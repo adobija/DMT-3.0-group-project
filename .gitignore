@@ -47,4 +47,4 @@ replay_pid*
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,java
 
 # password folder
-password/*
+.password/*
