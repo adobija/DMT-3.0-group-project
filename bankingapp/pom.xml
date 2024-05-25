@@ -40,6 +40,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency> <!-- This dependency is added to launch javax.annotation.PostConstruct to pull password from external file -->
+        	<groupId>javax.annotation</groupId>
+        	<artifactId>javax.annotation-api</artifactId>
+        	<version>1.3.2</version>
+    	</dependency>
 	</dependencies>
 
 	<build>
