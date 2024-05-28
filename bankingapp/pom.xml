@@ -39,11 +39,26 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<!-- Exclusion to avoid conflicts between JUnit 4 and JUnit 5 -
+			when using  use the spring-boot-starter-test dependency
+			added by Artur 28.05.2024 -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.mindrot</groupId>
 			<artifactId>jbcrypt</artifactId>
 			<version>0.4</version>
+		</dependency>
+		<!-- Dependency 'H2 Database' for testing in memory - added by Artur 28.05.2024 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 
@@ -55,5 +70,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
