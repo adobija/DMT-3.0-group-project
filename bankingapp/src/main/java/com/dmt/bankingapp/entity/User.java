@@ -2,6 +2,8 @@ package com.dmt.bankingapp.entity;
 
 import jakarta.persistence.*;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,13 +22,14 @@ public class User {
     private String userPassword;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Account> accounts;
+    private List<Account> accounts = new ArrayList<>();
 
     public User(String userName, boolean isAdmin, String userPassword) {
         this.userName = userName;
         this.isAdmin = isAdmin;
         this.userPassword = createBcryptHashedPassword(userPassword);
     }
+
     public User(){
     }
 
@@ -62,12 +65,17 @@ public class User {
         this.userPassword = createBcryptHashedPassword(userPassword);
     }
 
-    public List<Account> getAccounts() {
+    public List<Account> getAccountsList() {
         return accounts;
     }
 
-    public void setAccounts(List<Account> accounts) {
+    public void setAccountsList(List<Account> accounts) {
         this.accounts = accounts;
+    }
+
+    public void addAccount(Account account) {
+        account.setUser(this);
+        this.accounts.add(account);
     }
 
     // Method to create bcrypted password from plain text to insert into database crypted password
