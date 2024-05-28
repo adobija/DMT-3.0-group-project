@@ -34,8 +34,7 @@ public class BankingappApplicationTests {
 
 		String accountNumberOne = "123456789";
 		double balanceOne = 1000.0;
-        Account account = new Account(accountNumberOne, balanceOne, "savings");
-        account.setUser(user);
+        Account account = new Account(accountNumberOne, balanceOne, "savings", user);
         entityManager.persist(account);
 
 		// Act
@@ -61,8 +60,7 @@ public class BankingappApplicationTests {
 
         String accountNumberOne = "123456789";
         Double initialBalance = 1000.0;
-        Account account = new Account(accountNumberOne, initialBalance, "savings");
-        account.setUser(user);
+        Account account = new Account(accountNumberOne, initialBalance, "savings", user);
         entityManager.persist(account);
 
         // Act - Update the balance
