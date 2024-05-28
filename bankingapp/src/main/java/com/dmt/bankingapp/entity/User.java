@@ -1,6 +1,7 @@
 package com.dmt.bankingapp.entity;
 
 import jakarta.persistence.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 @Entity
 @Table(name="Users")
@@ -55,5 +56,13 @@ public class User {
 
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+
+    // Method to create bcrypted password from plain text to insert into database crypted password
+    private String createBcryptHashedPassword(String plainTextPassword){
+        int numberOfRounds = 10;
+        String hashingSalt = BCrypt.gensalt(numberOfRounds);
+        String bcryptedPassword = "{bcrypt}"+ BCrypt.hashpw(plainTextPassword,hashingSalt);
+        return bcryptedPassword;
     }
 }
