@@ -14,6 +14,7 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 @ExtendWith(SpringExtension.class)
@@ -32,7 +33,8 @@ public class BankingappApplicationTests {
         entityManager.persist(user);
 
 		String accountNumberOne = "123456789";
-        Account account = new Account(accountNumberOne, 1000.0, "savings");
+		double balanceOne = 1000.0;
+        Account account = new Account(accountNumberOne, balanceOne, "savings");
         account.setUser(user);
         entityManager.persist(account);
 
@@ -44,7 +46,9 @@ public class BankingappApplicationTests {
         assertThat(foundUser).isNotNull();
 		assertThat(foundAccount).isNotNull();
 
-		assertThat(foundUser.getUserName().equals(nameUserOne));
-		assertThat(foundAccount.getAccount_number().equals(accountNumberOne));
+		assertThat(foundUser.getUserName()).isEqualTo(nameUserOne);
+        assertFalse(foundUser.isAdmin());
+        assertThat(foundAccount.getAccount_number()).isEqualTo(accountNumberOne);
+        assertThat(foundAccount.getAccount_balance()).isEqualTo(balanceOne);
     }
 }
