@@ -25,6 +25,7 @@ public class BankingappApplicationTests {
     @PersistenceContext
     private EntityManager entityManager;
 	
+    // Test to check whether creating User and Account features work properly
     @Test
     public void testCreateAccount() {
 		// Arrange
@@ -47,10 +48,11 @@ public class BankingappApplicationTests {
 
 		assertThat(foundUser.getUserName()).isEqualTo(nameUserOne);
         assertFalse(foundUser.isAdmin());
-        assertThat(foundAccount.getAccount_number()).isEqualTo(accountNumberOne);
-        assertThat(foundAccount.getAccount_balance()).isEqualTo(balanceOne);
+        assertThat(foundAccount.getAccountNumber()).isEqualTo(accountNumberOne);
+        assertThat(foundAccount.getAccountBalance()).isEqualTo(balanceOne);
     }
 
+    // Test to setter method using 'setAccountBalance' method
 	@Test
     public void testSetAccountBalance() {
         // Arrange
@@ -66,7 +68,7 @@ public class BankingappApplicationTests {
         // Act - Update the balance
         Account existingAccount = entityManager.find(Account.class, account.getAccountID());
         Double newBalance = 2000.0;
-        existingAccount.setAccount_balance(newBalance);
+        existingAccount.setAccountBalance(newBalance);
         entityManager.persist(existingAccount);
 
         // Act - Retrieve the updated account
@@ -74,6 +76,6 @@ public class BankingappApplicationTests {
 
         // Assert
         assertThat(updatedAccount).isNotNull();
-        assertThat(updatedAccount.getAccount_balance()).isEqualTo(newBalance);
+        assertThat(updatedAccount.getAccountBalance()).isEqualTo(newBalance);
     }
 }

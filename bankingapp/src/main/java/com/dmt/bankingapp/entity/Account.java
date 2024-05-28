@@ -39,11 +39,11 @@ public class Account {
         this.accountID = accountID;
     }
 
-    public String getAccount_number() {
+    public String getAccountNumber() {
         return account_number;
     }
 
-    public void setAccount_number(String account_number) {
+    public void setAccountNumber(String account_number) {
         this.account_number = account_number;
     }
 
@@ -55,19 +55,19 @@ public class Account {
         this.user = user;
     }
 
-    public double getAccount_balance() {
+    public double getAccountBalance() {
         return account_balance;
     }
 
-    public void setAccount_balance(double account_balance) {
+    public void setAccountBalance(double account_balance) {
         this.account_balance = account_balance;
     }
 
-    public String getAccount_type() {
+    public String getAccountType() {
         return account_type;
     }
 
-    public void setAccount_type(String account_type) {
+    public void setAccountType(String account_type) {
         this.account_type = account_type;
     }
 }
