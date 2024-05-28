@@ -13,6 +13,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -77,5 +80,31 @@ public class BankingappApplicationTests {
         // Assert
         assertThat(updatedAccount).isNotNull();
         assertThat(updatedAccount.getAccountBalance()).isEqualTo(newBalance);
+    }
+
+    @Test
+    @Transactional
+    public void testManyAccountsForOneUser() {
+        // Arrange - create a new user
+        User user = new User("testUser", false, "password");
+        entityManager.persist(user);
+
+        // Arrange - create multiple accounts for the user
+        Account account1 = new Account("123456789", 1000.0, "checking", user);
+        Account account2 = new Account("987654321", 2000.0, "savings", user);
+        entityManager.persist(account1);
+        entityManager.persist(account2);
+
+        // Act  - fetch the user from the database
+        User fetchedUser = entityManager.find(User.class, user.getUserID());
+
+        // Assert - check that the user has two accounts
+        assertThat(fetchedUser).isNotNull();
+        assertThat(fetchedUser.getAccountsList()).hasSize(2);
+
+        // Assert - Check that the accounts belong to the correct user
+        List<Account> accounts = fetchedUser.getAccountsList();
+        assertThat(accounts.get(0).getAccountNumber().equals(account1.getAccountNumber()));
+        assertThat(accounts.get(1).getAccountNumber().equals(account2.getAccountNumber()));
     }
 }
