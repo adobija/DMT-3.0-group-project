@@ -27,19 +27,24 @@ public class BankingappApplicationTests {
     @Test
     public void testCreateAccount() {
 		// Arrange
-        User user = new User("testUser", false, "password123");
+		String nameUserOne = "testUser";
+        User user = new User(nameUserOne, false, "password123");
         entityManager.persist(user);
 
-        Account account = new Account("123456789", 1000.0, "savings");
+		String accountNumberOne = "123456789";
+        Account account = new Account(accountNumberOne, 1000.0, "savings");
         account.setUser(user);
         entityManager.persist(account);
 
 		// Act
-        Account foundAccount = entityManager.find(Account.class, account.getAccountID());
         User foundUser = entityManager.find(User.class, user.getUserID());
+		Account foundAccount = entityManager.find(Account.class, account.getAccountID());
 
 		// Assert
-        assertThat(foundAccount).isNotNull();
         assertThat(foundUser).isNotNull();
+		assertThat(foundAccount).isNotNull();
+
+		assertThat(foundUser.getUserName().equals(nameUserOne));
+		assertThat(foundAccount.getAccount_number().equals(accountNumberOne));
     }
 }
