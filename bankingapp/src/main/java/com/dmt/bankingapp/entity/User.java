@@ -21,7 +21,7 @@ public class User {
     @Column(name = "bcrypt_userPassword", length = 68)
     private String userPassword;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private List<Account> accounts = new ArrayList<>();
 
     public User(String userName, boolean isAdmin, String userPassword) {

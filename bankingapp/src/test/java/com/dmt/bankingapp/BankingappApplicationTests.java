@@ -37,8 +37,7 @@ public class BankingappApplicationTests {
         entityManager.persist(user);
 
 		String accountNumberOne = "123456789";
-		double balanceOne = 1000.0;
-        Account account = new Account(accountNumberOne, balanceOne, "savings", user);
+        Account account = new Account(accountNumberOne, "savings", user);
         entityManager.persist(account);
 
 		// Act
@@ -52,7 +51,7 @@ public class BankingappApplicationTests {
 		assertThat(foundUser.getUserName()).isEqualTo(nameUserOne);
         assertFalse(foundUser.isAdmin());
         assertThat(foundAccount.getAccountNumber()).isEqualTo(accountNumberOne);
-        assertThat(foundAccount.getAccountBalance()).isEqualTo(balanceOne);
+        assertThat(foundAccount.getAccountBalance()).isEqualTo(0);
     }
 
     // Test to setter method using 'setAccountBalance' method
@@ -61,12 +60,11 @@ public class BankingappApplicationTests {
         // Arrange
         String nameUserOne = "testUser";
         User user = new User(nameUserOne, false, "password123");
-        entityManager.persist(user);
 
         String accountNumberOne = "123456789";
-        Double initialBalance = 1000.0;
-        Account account = new Account(accountNumberOne, initialBalance, "savings", user);
-        entityManager.persist(account);
+        Account account = new Account(accountNumberOne, "savings", user);
+
+        entityManager.persist(user);
 
         // Act - Update the balance
         Account existingAccount = entityManager.find(Account.class, account.getAccountID());
@@ -87,13 +85,12 @@ public class BankingappApplicationTests {
     public void testManyAccountsForOneUser() {
         // Arrange - create a new user
         User user = new User("testUser", false, "password");
-        entityManager.persist(user);
 
         // Arrange - create multiple accounts for the user
-        Account account1 = new Account("123456789", 1000.0, "checking", user);
-        Account account2 = new Account("987654321", 2000.0, "savings", user);
-        entityManager.persist(account1);
-        entityManager.persist(account2);
+        Account account1 = new Account("123456789", "checking", user);
+        Account account2 = new Account("987654321", "savings", user);
+
+        entityManager.persist(user);
 
         // Act  - fetch the user from the database
         User fetchedUser = entityManager.find(User.class, user.getUserID());

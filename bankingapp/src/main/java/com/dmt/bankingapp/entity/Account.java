@@ -18,9 +18,9 @@ public class Account {
     private double account_balance;
     private String account_type;
 
-    public Account(String account_number, double account_balance, String account_type, User user) {
+    public Account(String account_number, String account_type, User user) {
         this.account_number = account_number;
-        this.account_balance = account_balance;
+        this.account_balance = 0.0;
         this.account_type = account_type;
         this.user = user;
         if (user != null) {
