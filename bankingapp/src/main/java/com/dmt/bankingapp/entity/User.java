@@ -21,7 +21,7 @@ public class User {
     public User(String userName, boolean isAdmin, String userPassword) {
         this.userName = userName;
         this.isAdmin = isAdmin;
-        this.userPassword = userPassword;
+        this.userPassword = createBcryptHashedPassword(userPassword);
     }
     public User(){
     }
@@ -55,7 +55,7 @@ public class User {
     }
 
     public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
+        this.userPassword = createBcryptHashedPassword(userPassword);
     }
 
     // Method to create bcrypted password from plain text to insert into database crypted password
