@@ -2,6 +2,7 @@ package com.dmt.bankingapp.entity;
 
 import jakarta.persistence.*;
 import org.mindrot.jbcrypt.BCrypt;
+import java.util.List;
 
 @Entity
 @Table(name="Users")
@@ -17,6 +18,9 @@ public class User {
     //length 68 because {bcrypt}+hash has in total 68 characters
     @Column(name = "bcrypt_userPassword", length = 68)
     private String userPassword;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Account> accounts;
 
     public User(String userName, boolean isAdmin, String userPassword) {
         this.userName = userName;
@@ -56,6 +60,14 @@ public class User {
 
     public void setUserPassword(String userPassword) {
         this.userPassword = createBcryptHashedPassword(userPassword);
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
     }
 
     // Method to create bcrypted password from plain text to insert into database crypted password
