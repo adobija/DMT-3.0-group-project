@@ -34,11 +34,11 @@ public class BankingappApplicationTests {
 		// Arrange
 		String nameUserOne = "testUser";
         User user = new User(nameUserOne, false, "password123");
-        entityManager.persist(user);
 
 		String accountNumberOne = "123456789";
         Account account = new Account(accountNumberOne, "savings", user);
-        entityManager.persist(account);
+
+        entityManager.persist(user);
 
 		// Act
         User foundUser = entityManager.find(User.class, user.getUserID());
