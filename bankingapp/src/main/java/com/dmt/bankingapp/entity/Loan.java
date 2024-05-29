@@ -10,41 +10,40 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "loan_ID")
     private int loanID;
-    private String account_number;
 
     @ManyToOne
     @JoinColumn(name = "user_ID")
     private User user;
-    private double account_balance;
-    private String account_type;
 
-    public Account(String account_number, double account_balance, String account_type, User user) {
-        this.account_number = account_number;
-        this.account_balance = account_balance;
-        this.account_type = account_type;
+    private int loanAccountID;
+    private double loanAccountBalance;
+    private int checkingAccountID;
+
+    public Loan(int loan_account_ID, double loanAccountBalance, int checkingAccountID, User user) {
+        this.loanAccountID = loan_account_ID;
+        this.loanAccountBalance = loanAccountBalance;
+        this.checkingAccountID = checkingAccountID;
         this.user = user;
-        if (user != null) {
-            user.addAccount(this);
-        }
     }
 
-    public Account() {
+    public int getLoanID() {
+        return loanID;
     }
 
-    public int getAccountID() {
-        return accountID;
+    public void setLoanID(int loanID) {
+        this.loanID = loanID;
     }
 
-    public void setAccountID(int accountID) {
-        this.accountID = accountID;
+    public int getLoanAccountID() {
+        return this.loanAccountID;
     }
 
-    public String getAccountNumber() {
-        return account_number;
+    public int getCheckingAccountID() {
+        return this.checkingAccountID;
     }
 
-    public void setAccountNumber(String account_number) {
-        this.account_number = account_number;
+    public double getLoanAccountBalance() {
+        return this.loanAccountBalance;
     }
 
     public User getUser() {
@@ -53,21 +52,5 @@ public class Loan {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public double getAccountBalance() {
-        return account_balance;
-    }
-
-    public void setAccountBalance(double account_balance) {
-        this.account_balance = account_balance;
-    }
-
-    public String getAccountType() {
-        return account_type;
-    }
-
-    public void setAccountType(String account_type) {
-        this.account_type = account_type;
     }
 }
