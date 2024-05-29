@@ -79,11 +79,11 @@ public class TransactionFeatureTest {
         double amountInTransaction = 300.0;
         Transaction transaction = new Transaction(giverAccount, receiverAccount, amountInTransaction);
         entityManager.persist(transaction);
-        String now = LocalDateTime.now().toString().split(".")[0];
+        String now = LocalDateTime.now().toString().split("\\.")[0];
         //Act
         Transaction transaction1 = entityManager.find(Transaction.class, transaction.getTransactionID());
 
-        String timestampFromTransactionRecord = transaction1.getTimestamp().toString().split(".")[0];
+        String timestampFromTransactionRecord = transaction1.getTimestamp().toString().split("\\.")[0];
         //Assert
         assertEquals(now, timestampFromTransactionRecord);
     }
