@@ -67,4 +67,16 @@ public class Transaction {
         giver.setAccountBalance(amount, true);
         receiver.setAccountBalance(amount, false);
     }
+
+    public int getTransactionID() {
+        return transactionID;
+    }
+
+    public void setTransactionID(int transactionID) {
+        this.transactionID = transactionID;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 }
