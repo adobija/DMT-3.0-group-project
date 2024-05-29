@@ -24,6 +24,9 @@ public class Loan {
         this.loanAccountBalance = loanAccountBalance;
         this.checkingAccountID = checkingAccountID;
         this.user = user;
+        if (user != null) {
+            user.addLoan(this);
+        }
     }
 
     public int getLoanID() {
