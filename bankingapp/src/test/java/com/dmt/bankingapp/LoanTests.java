@@ -18,6 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional
 public class LoanTests {
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Test
     public void testLoans() {
         //Arrange
@@ -37,14 +40,15 @@ public class LoanTests {
         loan.grantLoan(loanCheckingAcc, loanLoanAcc, loanAmount);
         // entityManager.persist(loan);
 
-        Account foundGiverAccount = entityManager.find(Account.class, loanCheckingAcc.getAccountID());
+        Account foundCheckingAccount = entityManager.find(Account.class, loanCheckingAcc.getAccountID());
+        Account foundLoanAccount = entityManager.find(Account.class, loanLoanAcc.getAccountID());
 
         //Assert
-        assertThat(foundGiverAccount).isNotNull();
-        assertThat(foundReceiverAccount).isNotNull();
+        assertThat(foundCheckingAccount).isNotNull();
+        assertThat(foundLoanAccount).isNotNull();
 
-        assertEquals(amount-amountInTransaction, foundGiverAccount.getAccountBalance());
-        assertEquals(amountInTransaction, foundReceiverAccount.getAccountBalance());
+        assertEquals(loanAmount, foundCheckingAccount.getAccountBalance());
+        assertEquals(0 - loanAmount, foundLoanAccount.getAccountBalance());
 
 
     }

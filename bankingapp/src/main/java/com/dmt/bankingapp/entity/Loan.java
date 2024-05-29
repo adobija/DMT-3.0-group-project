@@ -76,7 +76,7 @@ public class Loan {
         Transaction loan = new Transaction(loanAccount, checkingAccount, loanAmount);
         loan.manipulateTransaction(loanAccount, checkingAccount, loanAmount);
         // Here will be invoked method to increase amount of money to be returned
-        // when intrest rates are applied.
+        // when intrest rates are applied. This will be displayed on loan account.
 
     }
 }
