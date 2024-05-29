@@ -29,6 +29,7 @@ public class Transaction {
         this.giver = giver;
         this.receiver = receiver;
         this.amount = amount;
+        manipulateTransaction(giver, receiver, amount);
     }
 
     public Transaction() {
@@ -60,5 +61,10 @@ public class Transaction {
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public void manipulateTransaction(Account giver, Account receiver, double amount){
+        giver.setAccountBalance(amount, true);
+        receiver.setAccountBalance(amount, false);
     }
 }
