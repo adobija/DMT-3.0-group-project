@@ -83,6 +83,8 @@ public class TransactionFeatureTest {
         //Act
         Transaction transaction1 = entityManager.find(Transaction.class, transaction.getTransactionID());
 
+        //LocalDateTime look like YYYY-MM-DD{timezone}HH:MM:SS.{9 decimal points for milisecond}
+        //so I am comparing whole string before coma
         String timestampFromTransactionRecord = transaction1.getTimestamp().toString().split("\\.")[0];
         //Assert
         assertEquals(now, timestampFromTransactionRecord);
