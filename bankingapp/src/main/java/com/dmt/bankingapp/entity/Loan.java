@@ -1,5 +1,7 @@
 package com.dmt.bankingapp.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,18 +14,21 @@ public class Loan {
     private int loanID;
 
     @ManyToOne
-    @JoinColumn(name = "Checking_account", referencedColumnName = "account_ID")
+    @JoinColumn(name = "Checking_account", referencedColumnName = "Account_ID")
     private Account checkingAccountID;
 
     @ManyToOne
-    @JoinColumn(name = "Loan_account", referencedColumnName = "account_ID")
+    @JoinColumn(name = "Loan_account", referencedColumnName = "Account_ID")
     private Account loanAccountID;
 
     @ManyToOne
-    @JoinColumn(name = "User", referencedColumnName = "user_ID")
+    @JoinColumn(name = "User", referencedColumnName = "User_ID")
     private User user;
 
     private double loanAmount;
+
+    @Column(name = "Date_of_loan")
+    private LocalDateTime timestamp;
 
     public Loan(Account loanAccountID, double loanAccountBalance, Account checkingAccountID, User user) {
         this.loanAccountID = loanAccountID;
@@ -61,5 +66,9 @@ public class Loan {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }
