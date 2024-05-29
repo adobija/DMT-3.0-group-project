@@ -29,6 +29,7 @@ public class Transaction {
         this.giver = giver;
         this.receiver = receiver;
         this.amount = amount;
+        this.timestamp = LocalDateTime.now();
         manipulateTransaction(giver, receiver, amount);
     }
 
