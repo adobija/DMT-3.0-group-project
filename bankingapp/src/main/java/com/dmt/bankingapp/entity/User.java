@@ -24,6 +24,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private List<Account> accounts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    private List<Loan> loans = new ArrayList<>();
+
     public User(String userName, boolean isAdmin, String userPassword) {
         this.userName = userName;
         this.isAdmin = isAdmin;
@@ -76,6 +79,19 @@ public class User {
     public void addAccount(Account account) {
         account.setUser(this);
         this.accounts.add(account);
+    }
+
+    public List<Loan> getALoansList() {
+        return loans;
+    }
+
+    public void setLoansList(List<Loan> loans) {
+        this.loans = loans;
+    }
+
+    public void addLoan(Loan loan) {
+        loan.setUser(this);
+        this.loans.add(loan);
     }
 
     // Method to create bcrypted password from plain text to insert into database crypted password
