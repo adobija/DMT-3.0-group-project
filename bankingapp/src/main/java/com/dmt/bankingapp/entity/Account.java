@@ -59,8 +59,13 @@ public class Account {
         return account_balance;
     }
 
-    public void setAccountBalance(double account_balance) {
-        this.account_balance = account_balance;
+    public void setAccountBalance(double newAmountBalance, boolean isExpense) {
+        if(isExpense){
+            this.account_balance -= newAmountBalance;
+        }else {
+            this.account_balance += newAmountBalance;
+        }
+
     }
 
     public String getAccountType() {

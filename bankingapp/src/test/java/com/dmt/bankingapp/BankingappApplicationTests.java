@@ -69,7 +69,7 @@ public class BankingappApplicationTests {
         // Act - Update the balance
         Account existingAccount = entityManager.find(Account.class, account.getAccountID());
         Double newBalance = 2000.0;
-        existingAccount.setAccountBalance(newBalance);
+        existingAccount.setAccountBalance(newBalance, false);
         entityManager.persist(existingAccount);
 
         // Act - Retrieve the updated account
