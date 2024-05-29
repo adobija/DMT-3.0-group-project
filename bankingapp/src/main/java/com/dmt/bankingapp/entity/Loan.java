@@ -43,11 +43,11 @@ public class Loan {
         this.loanID = loanID;
     }
 
-    public int getLoanAccountID() {
+    public Account getLoanAccountID() {
         return this.loanAccountID;
     }
 
-    public int getCheckingAccountID() {
+    public Account getCheckingAccountID() {
         return this.checkingAccountID;
     }
 
