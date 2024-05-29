@@ -12,16 +12,22 @@ public class Loan {
     private int loanID;
 
     @ManyToOne
-    @JoinColumn(name = "user_ID")
+    @JoinColumn(name = "Checking_account", referencedColumnName = "account_ID")
+    private Account checkingAccountID;
+
+    @ManyToOne
+    @JoinColumn(name = "Loan_account", referencedColumnName = "account_ID")
+    private Account loanAccountID;
+
+    @ManyToOne
+    @JoinColumn(name = "User", referencedColumnName = "user_ID")
     private User user;
 
-    private int loanAccountID;
-    private double loanAccountBalance;
-    private int checkingAccountID;
+    private double loanAmount;
 
-    public Loan(int loan_account_ID, double loanAccountBalance, int checkingAccountID, User user) {
-        this.loanAccountID = loan_account_ID;
-        this.loanAccountBalance = loanAccountBalance;
+    public Loan(Account loanAccountID, double loanAccountBalance, Account checkingAccountID, User user) {
+        this.loanAccountID = loanAccountID;
+        this.loanAmount = loanAccountBalance;
         this.checkingAccountID = checkingAccountID;
         this.user = user;
         if (user != null) {
@@ -45,8 +51,8 @@ public class Loan {
         return this.checkingAccountID;
     }
 
-    public double getLoanAccountBalance() {
-        return this.loanAccountBalance;
+    public double getLoanAmount() {
+        return this.loanAmount;
     }
 
     public User getUser() {
