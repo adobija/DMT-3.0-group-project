@@ -15,11 +15,11 @@ public class Loan {
 
     @ManyToOne
     @JoinColumn(name = "Checking_account", referencedColumnName = "Account_ID")
-    private Account checkingAccountID;
+    private Account checkingAccount;
 
     @ManyToOne
     @JoinColumn(name = "Loan_account", referencedColumnName = "Account_ID")
-    private Account loanAccountID;
+    private Account loanAccount;
 
     @ManyToOne
     @JoinColumn(name = "User", referencedColumnName = "User_ID")
@@ -30,14 +30,14 @@ public class Loan {
     @Column(name = "Date_of_loan")
     private LocalDateTime timestamp;
 
-    public Loan(Account loanAccountID, double loanAccountBalance, Account checkingAccountID, User user) {
-        this.loanAccountID = loanAccountID;
-        this.loanAmount = loanAccountBalance;
-        this.checkingAccountID = checkingAccountID;
-        this.user = user;
+    public Loan(Account checkingAccount, Account loanAccount, double loanAmount) {
+        this.loanAccount = loanAccount;
+        this.checkingAccount = checkingAccount;
+        this.user = checkingAccount.getUser();
         if (user != null) {
             user.addLoan(this);
         }
+        this.loanAmount = loanAmount;
     }
 
     public int getLoanID() {
@@ -48,12 +48,12 @@ public class Loan {
         this.loanID = loanID;
     }
 
-    public Account getLoanAccountID() {
-        return this.loanAccountID;
+    public Account getLoanAccount() {
+        return this.loanAccount;
     }
 
-    public Account getCheckingAccountID() {
-        return this.checkingAccountID;
+    public Account getCheckingAccount() {
+        return this.checkingAccount;
     }
 
     public double getLoanAmount() {
@@ -70,5 +70,13 @@ public class Loan {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public void grantLoan(Account checkingAccount, Account loanAccount, double loanAmount) {
+        Transaction loan = new Transaction(loanAccount, checkingAccount, loanAmount);
+        loan.manipulateTransaction(loanAccount, checkingAccount, loanAmount);
+        // Here will be invoked method to increase amount of money to be returned
+        // when intrest rates are applied.
+
     }
 }
