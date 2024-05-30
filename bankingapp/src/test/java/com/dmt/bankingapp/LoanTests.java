@@ -27,30 +27,33 @@ public class LoanTests {
 
         User user1 = new User(loanTaker, false, "abc123");
 
-        String checkingAccountNum = "33311100";
-        String loanAccountNum = "44422211";
+        String checkingAccNum = "33311100";
+        String loanAccNum = "44422211";
 
-        Account loanCheckingAcc = new Account(checkingAccountNum, "checking", user1);
-        Account loanLoanAcc = new Account(loanAccountNum, "loan", user1);
+        Account checkingAccTest = new Account(checkingAccNum, "checking", user1);
+        Account loanAccTest = new Account(loanAccNum, "loan", user1);
+
+        double initialBalace = 255.90;
+        checkingAccTest.setAccountBalance(initialBalace, false);
 
         entityManager.persist(user1);
-        entityManager.persist(loanCheckingAcc);
-        entityManager.persist(loanLoanAcc);
+        entityManager.persist(checkingAccTest);
+        entityManager.persist(loanAccTest);
 
         // Act
         double testLoanAmount = 10000.0;
-        Loan loan = new Loan(loanCheckingAcc, loanLoanAcc, testLoanAmount);
-        loan.grantLoan(loan.getLoanAccount(), loan.getCheckingAccount(), loan.getLoanAmount());
+        Loan loan = new Loan(loanAccTest, checkingAccTest, testLoanAmount);
+        loan.grantLoan(loan.getLoanAccount(), loan.getCheckingAccount(), loan.getPrincipleLoanAmount());
         entityManager.persist(loan);
 
-        Account foundCheckingAccount = entityManager.find(Account.class, loanCheckingAcc.getAccountID());
-        Account foundLoanAccount = entityManager.find(Account.class, loanLoanAcc.getAccountID());
+        Account foundLoanAccount = entityManager.find(Account.class, loanAccTest.getAccountID());
+        Account foundCheckingAccount = entityManager.find(Account.class, checkingAccTest.getAccountID());
 
         // Assert
         assertThat(foundCheckingAccount).isNotNull();
         assertThat(foundLoanAccount).isNotNull();
 
-        assertEquals(testLoanAmount, foundCheckingAccount.getAccountBalance());
+        assertEquals(initialBalace + testLoanAmount, foundCheckingAccount.getAccountBalance());
         assertEquals(-testLoanAmount, foundLoanAccount.getAccountBalance());
     }
 }
