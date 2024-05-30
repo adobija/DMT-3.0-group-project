@@ -46,14 +46,17 @@ public class Loan {
     public Loan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate, int loanDuration, Account bankAccount) {
         this.loanAccount = loanAccount;
         this.checkingAccount = checkingAccount;
+        this.bankAccount = bankAccount;
+        this.principalLoanAmount = principalAmount;
+        this.intrestRate = intrestRate;
+        this.loanDuration = loanDuration;
+
         this.user = checkingAccount.getUser();
         if (user != null) {
             user.addLoan(this);
         }
-        this.principalLoanAmount = principalAmount;
-        this.intrestRate = intrestRate;
-        this.loanDuration = loanDuration;
-        this.bankAccount = bankAccount;
+
+        this.totalLoanAmount = 0;
     }
 
     public Loan() {}
@@ -74,16 +77,40 @@ public class Loan {
         return this.checkingAccount;
     }
 
-    public double getPrincipalLoanAmount() {
-        return this.principalLoanAmount;
+    public Account getBankAccount() {
+        return this.bankAccount;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setPrincipalLoanAmout(double principalAmount) {
+        this.principalLoanAmount = principalAmount;
+    }
+
+    public double getPrincipalLoanAmount() {
+        return this.principalLoanAmount;
+    }
+
+    public void setTotalLoanAmout(double totalAmount) {
+        this.totalLoanAmount = totalAmount;
+    }
+
+    public double getTotalLoanAmount() {
+        return this.totalLoanAmount;
+    }
+
+    public void setLoanDuration(int durationInMonths) {
+        this.loanDuration = durationInMonths;
+    }
+
+    public int getLoanDuration() {
+        return this.loanDuration;
     }
 
     public void setTimestamp(LocalDateTime timestamp) {
@@ -94,8 +121,8 @@ public class Loan {
         return timestamp;
     }
 
-    public void setIntrestRate(double intrestRate) {
-        this.intrestRate = intrestRate;
+    public void setIntrestRate(double rateInPercent) {
+        this.intrestRate = rateInPercent;
     }
 
     public double getIntrestRate() {
@@ -104,16 +131,21 @@ public class Loan {
 
     // Method to calculate amount of interests that bank charges for launching the loan, basing on amout of money to be borrowed, intrest rate and duration of the loan
     public double intrestAmount(double principalAmount, double intrestRate, int loanDuration) {
-        double total = principalAmount * (1 + ((intrestRate * loanDuration) / 12)); 
+        double convertedRate = intrestRate * 0.01; //converting from % value to decimal value (i.e. 3% to 0.03)
+        double total = principalAmount * (1 + ((convertedRate * loanDuration) / 12)); 
         double intrestAmount = total - principalAmount;
         return intrestAmount;
     }
 
     public void grantLoan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate, int loanDuration, Account bankAccount) {
-
-        Transaction loan = new Transaction(loanAccount, checkingAccount, principalAmount);
-        loan.setTimestamp(LocalDateTime.now());
-    }
-
-    
+        double intrestForBank = intrestAmount(principalAmount, intrestRate, loanDuration);
+        // Money transfer from the account where loan is launched to the checking account of the customer + setting time and date for the loan
+        Transaction principalGranted = new Transaction(loanAccount, checkingAccount, principalAmount);
+        setTimestamp(LocalDateTime.now());
+        // Profit from intrest transfer from the account where loan is launched to the bank's account
+        Transaction bankProfit = new Transaction(loanAccount, bankAccount, intrestForBank);
+        // Updating total amount of the loan
+        double totalLoanAmount = principalAmount + intrestForBank;
+        setTotalLoanAmout(totalLoanAmount);
+    } 
 }
