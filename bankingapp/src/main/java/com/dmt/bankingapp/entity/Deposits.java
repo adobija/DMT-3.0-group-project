@@ -45,5 +45,6 @@ public class Deposits {
 
         double progressiveDeposit = calculateProgressiveDeposit(1000, 4);
         System.out.println("Progressive: " + progressiveDeposit);
+        
     }
 }
