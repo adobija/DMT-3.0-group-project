@@ -1,8 +1,7 @@
 package com.dmt.bankingapp.entity;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Loans")
@@ -14,17 +13,18 @@ public class Loan {
     private int loanID;
 
     @ManyToOne
-    @JoinColumn(name = "Checking_account", referencedColumnName = "Account_ID")
+    @JoinColumn(name = "Checking_account", referencedColumnName = "account_ID")
     private Account checkingAccount;
 
     @ManyToOne
-    @JoinColumn(name = "Loan_account", referencedColumnName = "Account_ID")
+    @JoinColumn(name = "Loan_account", referencedColumnName = "account_ID")
     private Account loanAccount;
 
     @ManyToOne
-    @JoinColumn(name = "User", referencedColumnName = "User_ID")
+    @JoinColumn(name = "User", referencedColumnName = "user_ID")
     private User user;
 
+    @Column(name = "loan_amount")
     private double loanAmount;
 
     @Column(name = "Date_of_loan")
@@ -38,7 +38,10 @@ public class Loan {
             user.addLoan(this);
         }
         this.loanAmount = loanAmount;
+        this.timestamp = LocalDateTime.now();
     }
+
+    public Loan() {}
 
     public int getLoanID() {
         return loanID;
@@ -72,11 +75,14 @@ public class Loan {
         this.timestamp = timestamp;
     }
 
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
     public void grantLoan(Account checkingAccount, Account loanAccount, double loanAmount) {
         Transaction loan = new Transaction(loanAccount, checkingAccount, loanAmount);
-        loan.manipulateTransaction(loanAccount, checkingAccount, loanAmount);
+        this.timestamp = LocalDateTime.now();
         // Here will be invoked method to increase amount of money to be returned
-        // when intrest rates are applied. This will be displayed on loan account.
-
+        // when interest rates are applied. This will be displayed on loan account.
     }
 }

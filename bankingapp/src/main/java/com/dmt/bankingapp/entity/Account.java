@@ -10,26 +10,31 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_ID")
     private int accountID;
-    private String account_number;
+
+    @Column(name = "account_number")
+    private String accountNumber;
 
     @ManyToOne
     @JoinColumn(name = "user_ID")
     private User user;
-    private double account_balance;
-    private String account_type;
 
-    public Account(String account_number, String account_type, User user) {
-        this.account_number = account_number;
-        this.account_balance = 0.0;
-        this.account_type = account_type;
+    @Column(name = "account_balance")
+    private double accountBalance;
+
+    @Column(name = "account_type")
+    private String accountType;
+
+    public Account(String accountNumber, String accountType, User user) {
+        this.accountNumber = accountNumber;
+        this.accountBalance = 0.0;
+        this.accountType = accountType;
         this.user = user;
         if (user != null) {
             user.addAccount(this);
         }
     }
 
-    public Account() {
-    }
+    public Account() {}
 
     public int getAccountID() {
         return accountID;
@@ -40,11 +45,11 @@ public class Account {
     }
 
     public String getAccountNumber() {
-        return account_number;
+        return accountNumber;
     }
 
-    public void setAccountNumber(String account_number) {
-        this.account_number = account_number;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public User getUser() {
@@ -56,23 +61,22 @@ public class Account {
     }
 
     public double getAccountBalance() {
-        return account_balance;
+        return accountBalance;
     }
 
     public void setAccountBalance(double newAmountBalance, boolean isExpense) {
-        if(isExpense){
-            this.account_balance -= newAmountBalance;
-        }else {
-            this.account_balance += newAmountBalance;
+        if (isExpense) {
+            this.accountBalance -= newAmountBalance;
+        } else {
+            this.accountBalance += newAmountBalance;
         }
-
     }
 
     public String getAccountType() {
-        return account_type;
+        return accountType;
     }
 
-    public void setAccountType(String account_type) {
-        this.account_type = account_type;
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
     }
 }
