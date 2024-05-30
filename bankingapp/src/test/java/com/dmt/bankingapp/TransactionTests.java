@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @Transactional
-public class TransactionFeatureTest {
+public class TransactionTests {
     //arrange
     @PersistenceContext
     private EntityManager entityManager;
@@ -40,6 +40,7 @@ public class TransactionFeatureTest {
         giverAccount.setAccountBalance(amount, false);
         entityManager.persist(giverAccount);
         entityManager.persist(receiverAccount);
+
         //Act
         double amountInTransaction = 300.0;
         Transaction transaction = new Transaction(giverAccount, receiverAccount, amountInTransaction);
@@ -53,8 +54,6 @@ public class TransactionFeatureTest {
 
         assertEquals(amount-amountInTransaction, foundGiverAccount.getAccountBalance());
         assertEquals(amountInTransaction, foundReceiverAccount.getAccountBalance());
-
-
     }
 
     @Test
@@ -80,12 +79,14 @@ public class TransactionFeatureTest {
         Transaction transaction = new Transaction(giverAccount, receiverAccount, amountInTransaction);
         entityManager.persist(transaction);
         String now = LocalDateTime.now().toString().split("\\.")[0];
+
         //Act
         Transaction transaction1 = entityManager.find(Transaction.class, transaction.getTransactionID());
 
         //LocalDateTime look like YYYY-MM-DD{timezone}HH:MM:SS.{9 decimal points for milisecond}
         //so I am comparing whole string before coma
         String timestampFromTransactionRecord = transaction1.getTimestamp().toString().split("\\.")[0];
+        
         //Assert
         assertEquals(now, timestampFromTransactionRecord);
     }
