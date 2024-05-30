@@ -24,8 +24,8 @@ public class Loan {
     @JoinColumn(name = "Client", referencedColumnName = "user_ID")
     private User user;
 
-    @Column(name = "Principle_loan_amount")
-    private double principleLoanAmount;
+    @Column(name = "Principal_loan_amount")
+    private double principalLoanAmount;
 
     @Column(name = "Loan_duration")
     private int loanDuration;
@@ -39,16 +39,21 @@ public class Loan {
     @Column(name = "Date_of_loan")
     private LocalDateTime timestamp;
 
-    public Loan(Account loanAccount, Account checkingAccount, double principleAmount, double intrestRate, int loanDuration) {
+    @ManyToOne
+    @JoinColumn(name = "Bank_account", referencedColumnName = "account_ID")
+    private Account bankAccount;
+
+    public Loan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate, int loanDuration, Account bankAccount) {
         this.loanAccount = loanAccount;
         this.checkingAccount = checkingAccount;
         this.user = checkingAccount.getUser();
         if (user != null) {
             user.addLoan(this);
         }
-        this.principleLoanAmount = principleAmount;
+        this.principalLoanAmount = principalAmount;
         this.intrestRate = intrestRate;
         this.loanDuration = loanDuration;
+        this.bankAccount = bankAccount;
     }
 
     public Loan() {}
@@ -69,8 +74,8 @@ public class Loan {
         return this.checkingAccount;
     }
 
-    public double getPrincipleLoanAmount() {
-        return this.principleLoanAmount;
+    public double getPrincipalLoanAmount() {
+        return this.principalLoanAmount;
     }
 
     public User getUser() {
@@ -97,16 +102,18 @@ public class Loan {
         return this.intrestRate;
     }
 
-    public void grantLoan(Account loanAccount, Account checkingAccount, double principleAmount, double intrestRate, int loanDuration) {
+    // Method to calculate amount of interests that bank charges for launching the loan, basing on amout of money to be borrowed, intrest rate and duration of the loan
+    public double intrestAmount(double principalAmount, double intrestRate, int loanDuration) {
+        double total = principalAmount * (1 + ((intrestRate * loanDuration) / 12)); 
+        double intrestAmount = total - principalAmount;
+        return intrestAmount;
+    }
 
-        Transaction loan = new Transaction(loanAccount, checkingAccount, principleAmount);
+    public void grantLoan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate, int loanDuration, Account bankAccount) {
+
+        Transaction loan = new Transaction(loanAccount, checkingAccount, principalAmount);
         loan.setTimestamp(LocalDateTime.now());
-        // Here will be invoked method to increase amount of money to be returned
-        // when interest rates are applied. This will be displayed on loan account.
     }
 
-    public double intrestAmount(double principleAmount, double intrestRate, int loanDuration) {
-        double total = 0.0;
-        return total;
-    }
+    
 }

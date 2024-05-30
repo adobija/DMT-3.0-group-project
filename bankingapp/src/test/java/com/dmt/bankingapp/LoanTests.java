@@ -43,7 +43,7 @@ public class LoanTests {
         // Act
         double testLoanAmount = 10000.0;
         Loan loan = new Loan(loanAccTest, checkingAccTest, testLoanAmount);
-        loan.grantLoan(loan.getLoanAccount(), loan.getCheckingAccount(), loan.getPrincipleLoanAmount());
+        loan.grantLoan(loan.getLoanAccount(), loan.getCheckingAccount(), loan.getPrincipalLoanAmount());
         entityManager.persist(loan);
 
         Account foundLoanAccount = entityManager.find(Account.class, loanAccTest.getAccountID());
