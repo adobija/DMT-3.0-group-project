@@ -34,21 +34,24 @@ public class LoanTests {
         Account loanCheckingAcc = new Account(checkingAccountNum, "checking", user1);
         Account loanLoanAcc = new Account(loanAccountNum, "loan", user1);
 
+        entityManager.persist(loanCheckingAcc);
+        entityManager.persist(loanLoanAcc);
+
         //Act
-        double loanAmount = 10000.0;
-        Loan loan = new Loan(loanCheckingAcc, loanLoanAcc, loanAmount);
-        loan.grantLoan(loanCheckingAcc, loanLoanAcc, loanAmount);
-        // entityManager.persist(loan);
+        double testLoanAmount = 10000.0;
+        Loan loan = new Loan(loanCheckingAcc, loanLoanAcc, testLoanAmount);
+        loan.grantLoan(loan.getLoanAccount(), loan.getCheckingAccount(), loan.getLoanAmount());
+        entityManager.persist(loan);
 
         Account foundCheckingAccount = entityManager.find(Account.class, loanCheckingAcc.getAccountID());
         Account foundLoanAccount = entityManager.find(Account.class, loanLoanAcc.getAccountID());
-
+        
         //Assert
         assertThat(foundCheckingAccount).isNotNull();
         assertThat(foundLoanAccount).isNotNull();
 
-        assertEquals(loanAmount, foundCheckingAccount.getAccountBalance());
-        assertEquals(0 - loanAmount, foundLoanAccount.getAccountBalance());
+        assertEquals(testLoanAmount, foundCheckingAccount.getAccountBalance());
+        assertEquals(0 - testLoanAmount, foundLoanAccount.getAccountBalance());
 
 
     }
