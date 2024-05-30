@@ -9,7 +9,7 @@ public class Loan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "loan_ID")
+    @Column(name = "Loan_ID")
     private int loanID;
 
     @ManyToOne
@@ -21,10 +21,10 @@ public class Loan {
     private Account loanAccount;
 
     @ManyToOne
-    @JoinColumn(name = "User", referencedColumnName = "user_ID")
+    @JoinColumn(name = "Client", referencedColumnName = "user_ID")
     private User user;
 
-    @Column(name = "loan_amount")
+    @Column(name = "Loan_amount")
     private double loanAmount;
 
     @Column(name = "Date_of_loan")
@@ -80,7 +80,7 @@ public class Loan {
     }
 
     public void grantLoan(Account checkingAccount, Account loanAccount, double loanAmount) {
-        Transaction loan = new Transaction(loanAccount, checkingAccount, loanAmount);
+        Transaction loan = new Transaction(checkingAccount, loanAccount, loanAmount);
         this.timestamp = LocalDateTime.now();
         // Here will be invoked method to increase amount of money to be returned
         // when interest rates are applied. This will be displayed on loan account.
