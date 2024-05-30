@@ -2,7 +2,6 @@ package com.dmt.bankingapp.entity;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,19 +10,19 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "transaction_ID")
+    @Column(name = "transactionID")
     private int transactionID;
     
     @ManyToOne
-    @JoinColumn(name = "Account_of_sender", referencedColumnName = "Account_ID")
+    @JoinColumn(name = "accountOfSender", referencedColumnName = "accountID")
     private Account giver;
 
     @ManyToOne
-    @JoinColumn(name = "Account_of_receiver", referencedColumnName = "Account_ID")
+    @JoinColumn(name = "accountOfReceiver", referencedColumnName = "accountID")
     private Account receiver;
     private double amount;
 
-    @Column(name = "Date_of_transaction")
+    @Column(name = "dateOfTransaction")
     private LocalDateTime timestamp;
 
     public Transaction(Account giver, Account receiver, double amount) {

@@ -9,38 +9,38 @@ public class Loan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Loan_ID")
+    @Column(name = "loanID")
     private int loanID;
 
     @ManyToOne
-    @JoinColumn(name = "Loan_account", referencedColumnName = "account_ID")
+    @JoinColumn(name = "loanAccount", referencedColumnName = "accountID")
     private Account loanAccount;
 
     @ManyToOne
-    @JoinColumn(name = "Checking_account", referencedColumnName = "account_ID")
+    @JoinColumn(name = "checkingAccount", referencedColumnName = "accountID")
     private Account checkingAccount;
 
     @ManyToOne
-    @JoinColumn(name = "Client", referencedColumnName = "user_ID")
-    private User user;
+    @JoinColumn(name = "client", referencedColumnName = "clientID")
+    private Client client;
 
-    @Column(name = "Principal_loan_amount")
+    @Column(name = "principalLoanAmount")
     private double principalLoanAmount;
 
-    @Column(name = "Loan_duration")
+    @Column(name = "loanDuration")
     private int loanDuration;
 
-    @Column(name = "Intrest_rate")
+    @Column(name = "intrestRate")
     private double intrestRate;
 
-    @Column(name = "Total_loan_amount")
+    @Column(name = "totalLoanAmount")
     private double totalLoanAmount;
 
-    @Column(name = "Date_of_loan")
+    @Column(name = "dateOfLoan")
     private LocalDateTime timestamp;
 
     @ManyToOne
-    @JoinColumn(name = "Bank_account", referencedColumnName = "account_ID")
+    @JoinColumn(name = "bankAccount", referencedColumnName = "accountID")
     private Account bankAccount;
 
     public Loan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate, int loanDuration, Account bankAccount) {
@@ -51,9 +51,9 @@ public class Loan {
         this.intrestRate = intrestRate;
         this.loanDuration = loanDuration;
 
-        this.user = checkingAccount.getUser();
-        if (user != null) {
-            user.addLoan(this);
+        this.client = checkingAccount.getClient();
+        if (client != null) {
+            client.addLoan(this);
         }
 
         this.totalLoanAmount = 0;
@@ -81,12 +81,12 @@ public class Loan {
         return this.bankAccount;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    public User getUser() {
-        return user;
+    public Client getClient() {
+        return client;
     }
 
     public void setPrincipalLoanAmout(double principalAmount) {

@@ -7,51 +7,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Users")
-public class User {
+@Table(name = "Clients")
+public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_ID")
-    private int userID;
+    @Column(name = "clientID")
+    private int clientID;
 
-    @Column(name = "userName")
-    private String userName;
+    @Column(name = "clientName")
+    private String clientName;
 
     @Column(name = "isAdmin")
     private boolean isAdmin;
 
-    @Column(name = "bcrypt_userPassword", length = 68)
-    private String userPassword;
+    @Column(name = "bcryptClientPassword", length = 68)
+    private String clientPassword;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @OneToMany(mappedBy = "client", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private List<Account> accounts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @OneToMany(mappedBy = "client", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private List<Loan> loans = new ArrayList<>();
 
-    public User(String userName, boolean isAdmin, String userPassword) {
-        this.userName = userName;
+    public Client(String clientName, boolean isAdmin, String clientPassword) {
+        this.clientName = clientName;
         this.isAdmin = isAdmin;
-        this.userPassword = createBcryptHashedPassword(userPassword);
+        this.clientPassword = createBcryptHashedPassword(clientPassword);
     }
 
-    public User() {}
+    public Client() {}
 
-    public int getUserID() {
-        return userID;
+    public int getClientID() {
+        return clientID;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setClientID(int clientID) {
+        this.clientID = clientID;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getClientName() {
+        return clientName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 
     public boolean isAdmin() {
@@ -62,12 +62,12 @@ public class User {
         isAdmin = admin;
     }
 
-    public String getUserPassword() {
-        return userPassword;
+    public String getClientPassword() {
+        return clientPassword;
     }
 
-    public void setUserPassword(String userPassword) {
-        this.userPassword = createBcryptHashedPassword(userPassword);
+    public void setClientPassword(String clientPassword) {
+        this.clientPassword = createBcryptHashedPassword(clientPassword);
     }
 
     public List<Account> getAccountsList() {
@@ -79,7 +79,7 @@ public class User {
     }
 
     public void addAccount(Account account) {
-        account.setUser(this);
+        account.setClient(this);
         this.accounts.add(account);
     }
 
@@ -92,7 +92,7 @@ public class User {
     }
 
     public void addLoan(Loan loan) {
-        loan.setUser(this);
+        loan.setClient(this);
         this.loans.add(loan);
     }
 
