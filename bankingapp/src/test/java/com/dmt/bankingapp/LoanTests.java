@@ -2,7 +2,7 @@ package com.dmt.bankingapp;
 
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Loan;
-import com.dmt.bankingapp.entity.User;
+import com.dmt.bankingapp.entity.Client;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -26,9 +26,9 @@ public class LoanTests {
     @Test
     public void testConstructor() {
         // Arrange
-        Account loanAccount = new Account("loanAccNum", "loan", new User("loanTaker", false, "abc123"));
-        Account checkingAccount = new Account("checkingAccNum", "checking", new User("loanTaker", false, "abc123"));
-        Account bankAccount = new Account("bankAccNum", "bank", new User("bankName", false, "1234"));
+        Account loanAccount = new Account("loanAccNum", "loan", new Client("loanTaker", false, "abc123"));
+        Account checkingAccount = new Account("checkingAccNum", "checking", new Client("loanTaker", false, "abc123"));
+        Account bankAccount = new Account("bankAccNum", "bank", new Client("bankName", false, "1234"));
         double principalAmount = 50000.0;
         double interestRate = 2.9;
         int loanDuration = 12;
@@ -43,8 +43,8 @@ public class LoanTests {
         assertEquals(principalAmount, loan.getPrincipalLoanAmount());
         assertEquals(interestRate, loan.getIntrestRate());
         assertEquals(loanDuration, loan.getLoanDuration());
-        assertNotNull(loan.getUser());
-        assertEquals(loan.getUser(), checkingAccount.getUser());
+        assertNotNull(loan.getClient());
+        assertEquals(loan.getClient(), checkingAccount.getClient());
     }
 
     @Test
@@ -94,19 +94,19 @@ public class LoanTests {
 
     @Test
     public void testGrantLoan() {
-        // Arrange - instantiating a user and a bank, instantiating checking and loan account for the user, and account for the bank
-        String loanTaker = "userTaker";
+        // Arrange - instantiating a client and a bank, instantiating checking and loan account for the client, and account for the bank
+        String loanTaker = "clientTaker";
         String bankName = "bank";
 
-        User user1 = new User(loanTaker, false, "abc123");
-        User bank = new User(bankName, false, "1234");
+        Client client1 = new Client(loanTaker, false, "abc123");
+        Client bank = new Client(bankName, false, "1234");
 
         String checkingAccNum = "33311100";
         String loanAccNum = "44422211";
         String bankAccNum = "00000000";
 
-        Account checkingAccTest = new Account(checkingAccNum, "checking", user1);
-        Account loanAccTest = new Account(loanAccNum, "loan", user1);
+        Account checkingAccTest = new Account(checkingAccNum, "checking", client1);
+        Account loanAccTest = new Account(loanAccNum, "loan", client1);
         Account bankAccTest = new Account(bankAccNum, "bank", bank);
 
 
@@ -115,7 +115,7 @@ public class LoanTests {
         checkingAccTest.setAccountBalance(checkingInitialBalace, false);
         bankAccTest.setAccountBalance(bankInitialBalance, false);
 
-        entityManager.persist(user1);
+        entityManager.persist(client1);
         entityManager.persist(bank);
         entityManager.persist(checkingAccTest);
         entityManager.persist(loanAccTest);
