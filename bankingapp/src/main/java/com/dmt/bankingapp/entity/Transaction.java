@@ -13,6 +13,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_ID")
     private int transactionID;
+    
     @ManyToOne
     @JoinColumn(name = "Account_of_sender", referencedColumnName = "Account_ID")
     private Account giver;

@@ -7,22 +7,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="Users")
+@Table(name = "Users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_ID")
     private int userID;
+
+    @Column(name = "userName")
     private String userName;
+
+    @Column(name = "isAdmin")
     private boolean isAdmin;
 
-    //length 68 because {bcrypt}+hash has in total 68 characters
     @Column(name = "bcrypt_userPassword", length = 68)
     private String userPassword;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private List<Account> accounts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    private List<Loan> loans = new ArrayList<>();
 
     public User(String userName, boolean isAdmin, String userPassword) {
         this.userName = userName;
@@ -30,8 +36,7 @@ public class User {
         this.userPassword = createBcryptHashedPassword(userPassword);
     }
 
-    public User(){
-    }
+    public User() {}
 
     public int getUserID() {
         return userID;
@@ -78,11 +83,23 @@ public class User {
         this.accounts.add(account);
     }
 
+    public List<Loan> getLoansList() {
+        return loans;
+    }
+
+    public void setLoansList(List<Loan> loans) {
+        this.loans = loans;
+    }
+
+    public void addLoan(Loan loan) {
+        loan.setUser(this);
+        this.loans.add(loan);
+    }
+
     // Method to create bcrypted password from plain text to insert into database crypted password
-    private String createBcryptHashedPassword(String plainTextPassword){
+    private String createBcryptHashedPassword(String plainTextPassword) {
         int numberOfRounds = 10;
         String hashingSalt = BCrypt.gensalt(numberOfRounds);
-        String bcryptedPassword = "{bcrypt}"+ BCrypt.hashpw(plainTextPassword,hashingSalt);
-        return bcryptedPassword;
+        return "{bcrypt}" + BCrypt.hashpw(plainTextPassword, hashingSalt);
     }
 }
