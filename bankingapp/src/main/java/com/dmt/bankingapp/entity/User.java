@@ -96,6 +96,21 @@ public class User {
         this.loans.add(loan);
     }
 
+    private List<Deposits> Deposits = new ArrayList<>();
+
+    public List<Deposits> getDepositsList() {
+        return Deposits;
+    }
+
+    public void setDepositsList(List<Deposits> deposits) {
+        this.Deposits = deposits;
+    }
+
+    public void addDeposit(Deposits deposit) {
+        deposit.setUser(this);
+        this.Deposits.add(deposit);
+    }
+
     // Method to create bcrypted password from plain text to insert into database crypted password
     private String createBcryptHashedPassword(String plainTextPassword) {
         int numberOfRounds = 10;
