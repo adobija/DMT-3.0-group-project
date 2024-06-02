@@ -31,10 +31,11 @@ public class LoanTests {
         Account bankAccount = new Account("bankAccNum", "bank", new Client("bankName", false, "1234"));
         double principalAmount = 50000.0;
         double interestRate = 2.9;
+        double commisionRate = 4.0;
         int loanDuration = 12;
 
         // Act
-        Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, loanDuration, bankAccount);
+        Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
 
         // Assert
         assertEquals(loanAccount, loan.getLoanAccount());
@@ -42,6 +43,7 @@ public class LoanTests {
         assertEquals(bankAccount, loan.getBankAccount());
         assertEquals(principalAmount, loan.getPrincipalLoanAmount());
         assertEquals(interestRate, loan.getIntrestRate());
+        assertEquals(commisionRate, loan.getCommisionRate());
         assertEquals(loanDuration, loan.getLoanDuration());
         assertNotNull(loan.getClient());
         assertEquals(loan.getClient(), checkingAccount.getClient());
@@ -56,6 +58,7 @@ public class LoanTests {
         double totalAmount = 12000.0;
         int loanDuration = 360;
         double interestRate = 6.5;
+        double commisionRate = 4.0;
         LocalDateTime timestamp = LocalDateTime.now();
 
         // Act
@@ -64,6 +67,7 @@ public class LoanTests {
         loan.setTotalLoanAmout(totalAmount);
         loan.setLoanDuration(loanDuration);
         loan.setIntrestRate(interestRate);
+        loan.setCommisionRate(commisionRate);
         loan.setTimestamp(timestamp);
 
         // Assert
@@ -72,6 +76,7 @@ public class LoanTests {
         assertEquals(totalAmount, loan.getTotalLoanAmount());
         assertEquals(loanDuration, loan.getLoanDuration());
         assertEquals(interestRate, loan.getIntrestRate());
+        assertEquals(commisionRate, loan.getCommisionRate());
         assertEquals(timestamp, loan.getTimestamp());
     }
 
@@ -124,9 +129,10 @@ public class LoanTests {
         // Act - arranging new loan and variables required to grant the loan
         double testLoanAmount = 10000.0;
         double testIntrestRate = 5.7;
+        double testCommisionRate = 4.0;
         int testLoanDuration = 60;
-        Loan testLoan = new Loan(loanAccTest, checkingAccTest, testLoanAmount, testIntrestRate, testLoanDuration, bankAccTest);
-        testLoan.grantLoan(testLoan.getLoanAccount(), testLoan.getCheckingAccount(), testLoan.getPrincipalLoanAmount(), testLoan.getIntrestRate(), testLoan.getLoanDuration(), testLoan.getBankAccount());
+        Loan testLoan = new Loan(loanAccTest, checkingAccTest, testLoanAmount, testIntrestRate, testCommisionRate, testLoanDuration, bankAccTest);
+        testLoan.grantLoan(testLoan.getLoanAccount(), testLoan.getCheckingAccount(), testLoan.getPrincipalLoanAmount(), testLoan.getIntrestRate(), testLoan.getCommisionRate(), testLoan.getLoanDuration(), testLoan.getBankAccount());
         entityManager.persist(testLoan);
 
         Account foundLoanAccount = entityManager.find(Account.class, loanAccTest.getAccountID());
@@ -141,10 +147,10 @@ public class LoanTests {
         double testCheckingAccBalance = checkingInitialBalace + testLoanAmount;
         assertEquals(testCheckingAccBalance, foundCheckingAccount.getAccountBalance());
 
-        double testLoanAccBalance = -testLoanAmount - testLoan.intrestAmount(testLoanAmount, testIntrestRate, testLoanDuration);
+        double testLoanAccBalance = -testLoanAmount - testLoan.intrestAmount(testLoanAmount, testIntrestRate, testLoanDuration) - testLoan.commisionAmout(testLoanAmount, testCommisionRate);
         assertEquals(testLoanAccBalance, foundLoanAccount.getAccountBalance());
 
-        double testBankAccBalance = bankInitialBalance + testLoan.intrestAmount(testLoanAmount, testIntrestRate, testLoanDuration);
+        double testBankAccBalance = bankInitialBalance + testLoan.intrestAmount(testLoanAmount, testIntrestRate, testLoanDuration) + testLoan.commisionAmout(testLoanAmount, testCommisionRate);
         assertEquals(testBankAccBalance, foundBankAccount.getAccountBalance());
     }
 }
