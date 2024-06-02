@@ -33,6 +33,9 @@ public class Loan {
     @Column(name = "intrestRate")
     private double intrestRate;
 
+    @Column(name = "commisionRate")
+    private double commisionRate;
+
     @Column(name = "totalLoanAmount")
     private double totalLoanAmount;
 
@@ -43,12 +46,13 @@ public class Loan {
     @JoinColumn(name = "bankAccount", referencedColumnName = "accountID")
     private Account bankAccount;
 
-    public Loan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate, int loanDuration, Account bankAccount) {
+    public Loan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate, double commisionRate, int loanDuration, Account bankAccount) {
         this.loanAccount = loanAccount;
         this.checkingAccount = checkingAccount;
         this.bankAccount = bankAccount;
         this.principalLoanAmount = principalAmount;
         this.intrestRate = intrestRate;
+        this.commisionRate = commisionRate;
         this.loanDuration = loanDuration;
 
         this.client = checkingAccount.getClient();
@@ -129,7 +133,15 @@ public class Loan {
         return this.intrestRate;
     }
 
-    // Method to calculate amount of interests that bank charges for launching the loan, basing on amout of money to be borrowed, intrest rate and duration of the loan
+    public void setCommisionRate(double commsionInPercent) {
+        this.commisionRate = commsionInPercent;
+    }
+
+    public double getCommisionRate() {
+        return this.commisionRate;
+    }
+
+    // Method to calculate the amount of interests that bank charges for launching the loan, basing on amout of money to be borrowed, intrest rate and duration of the loan
     public double intrestAmount(double principalAmount, double intrestRate, int loanDuration) {
         double convertedRate = intrestRate * 0.01; //converting from % value to decimal value (i.e. 3% to 0.03)
         double total = principalAmount * (1 + ((convertedRate * loanDuration) / 12)); 
@@ -137,15 +149,26 @@ public class Loan {
         return intrestAmount;
     }
 
-    public void grantLoan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate, int loanDuration, Account bankAccount) {
+    // Method to calculate commision charged by the bank when granting the loan
+    public double commisionAmout(double principalAmount, double commisionRate) {
+        double decimalRate = intrestRate * 0.01; //converting from % value to decimal value (i.e. 3% to 0.03)
+        double commision = principalAmount * decimalRate;
+        return commision;
+    }
+
+    public void grantLoan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate, double commisionRate, int loanDuration, Account bankAccount) {
+        // Calculating commision and amount of intrests
         double intrestForBank = intrestAmount(principalAmount, intrestRate, loanDuration);
+        double commisionForBank = commisionAmout(principalAmount, commisionRate);
         // Money transfer from the account where loan is launched to the checking account of the customer + setting time and date for the loan
         Transaction principalGranted = new Transaction(loanAccount, checkingAccount, principalAmount);
         setTimestamp(LocalDateTime.now());
         // Profit from intrest transfer from the account where loan is launched to the bank's account
         Transaction bankProfit = new Transaction(loanAccount, bankAccount, intrestForBank);
+        // Profit from commision transfer from the account where loan is launched to the bank's account
+        Transaction commisionProfit = new Transaction(loanAccount, bankAccount, commisionForBank);
         // Updating total amount of the loan
-        double totalLoanAmount = principalAmount + intrestForBank;
+        double totalLoanAmount = principalAmount + intrestForBank + commisionForBank;
         setTotalLoanAmout(totalLoanAmount);
     } 
 }
