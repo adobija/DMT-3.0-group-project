@@ -7,7 +7,7 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import javax.sql.DataSource;
 
 @Configuration
-public class authenticationConfig {
+public class AuthenticationConfig {
 
     @Bean
     public JdbcUserDetailsManager userDetailsManager(DataSource dataSource){

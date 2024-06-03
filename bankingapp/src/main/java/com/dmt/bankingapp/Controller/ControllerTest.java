@@ -1,17 +1,15 @@
-package com.dmt.bankingapp.Controller;
+package com.dmt.bankingapp.controller;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping(path = "/test")
+@RestController
+@RequestMapping("/test")
 public class ControllerTest {
 
-    @GetMapping(path = "/hi")
-    public @ResponseBody String testLogin(){
-        return "Hello world!";
+    @GetMapping("/someEndpoint")
+    public String someEndpoint() {
+        return "Success";
     }
-
 }
