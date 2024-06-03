@@ -17,13 +17,14 @@ public class endpointAccess {
                 configure
                         //mask:
                         //.requestMatchers(HttpMethod.<REST API METHOD>,<URI as String>).<attribute>
-                        .requestMatchers(HttpMethod.GET,"/test").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/test/**").authenticated()
 
         );
         //Set http login as Basic Auth
         httpSecurity.httpBasic(Customizer.withDefaults());
-        //Disable cross site request forgery
-        httpSecurity.csrf(csrf -> csrf.disable());
+
+        //Disable cross site request forgery token - more vulnerable
+        //httpSecurity.csrf(csrf -> csrf.disable());
 
         return httpSecurity.build();
     }
