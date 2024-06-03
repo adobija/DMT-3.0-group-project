@@ -54,6 +54,11 @@
 			<artifactId>jbcrypt</artifactId>
 			<version>0.4</version>
 		</dependency>
+		<!-- Dependency security for login users to endpoints-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 		<!-- Dependency 'H2 Database' for testing in memory - added by Artur 28.05.2024 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
