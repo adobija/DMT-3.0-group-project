@@ -17,6 +17,10 @@ public class authenticationConfig {
         jdbcUserDetailsManager.setUsersByUsernameQuery(
                 "SELECT client_name,bcrypt_client_password, true FROM clients where client_name=?"
         );
+        //Query to fetch empty list of authorities, it is required but we don't use it
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery(
+                "SELECT client_name, is_admin from clients where client_name=?"
+        );
 
         return jdbcUserDetailsManager;
     }
