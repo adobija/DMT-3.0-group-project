@@ -46,6 +46,10 @@ public class Loan {
     @JoinColumn(name = "bankAccount", referencedColumnName = "accountID")
     private Account bankAccount;
 
+    @Column(name = "isActive")
+    private boolean isActive;
+
+
     public Loan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate,
             double commisionRate, int loanDuration, Account bankAccount) {
         this.loanAccount = loanAccount;
@@ -61,7 +65,11 @@ public class Loan {
             client.addLoan(this);
         }
 
-        grantLoan(loanAccount, checkingAccount, principalAmount, intrestRate, commisionRate, loanDuration, bankAccount);
+        grantLoan(this.loanAccount, this.checkingAccount, this.principalLoanAmount, this.intrestRate, this.commisionRate, this.loanDuration, this.bankAccount);
+
+        if (this.totalLoanAmount > 0) {
+            this.isActive = true;
+        }
     }
 
     public Loan() {
@@ -141,6 +149,14 @@ public class Loan {
 
     public double getCommisionRate() {
         return this.commisionRate;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public boolean getIsActive() {
+        return this.isActive;
     }
 
     // Method to calculate the amount of interests that bank charges for launching
