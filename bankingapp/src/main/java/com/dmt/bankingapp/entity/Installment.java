@@ -22,6 +22,12 @@ public class Installment {
     @Column(name = "dueDate")
     private LocalDateTime dueDate;
 
+    @Column(name = "paidAmount")
+    private double paidAmount;
+
+    @Column(name = "isPaid")
+    private boolean isPaid;
+
     public Installment() {
     }
 
@@ -61,5 +67,13 @@ public class Installment {
 
     public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public double getPaidAmount() {
+        return paidAmount;
+    }
+
+    public void setPaidAmount(double paidAmount) {
+        this.paidAmount = paidAmount;
     }
 }
