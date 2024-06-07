@@ -66,15 +66,15 @@ public class InstallmentTest {
         entityManager.persist(loan);
 
         Loan foundLoan = entityManager.find(Loan.class, loan.getLoanID());
-        List<Installment> installments = foundLoan.getInstallments();
+        List<Installment> foundInstallments = foundLoan.getInstallments();
 
         // Assert
-        assertNotNull(installments);
-        assertEquals(loanDuration, installments.size());
+        assertNotNull(foundInstallments);
+        assertEquals(loanDuration, foundInstallments.size());
         double expectedInstallmentAmount = loan.getTotalLoanAmount() / loanDuration;
 
         for (int i = 0; i < loanDuration; i++) {
-            Installment installment = installments.get(i);
+            Installment installment = foundInstallments.get(i);
             assertEquals(expectedInstallmentAmount, installment.getInstallmentAmount());
             assertEquals(foundLoan, installment.getLoan());
             assertEquals(loan.getDateOfLoan().plusMonths(i + 1), installment.getDueDate());
