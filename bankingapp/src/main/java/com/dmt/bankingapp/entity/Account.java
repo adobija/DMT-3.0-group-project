@@ -25,6 +25,10 @@ public class Account {
     @Column(name = "accountType")
     private AccountType accountType;
 
+    @OneToOne
+    @JoinColumn(name = "loanID", referencedColumnName = "loanID", nullable = true)
+    private Loan loan;
+
     public Account(String accountNumber, AccountType accountType, Client client) {
         this.accountNumber = accountNumber;
         this.accountBalance = 0.0;
@@ -35,6 +39,15 @@ public class Account {
         }
     }
 
+    public Account(String accountNumber, AccountType accountType, Client client, Loan loan) {
+        this(accountNumber, accountType, client);
+        if (accountType == AccountType.LOAN) {
+            this.loan = loan;
+        } else {
+            throw new IllegalArgumentException("loan can only be assigned for accounts of type LOAN");
+        }
+    }
+    
     public Account() {}
 
     public int getAccountID() {
@@ -86,5 +99,17 @@ public class Account {
         LOAN,
         DEPOSIT,
         BANK
+    }
+
+    public Loan getLoan() {
+        return loan;
+    }
+    
+    public void setLoan(Loan loan) {
+        if (this.accountType == AccountType.LOAN) {
+            this.loan = loan;
+        } else {
+            throw new IllegalArgumentException("loan can only be assigned for accounts of type LOAN");
+        }
     }
 }

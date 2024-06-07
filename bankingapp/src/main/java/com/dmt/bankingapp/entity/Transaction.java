@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+import com.dmt.bankingapp.entity.Account.AccountType;
+
 @Entity
 @Table(name = "Transactions")
 public class Transaction {
@@ -31,6 +33,11 @@ public class Transaction {
         this.amount = amount;
         this.timestamp = LocalDateTime.now();
         manipulateTransaction(giver, receiver, amount);
+
+        // Method to update paid installments
+        if (receiver.getAccountType().equals(AccountType.LOAN)) {
+
+        }
     }
 
     public Transaction() {
