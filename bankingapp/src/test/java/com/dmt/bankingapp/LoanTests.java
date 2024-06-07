@@ -132,7 +132,6 @@ public class LoanTests {
         double testCommisionRate = 4.0;
         int testLoanDuration = 60;
         Loan testLoan = new Loan(loanAccTest, checkingAccTest, testLoanAmount, testIntrestRate, testCommisionRate, testLoanDuration, bankAccTest);
-        testLoan.grantLoan(testLoan.getLoanAccount(), testLoan.getCheckingAccount(), testLoan.getPrincipalLoanAmount(), testLoan.getIntrestRate(), testLoan.getCommisionRate(), testLoan.getLoanDuration(), testLoan.getBankAccount());
         entityManager.persist(testLoan);
 
         Account foundLoanAccount = entityManager.find(Account.class, loanAccTest.getAccountID());

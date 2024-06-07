@@ -61,7 +61,7 @@ public class Loan {
             client.addLoan(this);
         }
 
-        this.totalLoanAmount = 0;
+        grantLoan(loanAccount, checkingAccount, principalAmount, intrestRate, commisionRate, loanDuration, bankAccount);
     }
 
     public Loan() {
