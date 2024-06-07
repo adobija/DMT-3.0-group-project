@@ -24,7 +24,7 @@ public class LoanTests {
     private EntityManager entityManager;
 
     @Test
-    public void testConstructor() {
+    public void testLoanConstructor() {
         // Arrange
         Account loanAccount = new Account("loanAccNum", "loan", new Client("loanTaker", false, "abc123"));
         Account checkingAccount = new Account("checkingAccNum", "checking", new Client("loanTaker", false, "abc123"));
@@ -50,7 +50,7 @@ public class LoanTests {
     }
 
     @Test
-    public void testGettersAndSetters() {
+    public void testLoanGettersAndSetters() {
         // Arrange
         Loan loan = new Loan();
         int loanID = 1;
@@ -68,7 +68,7 @@ public class LoanTests {
         loan.setLoanDuration(loanDuration);
         loan.setIntrestRate(interestRate);
         loan.setCommisionRate(commisionRate);
-        loan.setTimestamp(timestamp);
+        loan.setDateOfLoan(timestamp);
 
         // Assert
         assertEquals(loanID, loan.getLoanID());
@@ -77,7 +77,7 @@ public class LoanTests {
         assertEquals(loanDuration, loan.getLoanDuration());
         assertEquals(interestRate, loan.getIntrestRate());
         assertEquals(commisionRate, loan.getCommisionRate());
-        assertEquals(timestamp, loan.getTimestamp());
+        assertEquals(timestamp, loan.getDateOfLoan());
     }
 
     @Test

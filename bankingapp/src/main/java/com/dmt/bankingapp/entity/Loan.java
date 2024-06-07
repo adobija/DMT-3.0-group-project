@@ -2,6 +2,8 @@ package com.dmt.bankingapp.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Loans")
@@ -37,7 +39,7 @@ public class Loan {
     private double totalLoanAmount;
 
     @Column(name = "dateOfLoan")
-    private LocalDateTime timestamp;
+    private LocalDateTime dateOfLoan;
 
     @Column(name = "commisionRate")
     private double commisionRate;
@@ -49,6 +51,8 @@ public class Loan {
     @Column(name = "isActive")
     private boolean isActive;
 
+    @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Installment> installments = new ArrayList<>();
 
     public Loan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate,
             double commisionRate, int loanDuration, Account bankAccount) {
@@ -127,12 +131,12 @@ public class Loan {
         return this.loanDuration;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setDateOfLoan(LocalDateTime timestamp) {
+        this.dateOfLoan = timestamp;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+    public LocalDateTime getDateOfLoan() {
+        return dateOfLoan;
     }
 
     public void setIntrestRate(double rateInPercent) {
@@ -159,6 +163,10 @@ public class Loan {
         return this.isActive;
     }
 
+    public List<Installment> getInstallments() {
+        return installments;
+    }
+
     // Method to calculate the amount of interests that bank charges for launching
     // the loan, basing on amout of money to be borrowed, intrest rate and duration
     // of the loan
@@ -176,15 +184,27 @@ public class Loan {
         return commision;
     }
 
+    // Method to generate installments for the loan and saving them to the list of installments
+    public void generateInstallments() {
+        double installmentAmount = this.totalLoanAmount / this.loanDuration;
+        for (int i = 1; i <= this.loanDuration; i++) {
+            LocalDateTime dueDate = this.dateOfLoan.plusMonths(i);
+            Installment installment = new Installment(this, installmentAmount, dueDate);
+            this.installments.add(installment);
+        }
+    }
+
     public void grantLoan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate,
             double commisionRate, int loanDuration, Account bankAccount) {
         // Calculating commision and amount of intrests
         double intrestForBank = intrestAmount(principalAmount, intrestRate, loanDuration);
         double commisionForBank = commisionAmout(principalAmount, commisionRate);
+        // Setting date of loan
+        setDateOfLoan(LocalDateTime.now());
         // Money transfer from the account where loan is launched to the checking
         // account of the customer + setting time and date for the loan
         Transaction principalGranted = new Transaction(loanAccount, checkingAccount, principalAmount);
-        setTimestamp(LocalDateTime.now());
+        setDateOfLoan(LocalDateTime.now());
         // Profit from intrest transfer from the account where loan is launched to the
         // bank's account
         Transaction bankProfit = new Transaction(loanAccount, bankAccount, intrestForBank);
@@ -194,5 +214,7 @@ public class Loan {
         // Updating total amount of the loan
         double totalLoanAmount = principalAmount + intrestForBank + commisionForBank;
         setTotalLoanAmout(totalLoanAmount);
+
+        generateInstallments();
     }
 }
