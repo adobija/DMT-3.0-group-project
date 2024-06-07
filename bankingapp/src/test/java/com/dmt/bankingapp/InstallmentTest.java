@@ -1,6 +1,7 @@
 package com.dmt.bankingapp;
 
 import com.dmt.bankingapp.entity.Account;
+import com.dmt.bankingapp.entity.Account.AccountType;
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.entity.Installment;
 import com.dmt.bankingapp.entity.Loan;
@@ -48,9 +49,9 @@ public class InstallmentTest {
     @Test
     public void testInstallmentsGenerationInGrantLoan() {
         // Arrange
-        Account loanAccount = new Account("loanAccNum", "loan", new Client("loanTaker", false, "abc123"));
-        Account checkingAccount = new Account("checkingAccNum", "checking", new Client("loanTaker", false, "abc123"));
-        Account bankAccount = new Account("bankAccNum", "bank", new Client("bankName", false, "1234"));
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, new Client("loanTaker", false, "abc123"));
+        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, new Client("loanTaker", false, "abc123"));
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, new Client("bankName", false, "1234"));
         double principalAmount = 50000.0;
         double interestRate = 2.9;
         double commisionRate = 4.0;

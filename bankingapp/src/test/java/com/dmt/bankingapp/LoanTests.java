@@ -1,6 +1,7 @@
 package com.dmt.bankingapp;
 
 import com.dmt.bankingapp.entity.Account;
+import com.dmt.bankingapp.entity.Account.AccountType;
 import com.dmt.bankingapp.entity.Loan;
 import com.dmt.bankingapp.entity.Client;
 import org.junit.jupiter.api.Test;
@@ -26,9 +27,9 @@ public class LoanTests {
     @Test
     public void testLoanConstructor() {
         // Arrange
-        Account loanAccount = new Account("loanAccNum", "loan", new Client("loanTaker", false, "abc123"));
-        Account checkingAccount = new Account("checkingAccNum", "checking", new Client("loanTaker", false, "abc123"));
-        Account bankAccount = new Account("bankAccNum", "bank", new Client("bankName", false, "1234"));
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, new Client("loanTaker", false, "abc123"));
+        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, new Client("loanTaker", false, "abc123"));
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, new Client("bankName", false, "1234"));
         double principalAmount = 50000.0;
         double interestRate = 2.9;
         double commisionRate = 4.0;
@@ -110,9 +111,9 @@ public class LoanTests {
         String loanAccNum = "44422211";
         String bankAccNum = "00000000";
 
-        Account checkingAccTest = new Account(checkingAccNum, "checking", client1);
-        Account loanAccTest = new Account(loanAccNum, "loan", client1);
-        Account bankAccTest = new Account(bankAccNum, "bank", bank);
+        Account checkingAccTest = new Account(checkingAccNum, AccountType.CHECKING, client1);
+        Account loanAccTest = new Account(loanAccNum, AccountType.LOAN, client1);
+        Account bankAccTest = new Account(bankAccNum, AccountType.BANK, bank);
 
 
         double checkingInitialBalace = 255.90;

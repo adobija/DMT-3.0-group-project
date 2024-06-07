@@ -82,8 +82,9 @@ public class Account {
     }
 
     public enum AccountType {
-        CHECKED,
+        CHECKING,
         LOAN,
-        DEPOSIT
+        DEPOSIT,
+        BANK
     }
 }
