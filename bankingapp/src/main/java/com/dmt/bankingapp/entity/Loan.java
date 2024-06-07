@@ -51,7 +51,7 @@ public class Loan {
     @Column(name = "isActive")
     private boolean isActive;
 
-    @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL)
     private List<Installment> installments = new ArrayList<>();
 
     public Loan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate,

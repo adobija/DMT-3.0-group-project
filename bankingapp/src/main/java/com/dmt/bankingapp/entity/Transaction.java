@@ -3,6 +3,9 @@ package com.dmt.bankingapp.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.dmt.bankingapp.entity.Account.AccountType;
 
@@ -32,14 +35,54 @@ public class Transaction {
         this.receiver = receiver;
         this.amount = amount;
         this.timestamp = LocalDateTime.now();
-        manipulateTransaction(giver, receiver, amount);
-
-        // Method to update paid installments
+    
+        // If receiver is loan account check whether the loan is still active and handle unpaid installments
         if (receiver.getAccountType().equals(AccountType.LOAN)) {
-
+            Loan loan = receiver.getLoan();
+            if (loan.getIsActive()) {
+                double amountLeft = this.amount;
+                double amountUsedForPayments = 0;
+                List<Installment> loanInstallments = loan.getInstallments();
+    
+                // Filter unpaid installments of the loan
+                List<Installment> unpaidInstallments = loanInstallments.stream()
+                    .filter(installment -> !installment.getIsPaid())
+                    .sorted(Comparator.comparing(Installment::getDueDate))
+                    .collect(Collectors.toList());
+    
+                for (Installment installment : unpaidInstallments) {
+                    if (amountLeft <= 0) {
+                        break;
+                    }
+    
+                    double dueAmount = installment.getInstallmentAmount() - installment.getPaidAmount();
+                    double payment = Math.min(amountLeft, dueAmount); // Ensure not paying more than the provided amount
+                    installment.setPaidAmount(installment.getPaidAmount() + payment);
+                    amountLeft -= payment;
+                    amountUsedForPayments += payment;
+    
+                    if (installment.getPaidAmount() == installment.getInstallmentAmount()) {
+                        installment.setIsPaid(true);
+                    }
+                }
+    
+                // Transfer only the amount used for payments, remaining amount stays with the giver
+                manipulateTransaction(giver, receiver, amountUsedForPayments);
+    
+                if (unpaidInstallments.isEmpty() || amountLeft == 0) {
+                    // Setting loan as paid - inactive if fully paid
+                    loan.setIsActive(false);
+                }
+            } else {
+                // Handle the case where loan is already paid - since transaction is already instantiated the amount of transferred money is 0 but transaction exists
+                manipulateTransaction(giver, receiver, 0);
+            }
+        } else {
+            // If the receiver account is not loan, money are transfered without any other operations
+            manipulateTransaction(giver, receiver, amount);
         }
     }
-
+    
     public Transaction() {
     }
 

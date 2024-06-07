@@ -76,4 +76,12 @@ public class Installment {
     public void setPaidAmount(double paidAmount) {
         this.paidAmount = paidAmount;
     }
+
+    public boolean getIsPaid() {
+        return isPaid;
+    }
+
+    public void setIsPaid(boolean isPaid) {
+        this.isPaid = isPaid;
+    }
 }
