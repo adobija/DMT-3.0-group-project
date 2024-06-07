@@ -21,10 +21,11 @@ public class Account {
     @Column(name = "accountBalance")
     private double accountBalance;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "accountType")
-    private String accountType;
+    private AccountType accountType;
 
-    public Account(String accountNumber, String accountType, Client client) {
+    public Account(String accountNumber, AccountType accountType, Client client) {
         this.accountNumber = accountNumber;
         this.accountBalance = 0.0;
         this.accountType = accountType;
@@ -72,11 +73,17 @@ public class Account {
         }
     }
 
-    public String getAccountType() {
+    public AccountType getAccountType() {
         return accountType;
     }
 
-    public void setAccountType(String accountType) {
+    public void setAccountType(AccountType accountType) {
         this.accountType = accountType;
+    }
+
+    public enum AccountType {
+        CHECKED,
+        LOAN,
+        DEPOSIT
     }
 }
