@@ -133,7 +133,7 @@ public class Transaction {
             // Transfer only the amount used for payments, remaining amount stays with the giver
             manipulateTransaction(giver, receiver, amountUsedForPayments);
     
-            // After processing all payments, check if all installments are paid
+            // After processing all payments checking if all installments has been paid
             boolean allInstallmentsPaid = loanInstallments.stream()
                 .allMatch(Installment::getIsPaid);
     
