@@ -5,12 +5,10 @@ import com.dmt.bankingapp.entity.Account.AccountType;
 import com.dmt.bankingapp.entity.Loan;
 import com.dmt.bankingapp.entity.Transaction;
 import com.dmt.bankingapp.entity.Client;
-import com.dmt.bankingapp.entity.Installment;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
@@ -22,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @DataJpaTest
 @Transactional
