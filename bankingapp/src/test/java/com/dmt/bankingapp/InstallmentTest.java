@@ -127,4 +127,52 @@ public class InstallmentTest {
         assertFalse(foundInstallments.get(4).getIsPaid());
         assertEquals(foundInstallments.get(4).getPaidAmount(), 0, 0.01);
     }
+
+    @Test
+    public void testRedeemingAll() {
+        // Arrange
+        Client loanTaker = new Client("loanTaker", false, "abc123");
+        Client bankClient = new Client("bankName", false, "1234");
+
+        entityManager.persist(loanTaker);
+        entityManager.persist(bankClient);
+
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, loanTaker);
+        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, loanTaker);
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, bankClient);
+        
+        double checkingAccountBalance = 10000.0;
+        checkingAccount.setAccountBalance(checkingAccountBalance, false);
+        double principalAmount = 5000.0;
+        double interestRate = 7.1;
+        double commisionRate = 5.0;
+        int loanDuration = 36;
+
+        entityManager.persist(loanAccount);
+        entityManager.persist(checkingAccount);
+        entityManager.persist(bankAccount);
+
+        // Act
+        Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+        entityManager.persist(testLoan);
+
+        loanAccount.setLoan(testLoan);
+        entityManager.persist(loanAccount);
+
+        Loan foundLoan = entityManager.find(Loan.class, testLoan.getLoanID());
+        double foundTotalAmount = foundLoan.getTotalLoanAmount();
+        List<Installment> foundInstallments = foundLoan.getInstallments();
+
+        // Assert
+        assertEquals(foundInstallments.size(), loanDuration);
+        boolean allInstallmentsPaidBefore = foundInstallments.stream().allMatch(Installment::getIsPaid);
+        assertFalse(allInstallmentsPaidBefore);
+        
+        Transaction testTransaction = new Transaction(checkingAccount, loanAccount, foundTotalAmount);
+        entityManager.persist(testTransaction);
+        entityManager.flush();
+
+        boolean allInstallmentsPaidAfter = foundInstallments.stream().allMatch(Installment::getIsPaid);
+        assertTrue(allInstallmentsPaidAfter);
+    }
 }
