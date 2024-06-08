@@ -28,7 +28,7 @@ public class Deposit {
     private Account bankAccount;
 
     @ManyToOne
-    @JoinColumn(name = "Client", referencedColumnName = "user_ID")
+    @JoinColumn(name = "Client", referencedColumnName = "clientID")
     private Client client;
 
     @Column(name = "Principal_deposit_amount")
