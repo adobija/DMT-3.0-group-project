@@ -132,6 +132,9 @@ public class Transaction {
             // Transfer only the amount used for payments, remaining amount stays with the giver
             manipulateTransaction(giver, receiver, amountUsedForPayments);
 
+            // Update the amount in the transaction to reflect only the amount used for payments
+            this.amount = amountUsedForPayments;
+
             // Updating the leftToPay amount in the loan
             loan.setLeftToPay(loan.getLeftToPay() - amountUsedForPayments);
             // If leftToPay is very small, set it to zero - handling  floating-point precision errors
@@ -152,5 +155,4 @@ public class Transaction {
             throw new IllegalStateException("You cannot transfer money to the loan account since the loan has already been paid!");
         }
     }
-    
 }

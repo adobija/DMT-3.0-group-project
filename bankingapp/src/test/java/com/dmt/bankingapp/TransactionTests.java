@@ -1,11 +1,9 @@
 package com.dmt.bankingapp;
 
-
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Account.AccountType;
 import com.dmt.bankingapp.entity.Transaction;
 import com.dmt.bankingapp.entity.Client;
-import com.dmt.bankingapp.entity.Installment;
 import com.dmt.bankingapp.entity.Loan;
 
 import jakarta.persistence.EntityManager;
@@ -15,13 +13,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Transactional
@@ -98,6 +93,7 @@ public class TransactionTests {
         //Assert
         assertEquals(now, timestampFromTransactionRecord);
     }
+    
     @Test
     public void testTransactionGreaterThanLoan() {
         // Arrange
@@ -122,7 +118,7 @@ public class TransactionTests {
         entityManager.persist(checkingAccount);
         entityManager.persist(bankAccount);
 
-        // Act
+        // Act - loan
         Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
         entityManager.persist(testLoan);
 
@@ -130,19 +126,21 @@ public class TransactionTests {
         entityManager.persist(loanAccount);
 
         Loan foundLoan = entityManager.find(Loan.class, testLoan.getLoanID());
-        double foundTotalAmount = foundLoan.getTotalLoanAmount();
+        double foundLoanTotalAmount = foundLoan.getTotalLoanAmount();
         double overpay = 999.99;
-        double transferAmount = foundTotalAmount + overpay;
+        double initialTransferAmount = foundLoanTotalAmount + overpay;
 
-        Transaction testTransaction = new Transaction(checkingAccount, loanAccount, transferAmount);
+        // Act - transaction
+        Transaction testTransaction = new Transaction(checkingAccount, loanAccount, initialTransferAmount);
         entityManager.persist(testTransaction);
 
         Transaction foundTransaction = entityManager.find(Transaction.class, testTransaction.getTransactionID());
-        double foundAmount = foundTransaction.getAmount();
+        double foundTransferAmount = foundTransaction.getAmount();
 
         // Assert
         assertThat(foundTransaction).isNotNull();
-        assertNotEquals(foundAmount, transferAmount);
-        assertEquals(foundAmount, foundTotalAmount - overpay);
+        assertNotEquals(initialTransferAmount, foundTransferAmount);
+        assertEquals(initialTransferAmount, foundTransferAmount + overpay, 0.01);
+        assertEquals(checkingAccountBalance - foundTransferAmount, checkingAccountBalance - initialTransferAmount + overpay, 0.01);
     }
 }
