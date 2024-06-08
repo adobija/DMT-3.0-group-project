@@ -35,7 +35,7 @@ public class Transaction {
         this.receiver = receiver;
         this.amount = amount;
         this.timestamp = LocalDateTime.now();
-
+    
         // Checking the account balance for checking and saving accounts to avoid the balance falling below 0
         if (receiver.getAccountType().equals(AccountType.CHECKING) && receiver.getAccountType().equals(AccountType.DEPOSIT)) {
             if (this.amount > giver.getAccountBalance()) {
@@ -43,52 +43,15 @@ public class Transaction {
             }
         }
         
-        // If receiver is a loan account check whether the loan is still active and handle unpaid installments
+        // If receiver is a loan account, handle loan payments
         if (receiver.getAccountType().equals(AccountType.LOAN)) {
-            Loan loan = receiver.getLoan();
-            if (loan.getIsActive()) {
-                double amountLeft = this.amount;
-                double amountUsedForPayments = 0;
-                List<Installment> loanInstallments = loan.getInstallments();
-    
-                // Filter unpaid installments of the loan
-                List<Installment> unpaidInstallments = loanInstallments.stream()
-                    .filter(installment -> !installment.getIsPaid())
-                    .sorted(Comparator.comparing(Installment::getDueDate))
-                    .collect(Collectors.toList());
-    
-                for (Installment installment : unpaidInstallments) {
-                    if (amountLeft <= 0) {
-                        break;
-                    }
-    
-                    double dueAmount = installment.getInstallmentAmount() - installment.getPaidAmount();
-                    double payment = Math.min(amountLeft, dueAmount); // Ensure not paying more than the provided amount
-                    installment.setPaidAmount(installment.getPaidAmount() + payment);
-                    amountLeft -= payment;
-                    amountUsedForPayments += payment;
-    
-                    if (installment.getPaidAmount() == installment.getInstallmentAmount()) {
-                        installment.setIsPaid(true);
-                    }
-                }
-    
-                // Transfer only the amount used for payments, remaining amount stays with the giver
-                manipulateTransaction(giver, receiver, amountUsedForPayments);
-    
-                if (unpaidInstallments.isEmpty()) {
-                    // Setting loan as paid - inactive if fully paid
-                    loan.setIsActive(false);
-                }
-            } else {
-                // Handle the case where the loan is already paid
-                throw new IllegalStateException("You cannot transfer money to the loan account since the loan has already been paid!");
-            }
+            processLoanPayments(giver, receiver, amount);
         } else {
-            // If the receiver account is not loan, money are transfered without any other operations
+            // If the receiver account is not loan, money are transferred without any other operations
             manipulateTransaction(giver, receiver, amount);
         }
     }
+    
     
     public Transaction() {
     }
@@ -137,4 +100,51 @@ public class Transaction {
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
+
+    public void processLoanPayments(Account giver, Account receiver, double amount) {
+        Loan loan = receiver.getLoan();
+        if (loan.getIsActive()) {
+            double amountLeft = amount;
+            double amountUsedForPayments = 0;
+            List<Installment> loanInstallments = loan.getInstallments();
+    
+            // Filter unpaid installments of the loan
+            List<Installment> unpaidInstallments = loanInstallments.stream()
+                .filter(installment -> !installment.getIsPaid())
+                .sorted(Comparator.comparing(Installment::getDueDate))
+                .collect(Collectors.toList());
+    
+            for (Installment installment : unpaidInstallments) {
+                if (amountLeft <= 0) {
+                    break;
+                }
+    
+                double dueAmount = installment.getInstallmentAmount() - installment.getPaidAmount();
+                double payment = Math.min(amountLeft, dueAmount); // Ensure not paying more than the provided amount
+                installment.setPaidAmount(installment.getPaidAmount() + payment);
+                amountLeft -= payment;
+                amountUsedForPayments += payment;
+    
+                if (installment.getPaidAmount() == installment.getInstallmentAmount()) {
+                    installment.setIsPaid(true);
+                }
+            }
+    
+            // Transfer only the amount used for payments, remaining amount stays with the giver
+            manipulateTransaction(giver, receiver, amountUsedForPayments);
+    
+            // After processing all payments, check if all installments are paid
+            boolean allInstallmentsPaid = loanInstallments.stream()
+                .allMatch(Installment::getIsPaid);
+    
+            if (allInstallmentsPaid) {
+                // Setting loan as paid - inactive if fully paid
+                loan.setIsActive(false);
+            }
+        } else {
+            // Handle the case where the loan is already paid
+            throw new IllegalStateException("You cannot transfer money to the loan account since the loan has already been paid!");
+        }
+    }
+    
 }
