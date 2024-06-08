@@ -3,7 +3,10 @@ package com.dmt.bankingapp;
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Account.AccountType;
 import com.dmt.bankingapp.entity.Loan;
+import com.dmt.bankingapp.entity.Transaction;
 import com.dmt.bankingapp.entity.Client;
+import com.dmt.bankingapp.entity.Installment;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -13,9 +16,12 @@ import jakarta.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @DataJpaTest
 @Transactional
@@ -152,5 +158,42 @@ public class LoanTests {
 
         double testBankAccBalance = bankInitialBalance + testLoan.intrestAmount(testLoanAmount, testIntrestRate, testLoanDuration) + testLoan.commisionAmout(testLoanAmount, testCommisionRate);
         assertEquals(testBankAccBalance, foundBankAccount.getAccountBalance());
+    }
+
+    @Test
+    public void liquidateLoan() {
+        // Arrange
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, new Client("loanTaker", false, "abc123"));
+        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, new Client("loanTaker", false, "abc123"));
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, new Client("bankName", false, "1234"));
+        double checkingAccountBalance = 10000.0;
+        checkingAccount.setAccountBalance(checkingAccountBalance, false);
+        double principalAmount = 5000.0;
+        double interestRate = 7.1;
+        double commisionRate = 5.0;
+        int loanDuration = 36;
+  
+        entityManager.persist(loanAccount);
+        entityManager.persist(checkingAccount);
+        entityManager.persist(bankAccount);
+
+        // Act
+        Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+        entityManager.persist(testLoan);
+
+        loanAccount.setLoan(testLoan);
+        entityManager.persist(loanAccount);
+
+        Loan foundLoan = entityManager.find(Loan.class, testLoan.getLoanID());
+        double foundTotalAmount = foundLoan.getTotalLoanAmount();
+
+        // Assert
+        assertThat(foundLoan).isNotNull();
+        assertTrue(foundLoan.getIsActive());
+
+        Transaction testTransaction = new Transaction(checkingAccount, loanAccount, foundTotalAmount);
+        entityManager.persist(testTransaction);
+
+        assertFalse(foundLoan.getIsActive());
     }
 }
