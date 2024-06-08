@@ -2,6 +2,7 @@ package com.dmt.bankingapp;
 
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
+import com.dmt.bankingapp.entity.Account.AccountType;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -82,8 +83,8 @@ public class ClientTests {
         Client client = new Client("testClient", false, "password");
 
         // Arrange - create multiple accounts for the client
-        Account account1 = new Account("123456789", "checking", client);
-        Account account2 = new Account("987654321", "savings", client);
+        Account account1 = new Account("123456789", AccountType.CHECKING, client);
+        Account account2 = new Account("987654321", AccountType.DEPOSIT, client);
 
         entityManager.persist(client);
         entityManager.persist(account1);

@@ -2,6 +2,7 @@ package com.dmt.bankingapp;
 
 
 import com.dmt.bankingapp.entity.Account;
+import com.dmt.bankingapp.entity.Account.AccountType;
 import com.dmt.bankingapp.entity.Transaction;
 import com.dmt.bankingapp.entity.Client;
 import jakarta.persistence.EntityManager;
@@ -34,8 +35,8 @@ public class TransactionTests {
         String giverAccountNumber = "222111222";
         String receiverAccountNumber = "111333999";
 
-        Account giverAccount = new Account(giverAccountNumber, "savings", client1);
-        Account receiverAccount = new Account(receiverAccountNumber, "savings", client2);
+        Account giverAccount = new Account(giverAccountNumber, AccountType.DEPOSIT, client1);
+        Account receiverAccount = new Account(receiverAccountNumber, AccountType.DEPOSIT, client2);
         double amount = 500.0;
         giverAccount.setAccountBalance(amount, false);
         entityManager.persist(giverAccount);
@@ -68,8 +69,8 @@ public class TransactionTests {
         String giverAccountNumber = "222111222";
         String receiverAccountNumber = "111333999";
 
-        Account giverAccount = new Account(giverAccountNumber, "savings", client1);
-        Account receiverAccount = new Account(receiverAccountNumber, "savings", client2);
+        Account giverAccount = new Account(giverAccountNumber, AccountType.DEPOSIT, client1);
+        Account receiverAccount = new Account(receiverAccountNumber, AccountType.DEPOSIT, client2);
         double amount = 500.0;
         giverAccount.setAccountBalance(amount, false);
         entityManager.persist(giverAccount);

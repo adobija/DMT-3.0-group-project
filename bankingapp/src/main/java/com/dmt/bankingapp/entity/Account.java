@@ -21,10 +21,15 @@ public class Account {
     @Column(name = "accountBalance")
     private double accountBalance;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "accountType")
-    private String accountType;
+    private AccountType accountType;
 
-    public Account(String accountNumber, String accountType, Client client) {
+    @OneToOne
+    @JoinColumn(name = "loanID", referencedColumnName = "loanID", nullable = true)
+    private Loan loan;
+
+    public Account(String accountNumber, AccountType accountType, Client client) {
         this.accountNumber = accountNumber;
         this.accountBalance = 0.0;
         this.accountType = accountType;
@@ -34,6 +39,15 @@ public class Account {
         }
     }
 
+    public Account(String accountNumber, AccountType accountType, Client client, Loan loan) {
+        this(accountNumber, accountType, client);
+        if (accountType == AccountType.LOAN) {
+            this.loan = loan;
+        } else {
+            throw new IllegalArgumentException("loan can only be assigned for accounts of type LOAN");
+        }
+    }
+    
     public Account() {}
 
     public int getAccountID() {
@@ -72,11 +86,30 @@ public class Account {
         }
     }
 
-    public String getAccountType() {
+    public AccountType getAccountType() {
         return accountType;
     }
 
-    public void setAccountType(String accountType) {
+    public void setAccountType(AccountType accountType) {
         this.accountType = accountType;
+    }
+
+    public enum AccountType {
+        CHECKING,
+        LOAN,
+        DEPOSIT,
+        BANK
+    }
+
+    public Loan getLoan() {
+        return loan;
+    }
+    
+    public void setLoan(Loan loan) {
+        if (this.accountType == AccountType.LOAN) {
+            this.loan = loan;
+        } else {
+            throw new IllegalArgumentException("loan can only be assigned for accounts of type LOAN");
+        }
     }
 }
