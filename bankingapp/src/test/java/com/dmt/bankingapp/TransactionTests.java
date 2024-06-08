@@ -3,7 +3,7 @@ package com.dmt.bankingapp;
 
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Transaction;
-import com.dmt.bankingapp.entity.User;
+import com.dmt.bankingapp.entity.Client;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
@@ -25,17 +25,17 @@ public class TransactionTests {
     @Test
     public void testForTransactions() {
         //Arrange
-        String giverClient = "userFirst";
-        String receiverClient = "userSecond";
+        String giverClient = "clientFirst";
+        String receiverClient = "clientSecond";
 
-        User user1 = new User(giverClient, false, "test123");
-        User user2 = new User(receiverClient, false, "SuperCoolTest");
+        Client client1 = new Client(giverClient, false, "test123");
+        Client client2 = new Client(receiverClient, false, "SuperCoolTest");
 
         String giverAccountNumber = "222111222";
         String receiverAccountNumber = "111333999";
 
-        Account giverAccount = new Account(giverAccountNumber, "savings", user1);
-        Account receiverAccount = new Account(receiverAccountNumber, "savings", user2);
+        Account giverAccount = new Account(giverAccountNumber, "savings", client1);
+        Account receiverAccount = new Account(receiverAccountNumber, "savings", client2);
         double amount = 500.0;
         giverAccount.setAccountBalance(amount, false);
         entityManager.persist(giverAccount);
@@ -59,17 +59,17 @@ public class TransactionTests {
     @Test
     public void testForDateAndTime(){
         //Arrange
-        String giverClient = "userFirst";
-        String receiverClient = "userSecond";
+        String giverClient = "clientFirst";
+        String receiverClient = "clientSecond";
 
-        User user1 = new User(giverClient, false, "test123");
-        User user2 = new User(receiverClient, false, "SuperCoolTest");
+        Client client1 = new Client(giverClient, false, "test123");
+        Client client2 = new Client(receiverClient, false, "SuperCoolTest");
 
         String giverAccountNumber = "222111222";
         String receiverAccountNumber = "111333999";
 
-        Account giverAccount = new Account(giverAccountNumber, "savings", user1);
-        Account receiverAccount = new Account(receiverAccountNumber, "savings", user2);
+        Account giverAccount = new Account(giverAccountNumber, "savings", client1);
+        Account receiverAccount = new Account(receiverAccountNumber, "savings", client2);
         double amount = 500.0;
         giverAccount.setAccountBalance(amount, false);
         entityManager.persist(giverAccount);
@@ -86,7 +86,7 @@ public class TransactionTests {
         //LocalDateTime look like YYYY-MM-DD{timezone}HH:MM:SS.{9 decimal points for milisecond}
         //so I am comparing whole string before coma
         String timestampFromTransactionRecord = transaction1.getTimestamp().toString().split("\\.")[0];
-        
+
         //Assert
         assertEquals(now, timestampFromTransactionRecord);
     }

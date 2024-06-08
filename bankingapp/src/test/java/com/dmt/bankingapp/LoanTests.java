@@ -2,7 +2,7 @@ package com.dmt.bankingapp;
 
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Loan;
-import com.dmt.bankingapp.entity.User;
+import com.dmt.bankingapp.entity.Client;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -26,15 +26,16 @@ public class LoanTests {
     @Test
     public void testConstructor() {
         // Arrange
-        Account loanAccount = new Account("loanAccNum", "loan", new User("loanTaker", false, "abc123"));
-        Account checkingAccount = new Account("checkingAccNum", "checking", new User("loanTaker", false, "abc123"));
-        Account bankAccount = new Account("bankAccNum", "bank", new User("bankName", false, "1234"));
+        Account loanAccount = new Account("loanAccNum", "loan", new Client("loanTaker", false, "abc123"));
+        Account checkingAccount = new Account("checkingAccNum", "checking", new Client("loanTaker", false, "abc123"));
+        Account bankAccount = new Account("bankAccNum", "bank", new Client("bankName", false, "1234"));
         double principalAmount = 50000.0;
         double interestRate = 2.9;
+        double commisionRate = 4.0;
         int loanDuration = 12;
 
         // Act
-        Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, loanDuration, bankAccount);
+        Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
 
         // Assert
         assertEquals(loanAccount, loan.getLoanAccount());
@@ -42,9 +43,10 @@ public class LoanTests {
         assertEquals(bankAccount, loan.getBankAccount());
         assertEquals(principalAmount, loan.getPrincipalLoanAmount());
         assertEquals(interestRate, loan.getIntrestRate());
+        assertEquals(commisionRate, loan.getCommisionRate());
         assertEquals(loanDuration, loan.getLoanDuration());
-        assertNotNull(loan.getUser());
-        assertEquals(loan.getUser(), checkingAccount.getUser());
+        assertNotNull(loan.getClient());
+        assertEquals(loan.getClient(), checkingAccount.getClient());
     }
 
     @Test
@@ -56,6 +58,7 @@ public class LoanTests {
         double totalAmount = 12000.0;
         int loanDuration = 360;
         double interestRate = 6.5;
+        double commisionRate = 4.0;
         LocalDateTime timestamp = LocalDateTime.now();
 
         // Act
@@ -64,6 +67,7 @@ public class LoanTests {
         loan.setTotalLoanAmout(totalAmount);
         loan.setLoanDuration(loanDuration);
         loan.setIntrestRate(interestRate);
+        loan.setCommisionRate(commisionRate);
         loan.setTimestamp(timestamp);
 
         // Assert
@@ -72,6 +76,7 @@ public class LoanTests {
         assertEquals(totalAmount, loan.getTotalLoanAmount());
         assertEquals(loanDuration, loan.getLoanDuration());
         assertEquals(interestRate, loan.getIntrestRate());
+        assertEquals(commisionRate, loan.getCommisionRate());
         assertEquals(timestamp, loan.getTimestamp());
     }
 
@@ -94,19 +99,19 @@ public class LoanTests {
 
     @Test
     public void testGrantLoan() {
-        // Arrange - instantiating a user and a bank, instantiating checking and loan account for the user, and account for the bank
-        String loanTaker = "userTaker";
+        // Arrange - instantiating a client and a bank, instantiating checking and loan account for the client, and account for the bank
+        String loanTaker = "clientTaker";
         String bankName = "bank";
 
-        User user1 = new User(loanTaker, false, "abc123");
-        User bank = new User(bankName, false, "1234");
+        Client client1 = new Client(loanTaker, false, "abc123");
+        Client bank = new Client(bankName, false, "1234");
 
         String checkingAccNum = "33311100";
         String loanAccNum = "44422211";
         String bankAccNum = "00000000";
 
-        Account checkingAccTest = new Account(checkingAccNum, "checking", user1);
-        Account loanAccTest = new Account(loanAccNum, "loan", user1);
+        Account checkingAccTest = new Account(checkingAccNum, "checking", client1);
+        Account loanAccTest = new Account(loanAccNum, "loan", client1);
         Account bankAccTest = new Account(bankAccNum, "bank", bank);
 
 
@@ -115,7 +120,7 @@ public class LoanTests {
         checkingAccTest.setAccountBalance(checkingInitialBalace, false);
         bankAccTest.setAccountBalance(bankInitialBalance, false);
 
-        entityManager.persist(user1);
+        entityManager.persist(client1);
         entityManager.persist(bank);
         entityManager.persist(checkingAccTest);
         entityManager.persist(loanAccTest);
@@ -124,9 +129,10 @@ public class LoanTests {
         // Act - arranging new loan and variables required to grant the loan
         double testLoanAmount = 10000.0;
         double testIntrestRate = 5.7;
+        double testCommisionRate = 4.0;
         int testLoanDuration = 60;
-        Loan testLoan = new Loan(loanAccTest, checkingAccTest, testLoanAmount, testIntrestRate, testLoanDuration, bankAccTest);
-        testLoan.grantLoan(testLoan.getLoanAccount(), testLoan.getCheckingAccount(), testLoan.getPrincipalLoanAmount(), testLoan.getIntrestRate(), testLoan.getLoanDuration(), testLoan.getBankAccount());
+        Loan testLoan = new Loan(loanAccTest, checkingAccTest, testLoanAmount, testIntrestRate, testCommisionRate, testLoanDuration, bankAccTest);
+        testLoan.grantLoan(testLoan.getLoanAccount(), testLoan.getCheckingAccount(), testLoan.getPrincipalLoanAmount(), testLoan.getIntrestRate(), testLoan.getCommisionRate(), testLoan.getLoanDuration(), testLoan.getBankAccount());
         entityManager.persist(testLoan);
 
         Account foundLoanAccount = entityManager.find(Account.class, loanAccTest.getAccountID());
@@ -141,10 +147,10 @@ public class LoanTests {
         double testCheckingAccBalance = checkingInitialBalace + testLoanAmount;
         assertEquals(testCheckingAccBalance, foundCheckingAccount.getAccountBalance());
 
-        double testLoanAccBalance = -testLoanAmount - testLoan.intrestAmount(testLoanAmount, testIntrestRate, testLoanDuration);
+        double testLoanAccBalance = -testLoanAmount - testLoan.intrestAmount(testLoanAmount, testIntrestRate, testLoanDuration) - testLoan.commisionAmout(testLoanAmount, testCommisionRate);
         assertEquals(testLoanAccBalance, foundLoanAccount.getAccountBalance());
 
-        double testBankAccBalance = bankInitialBalance + testLoan.intrestAmount(testLoanAmount, testIntrestRate, testLoanDuration);
+        double testBankAccBalance = bankInitialBalance + testLoan.intrestAmount(testLoanAmount, testIntrestRate, testLoanDuration) + testLoan.commisionAmout(testLoanAmount, testCommisionRate);
         assertEquals(testBankAccBalance, foundBankAccount.getAccountBalance());
     }
 }

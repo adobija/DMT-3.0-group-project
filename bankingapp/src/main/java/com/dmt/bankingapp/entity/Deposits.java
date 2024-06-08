@@ -30,7 +30,7 @@ public class Deposits {
 
     @ManyToOne
     @JoinColumn(name = "Client", referencedColumnName = "user_ID")
-    private User user;
+    private Client client;
 
     @Column(name = "Principal_deposit_amount")
     private double principalDepositAmount;
@@ -47,9 +47,6 @@ public class Deposits {
     @Column(name = "Date_of_deposit")
     private LocalDateTime timestamp;
 
-    private double depositAmount;
-    private boolean isCapitalized;
-
     public void Deposit(Account depositAccount, Account checkingAccount, double principalAmount, double interestRate, int depositDuration, Account bankAccount) {
         this.depositAccount = depositAccount;
         this.checkingAccount = checkingAccount;
@@ -58,23 +55,23 @@ public class Deposits {
         this.interestRate = interestRate;
         this.depositDuration = depositDuration;
 
-        this.user = checkingAccount.getUser();
-        if (user != null) {
-            user.addDeposit(this);
+        this.client = checkingAccount.getClient();
+        if (client != null) {
+            client.addDeposit(this);
         }
 
         this.totalDepositAmount = 0;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    public static double calculateFixedTermDeposit(double depositAmount, int numberOfMonthsOnDeposit,
-            int interestRate) {
+    public static double calculateFixedTermDeposit(double depositAmount, int numberOfMonthsOnDeposit, int interestRate) {
         double interest = depositAmount * (numberOfMonthsOnDeposit / 12) * (interestRate / 100);
         return depositAmount + interest;
     }
+
 
     public static double calculateProgressiveDeposit(double depositAmount, int numberOfQuarters) {
         if (numberOfQuarters > 4) {
@@ -99,5 +96,6 @@ public class Deposits {
 
         double progressiveDeposit = calculateProgressiveDeposit(1000, 4);
         System.out.println("Progressive: " + progressiveDeposit);
+
     }
 }

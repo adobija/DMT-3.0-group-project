@@ -5,7 +5,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 import com.dmt.bankingapp.entity.Account;
-import com.dmt.bankingapp.entity.User;
+import com.dmt.bankingapp.entity.Client;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -25,28 +25,28 @@ public class AccountTests {
     @PersistenceContext
     private EntityManager entityManager;
 	
-    // Test to check whether creating User and Account features work properly
+    // Test to check whether creating Client and Account features work properly
     @Test
     public void testCreateAccount() {
 		// Arrange
-		String nameUserOne = "testUser";
-        User user = new User(nameUserOne, false, "password123");
+		String nameClientOne = "testClient";
+        Client client = new Client(nameClientOne, false, "password123");
 
 		String accountNumberOne = "123456789";
-        Account account = new Account(accountNumberOne, "savings", user);
+        Account account = new Account(accountNumberOne, "savings", client);
 
-        entityManager.persist(user);
+        entityManager.persist(client);
 
 		// Act
-        User foundUser = entityManager.find(User.class, user.getUserID());
+        Client foundClient = entityManager.find(Client.class, client.getClientID());
 		Account foundAccount = entityManager.find(Account.class, account.getAccountID());
 
 		// Assert
-        assertThat(foundUser).isNotNull();
+        assertThat(foundClient).isNotNull();
 		assertThat(foundAccount).isNotNull();
 
-		assertThat(foundUser.getUserName()).isEqualTo(nameUserOne);
-        assertFalse(foundUser.isAdmin());
+		assertThat(foundClient.getClientName()).isEqualTo(nameClientOne);
+        assertFalse(foundClient.isAdmin());
         assertThat(foundAccount.getAccountNumber()).isEqualTo(accountNumberOne);
         assertThat(foundAccount.getAccountBalance()).isEqualTo(0);
     }
@@ -55,13 +55,13 @@ public class AccountTests {
 	@Test
     public void testSetAccountBalance() {
         // Arrange
-        String nameUserOne = "testUser";
-        User user = new User(nameUserOne, false, "password123");
+        String nameClientOne = "testClient";
+        Client client = new Client(nameClientOne, false, "password123");
 
         String accountNumberOne = "123456789";
-        Account account = new Account(accountNumberOne, "savings", user);
+        Account account = new Account(accountNumberOne, "savings", client);
 
-        entityManager.persist(user);
+        entityManager.persist(client);
 
         // Act - Update the balance
         Account existingAccount = entityManager.find(Account.class, account.getAccountID());

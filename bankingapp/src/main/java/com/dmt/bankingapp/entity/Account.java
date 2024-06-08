@@ -8,29 +8,29 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "account_ID")
+    @Column(name = "accountID")
     private int accountID;
 
-    @Column(name = "account_number")
+    @Column(name = "accountNumber")
     private String accountNumber;
 
     @ManyToOne
-    @JoinColumn(name = "user_ID")
-    private User user;
+    @JoinColumn(name = "clientID")
+    private Client client;
 
-    @Column(name = "account_balance")
+    @Column(name = "accountBalance")
     private double accountBalance;
 
-    @Column(name = "account_type")
+    @Column(name = "accountType")
     private String accountType;
 
-    public Account(String accountNumber, String accountType, User user) {
+    public Account(String accountNumber, String accountType, Client client) {
         this.accountNumber = accountNumber;
         this.accountBalance = 0.0;
         this.accountType = accountType;
-        this.user = user;
-        if (user != null) {
-            user.addAccount(this);
+        this.client = client;
+        if (client != null) {
+            client.addAccount(this);
         }
     }
 
@@ -52,12 +52,12 @@ public class Account {
         this.accountNumber = accountNumber;
     }
 
-    public User getUser() {
-        return user;
+    public Client getClient() {
+        return client;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public double getAccountBalance() {
