@@ -35,8 +35,20 @@ public class Transaction {
         this.receiver = receiver;
         this.amount = amount;
         this.timestamp = LocalDateTime.now();
+
+        // Checking the account balance to avoid the balance falling below 0
+        if (this.amount > giver.getAccountBalance()) {
+                throw new IllegalStateException("You cannot transfer more money than you have on the account!");
+        }
+
+        // If giver is a loan account evaluating the account balance, to allow only for one outgoing transaction from this account /first transaction when loan is granted/
+        if (giver.getAccountType().equals(AccountType.LOAN)) {
+            if (giver.getAccountBalance() != 0) {
+                throw new IllegalStateException("You cannot transfer money from the loan account!");
+            }
+        }
     
-        // If receiver is loan account check whether the loan is still active and handle unpaid installments
+        // If receiver is a loan account check whether the loan is still active and handle unpaid installments
         if (receiver.getAccountType().equals(AccountType.LOAN)) {
             Loan loan = receiver.getLoan();
             if (loan.getIsActive()) {
@@ -75,7 +87,7 @@ public class Transaction {
                 }
             } else {
                 // Handle the case where loan is already paid - since transaction is already instantiated the amount of transferred money is 0 but transaction exists
-                manipulateTransaction(giver, receiver, 0);
+                throw new IllegalStateException("You cannot transfer money to the loan account since the loan has already been paid!");
             }
         } else {
             // If the receiver account is not loan, money are transfered without any other operations
