@@ -6,6 +6,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
+import com.dmt.bankingapp.entity.Account.AccountType;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -33,7 +34,7 @@ public class AccountTests {
         Client client = new Client(nameClientOne, false, "password123");
 
 		String accountNumberOne = "123456789";
-        Account account = new Account(accountNumberOne, "savings", client);
+        Account account = new Account(accountNumberOne, AccountType.DEPOSIT, client);
 
         entityManager.persist(client);
 
@@ -59,7 +60,7 @@ public class AccountTests {
         Client client = new Client(nameClientOne, false, "password123");
 
         String accountNumberOne = "123456789";
-        Account account = new Account(accountNumberOne, "savings", client);
+        Account account = new Account(accountNumberOne, AccountType.DEPOSIT, client);
 
         entityManager.persist(client);
 
