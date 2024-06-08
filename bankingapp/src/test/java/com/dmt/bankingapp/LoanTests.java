@@ -10,6 +10,7 @@ import com.dmt.bankingapp.entity.Installment;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
@@ -163,16 +164,23 @@ public class LoanTests {
     @Test
     public void liquidateLoan() {
         // Arrange
-        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, new Client("loanTaker", false, "abc123"));
-        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, new Client("loanTaker", false, "abc123"));
-        Account bankAccount = new Account("bankAccNum", AccountType.BANK, new Client("bankName", false, "1234"));
+        Client loanTaker = new Client("loanTaker", false, "abc123");
+        Client bankClient = new Client("bankName", false, "1234");
+
+        entityManager.persist(loanTaker);
+        entityManager.persist(bankClient);
+
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, loanTaker);
+        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, loanTaker);
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, bankClient);
+        
         double checkingAccountBalance = 10000.0;
         checkingAccount.setAccountBalance(checkingAccountBalance, false);
         double principalAmount = 5000.0;
         double interestRate = 7.1;
         double commisionRate = 5.0;
         int loanDuration = 36;
-  
+
         entityManager.persist(loanAccount);
         entityManager.persist(checkingAccount);
         entityManager.persist(bankAccount);
@@ -193,7 +201,8 @@ public class LoanTests {
 
         Transaction testTransaction = new Transaction(checkingAccount, loanAccount, foundTotalAmount);
         entityManager.persist(testTransaction);
+        entityManager.flush();
 
-        // assertFalse(foundLoan.getIsActive());
+        assertFalse(foundLoan.getIsActive());
     }
 }
