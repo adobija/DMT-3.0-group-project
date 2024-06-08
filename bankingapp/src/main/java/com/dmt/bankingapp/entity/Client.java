@@ -96,17 +96,17 @@ public class Client {
         this.loans.add(loan);
     }
 
-    private List<Deposits> Deposits = new ArrayList<>();
+    private List<Deposit> Deposits = new ArrayList<>();
 
-    public List<Deposits> getDepositsList() {
+    public List<Deposit> getDepositsList() {
         return Deposits;
     }
 
-    public void setDepositsList(List<Deposits> deposits) {
+    public void setDepositsList(List<Deposit> deposits) {
         this.Deposits = deposits;
     }
 
-    public void addDeposit(Deposits deposit) {
+    public void addDeposit(Deposit deposit) {
         deposit.setClient(this);
         this.Deposits.add(deposit);
     }

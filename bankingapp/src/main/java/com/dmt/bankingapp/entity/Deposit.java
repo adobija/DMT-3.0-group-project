@@ -6,10 +6,9 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
-
 @Entity
-@Table(name = "Deposits")
-public class Deposits {
+@Table(name = "Deposit")
+public class Deposit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,7 +46,7 @@ public class Deposits {
     @Column(name = "Date_of_deposit")
     private LocalDateTime timestamp;
 
-    public void Deposit(Account depositAccount, Account checkingAccount, double principalAmount, double interestRate, int depositDuration, Account bankAccount) {
+    public void Deposits(Account depositAccount, Account checkingAccount, double principalAmount, double interestRate, int depositDuration, Account bankAccount) {
         this.depositAccount = depositAccount;
         this.checkingAccount = checkingAccount;
         this.bankAccount = bankAccount;
@@ -89,4 +88,5 @@ public class Deposits {
         roundToTwoDecimalPlaces = roundToTwoDecimalPlaces.setScale(2, RoundingMode.HALF_UP);
         return roundToTwoDecimalPlaces.doubleValue();
     }
+
 }
