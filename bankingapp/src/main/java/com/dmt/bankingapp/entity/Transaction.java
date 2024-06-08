@@ -132,6 +132,9 @@ public class Transaction {
     
             // Transfer only the amount used for payments, remaining amount stays with the giver
             manipulateTransaction(giver, receiver, amountUsedForPayments);
+
+            // Updating the leftToPay amount in the loan
+            loan.setLeftToPay(loan.getLeftToPay() - amountUsedForPayments);
     
             // After processing all payments checking if all installments has been paid
             boolean allInstallmentsPaid = loanInstallments.stream()
