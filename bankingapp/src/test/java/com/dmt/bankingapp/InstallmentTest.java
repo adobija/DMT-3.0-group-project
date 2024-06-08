@@ -5,6 +5,8 @@ import com.dmt.bankingapp.entity.Account.AccountType;
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.entity.Installment;
 import com.dmt.bankingapp.entity.Loan;
+import com.dmt.bankingapp.entity.Transaction;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,7 +18,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Transactional
@@ -79,5 +83,48 @@ public class InstallmentTest {
             assertEquals(foundLoan, installment.getLoan());
             assertEquals(loan.getDateOfLoan().plusMonths(i + 1), installment.getDueDate());
         }
+    }
+
+    @Test
+    public void testPayingInstallments() {
+        // Arrange
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, new Client("loanTaker", false, "abc123"));
+        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, new Client("loanTaker", false, "abc123"));
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, new Client("bankName", false, "1234"));
+        double principalAmount = 10000.0;
+        double interestRate = 5.9;
+        double commisionRate = 5.0;
+        int loanDuration = 60;
+ 
+        entityManager.persist(loanAccount);
+        entityManager.persist(checkingAccount);
+        entityManager.persist(bankAccount);
+
+        // Act
+        Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+        entityManager.persist(testLoan);
+
+        loanAccount.setLoan(testLoan);
+        entityManager.persist(loanAccount);
+
+        Loan foundLoan = entityManager.find(Loan.class, testLoan.getLoanID());
+        List<Installment> foundInstallments = foundLoan.getInstallments();
+
+        double testInstallmentAmount = foundInstallments.get(0).getInstallmentAmount();
+        double overpayment = 120.50;
+        double paymentThreeInstallments = (testInstallmentAmount * 3) + overpayment;
+
+        Transaction testTransaction = new Transaction(checkingAccount, loanAccount, paymentThreeInstallments);
+        entityManager.persist(testTransaction);
+
+        // Assert
+        assertNotNull(foundInstallments);
+        assertTrue(foundInstallments.get(0).getIsPaid());
+        assertTrue(foundInstallments.get(1).getIsPaid());
+        assertTrue(foundInstallments.get(2).getIsPaid());
+        assertFalse(foundInstallments.get(3).getIsPaid());
+        assertEquals(foundInstallments.get(3).getPaidAmount(), overpayment, 0.01);
+        assertFalse(foundInstallments.get(4).getIsPaid());
+        assertEquals(foundInstallments.get(4).getPaidAmount(), 0, 0.01);
     }
 }
