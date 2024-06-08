@@ -135,6 +135,10 @@ public class Transaction {
 
             // Updating the leftToPay amount in the loan
             loan.setLeftToPay(loan.getLeftToPay() - amountUsedForPayments);
+            // If leftToPay is very small, set it to zero - handling  floating-point precision errors
+            if (loan.getLeftToPay() < 0.001) {
+                loan.setLeftToPay(0.0);
+            }
     
             // After processing all payments checking if all installments has been paid
             boolean allInstallmentsPaid = loanInstallments.stream()

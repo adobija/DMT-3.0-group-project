@@ -198,11 +198,13 @@ public class LoanTests {
         // Assert
         assertThat(foundLoan).isNotNull();
         assertTrue(foundLoan.getIsActive());
+        assertEquals(testLoan.getTotalLoanAmount(), foundLoan.getLeftToPay());
 
         Transaction testTransaction = new Transaction(checkingAccount, loanAccount, foundTotalAmount);
         entityManager.persist(testTransaction);
         entityManager.flush();
 
         assertFalse(foundLoan.getIsActive());
+        assertEquals(foundLoan.getLeftToPay(), 0);
     }
 }
