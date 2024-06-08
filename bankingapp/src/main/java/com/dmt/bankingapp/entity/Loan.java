@@ -41,6 +41,9 @@ public class Loan {
     @Column(name = "dateOfLoan")
     private LocalDateTime dateOfLoan;
 
+    @Column(name = "leftToPay")
+    private double leftToPay;
+
     @Column(name = "commisionRate")
     private double commisionRate;
 
@@ -139,6 +142,14 @@ public class Loan {
         return dateOfLoan;
     }
 
+    public void setLeftToPay(double leftToPay) {
+        this.leftToPay = leftToPay;
+    }
+
+    public double getLeftToPay() {
+        return this.leftToPay;
+    }
+
     public void setIntrestRate(double rateInPercent) {
         this.intrestRate = rateInPercent;
     }
@@ -214,6 +225,7 @@ public class Loan {
         // Updating total amount of the loan
         double totalLoanAmount = principalAmount + intrestForBank + commisionForBank;
         setTotalLoanAmout(totalLoanAmount);
+        setLeftToPay(totalLoanAmount);
 
         generateInstallments();
     }
