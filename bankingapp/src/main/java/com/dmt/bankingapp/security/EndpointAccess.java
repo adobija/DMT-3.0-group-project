@@ -12,19 +12,18 @@ public class EndpointAccess {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        //Config which endpoints will be accessed by lambda expression
-        httpSecurity.authorizeHttpRequests(configure ->
-                configure
-                        //mask:
-                        //.requestMatchers(HttpMethod.<REST API METHOD>,<URI as String>).<attribute>
-                        .requestMatchers(HttpMethod.GET,"/test/**").authenticated()
+        // Config which endpoints will be accessed by lambda expression
+        httpSecurity.authorizeHttpRequests(configure -> configure
+                // mask:
+                // .requestMatchers(HttpMethod.<REST API METHOD>,<URI as String>).<attribute>
+                .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
 
         );
-        //Set http login as Basic Auth
+        // Set http login as Basic Auth
         httpSecurity.httpBasic(Customizer.withDefaults());
 
-        //Disable cross site request forgery token - more vulnerable
-        //httpSecurity.csrf(csrf -> csrf.disable());
+        // Disable cross site request forgery token - more vulnerable
+        // httpSecurity.csrf(csrf -> csrf.disable());
 
         return httpSecurity.build();
     }
