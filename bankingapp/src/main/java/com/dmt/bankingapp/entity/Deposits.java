@@ -89,13 +89,4 @@ public class Deposits {
         roundToTwoDecimalPlaces = roundToTwoDecimalPlaces.setScale(2, RoundingMode.HALF_UP);
         return roundToTwoDecimalPlaces.doubleValue();
     }
-    public static void main(String[] args) {
-
-        double fixedTermDeposit = calculateFixedTermDeposit(1000, 12, 10);
-        System.out.println("Fixed term: " + fixedTermDeposit);
-
-        double progressiveDeposit = calculateProgressiveDeposit(1000, 4);
-        System.out.println("Progressive: " + progressiveDeposit);
-
-    }
 }
