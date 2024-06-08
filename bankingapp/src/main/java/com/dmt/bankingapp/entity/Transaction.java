@@ -86,7 +86,7 @@ public class Transaction {
                     loan.setIsActive(false);
                 }
             } else {
-                // Handle the case where loan is already paid - since transaction is already instantiated the amount of transferred money is 0 but transaction exists
+                // Handle the case where the loan is already paid
                 throw new IllegalStateException("You cannot transfer money to the loan account since the loan has already been paid!");
             }
         } else {
