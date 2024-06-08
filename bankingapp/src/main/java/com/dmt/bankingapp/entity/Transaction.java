@@ -76,7 +76,7 @@ public class Transaction {
                 // Transfer only the amount used for payments, remaining amount stays with the giver
                 manipulateTransaction(giver, receiver, amountUsedForPayments);
     
-                if (unpaidInstallments.isEmpty() || amountLeft == 0) {
+                if (unpaidInstallments.isEmpty()) {
                     // Setting loan as paid - inactive if fully paid
                     loan.setIsActive(false);
                 }
