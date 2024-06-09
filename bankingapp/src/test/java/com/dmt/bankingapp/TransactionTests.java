@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 @Transactional
@@ -146,6 +147,27 @@ public class TransactionTests {
 
     @Test
     public void testTransactionGreaterThanBalance() {
+        // Arrange
+        Client customer1 = new Client("customer1", false, "09876");
+        Client customer2 = new Client("customer2", false, "12345");
 
+        entityManager.persist(customer1);
+        entityManager.persist(customer2);
+
+        Account checkingAccount1 = new Account("checkingAccNum1", AccountType.CHECKING, customer1);
+        Account checkingAccount2 = new Account("checkingAccNum2", AccountType.CHECKING, customer2);
+        
+        double checkingAccountBalance1 = 99.99;
+        checkingAccount1.setAccountBalance(checkingAccountBalance1, false);
+        entityManager.persist(checkingAccount1);
+
+        // Act
+        double testTransfer = 100;
+        IllegalStateException exceptionThrown = assertThrows(IllegalStateException.class, () -> {
+            new Transaction(checkingAccount1, checkingAccount2, testTransfer);
+        });
+
+        // Assert
+        assertEquals("You cannot transfer more money than you have on the account!", exceptionThrown.getMessage());
     }
 }
