@@ -138,7 +138,7 @@ public class Transaction {
             // Updating the leftToPay amount in the loan
             loan.setLeftToPay(loan.getLeftToPay() - amountUsedForPayments);
             // If leftToPay is very small, set it to zero - handling  floating-point precision errors
-            if (loan.getLeftToPay() < 0.001) {
+            if (loan.getLeftToPay() < 0.01) {
                 loan.setLeftToPay(0.0);
             }
     

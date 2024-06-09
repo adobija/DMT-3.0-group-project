@@ -26,7 +26,7 @@ public class TransactionTests {
     private EntityManager entityManager;
 
     @Test
-    public void testForTransactions() {
+    public void testNewTransaction() {
         //Arrange
         String giverClient = "clientFirst";
         String receiverClient = "clientSecond";
@@ -60,7 +60,7 @@ public class TransactionTests {
     }
 
     @Test
-    public void testForDateAndTime(){
+    public void testDateAndTime(){
         //Arrange
         String giverClient = "clientFirst";
         String receiverClient = "clientSecond";
@@ -142,5 +142,10 @@ public class TransactionTests {
         assertNotEquals(initialTransferAmount, foundTransferAmount);
         assertEquals(initialTransferAmount, foundTransferAmount + overpay, 0.01);
         assertEquals(checkingAccountBalance - foundTransferAmount, checkingAccountBalance - initialTransferAmount + overpay, 0.01);
+    }
+
+    @Test
+    public void testTransactionGreaterThanBalance() {
+
     }
 }
