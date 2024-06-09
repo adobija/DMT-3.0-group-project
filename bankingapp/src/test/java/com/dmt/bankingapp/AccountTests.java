@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.entity.Loan;
-import com.dmt.bankingapp.entity.Transaction;
 import com.dmt.bankingapp.entity.Account.AccountType;
 
 import jakarta.persistence.EntityManager;
@@ -113,5 +112,39 @@ public class AccountTests {
         assertThat(foundAccount).isNotNull();
         assertThat(foundAccount.getLoan()).isNotNull();
         assertEquals(foundAccount.getLoan().getLoanID(), testLoan.getLoanID());
+    }
+
+    @Test
+    public void testAssigningLoanToTheDepositAccount() {
+        // Arrange
+        Client loanTaker = new Client("loanTaker", false, "09876");
+        Client bankClient = new Client("loanBank", false, "12345");
+
+        entityManager.persist(loanTaker);
+        entityManager.persist(bankClient);
+
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, loanTaker);
+        Account depositAccount = new Account("depositAccNum", AccountType.DEPOSIT, loanTaker);
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, bankClient);
+        
+        entityManager.persist(loanAccount);
+        entityManager.persist(depositAccount);
+        entityManager.persist(bankAccount);
+
+        double principalAmount = 20000.0;
+        double interestRate = 3.8;
+        double commisionRate = 5.0;
+        int loanDuration = 48;
+        Loan testLoan = new Loan(loanAccount, depositAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+        entityManager.persist(testLoan);
+
+        // Act
+        IllegalArgumentException exceptionThrown = assertThrows(IllegalArgumentException.class, () -> {
+            depositAccount.setLoan(testLoan);
+            entityManager.persist(depositAccount);
+        });
+
+        // Assert
+        assertEquals("Loan can only be assigned for accounts of the LOAN type!", exceptionThrown.getMessage());
     }
 }

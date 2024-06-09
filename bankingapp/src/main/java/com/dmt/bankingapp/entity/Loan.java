@@ -214,14 +214,14 @@ public class Loan {
         setDateOfLoan(LocalDateTime.now());
         // Money transfer from the account where loan is launched to the checking
         // account of the customer + setting time and date for the loan
-        Transaction principalGranted = new Transaction(loanAccount, checkingAccount, principalAmount);
+        new Transaction(loanAccount, checkingAccount, principalAmount);
         setDateOfLoan(LocalDateTime.now());
         // Profit from intrest transfer from the account where loan is launched to the
         // bank's account
-        Transaction bankProfit = new Transaction(loanAccount, bankAccount, intrestForBank);
+        new Transaction(loanAccount, bankAccount, intrestForBank);
         // Profit from commision transfer from the account where loan is launched to the
         // bank's account
-        Transaction commisionProfit = new Transaction(loanAccount, bankAccount, commisionForBank);
+        new Transaction(loanAccount, bankAccount, commisionForBank);
         // Updating total amount of the loan
         double totalLoanAmount = principalAmount + intrestForBank + commisionForBank;
         setTotalLoanAmout(totalLoanAmount);

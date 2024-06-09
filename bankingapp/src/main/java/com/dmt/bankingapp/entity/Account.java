@@ -44,7 +44,7 @@ public class Account {
         if (accountType == AccountType.LOAN) {
             this.loan = loan;
         } else {
-            throw new IllegalArgumentException("loan can only be assigned for accounts of type LOAN");
+            throw new IllegalArgumentException("Loan can only be assigned for accounts of the LOAN type!");
         }
     }
     
@@ -109,7 +109,7 @@ public class Account {
         if (this.accountType == AccountType.LOAN) {
             this.loan = loan;
         } else {
-            throw new IllegalArgumentException("loan can only be assigned for accounts of type LOAN");
+            throw new IllegalArgumentException("Loan can only be assigned for accounts of the LOAN type!");
         }
     }
 }
