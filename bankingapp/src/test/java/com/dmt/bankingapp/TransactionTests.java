@@ -146,6 +146,54 @@ public class TransactionTests {
     }
 
     @Test
+    public void testTransactionToAccountWithPaidLoan() {
+        // Arrange
+        Client loanTaker = new Client("loanTaker", false, "09876");
+        Client bankClient = new Client("bankSTERS", false, "12345");
+
+        entityManager.persist(loanTaker);
+        entityManager.persist(bankClient);
+
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, loanTaker);
+        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, loanTaker);
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, bankClient);
+        
+        double checkingAccountBalance = 999999.99;
+        checkingAccount.setAccountBalance(checkingAccountBalance, false);
+        double principalAmount = 20000.0;
+        double interestRate = 3.8;
+        double commisionRate = 5.0;
+        int loanDuration = 48;
+
+        entityManager.persist(loanAccount);
+        entityManager.persist(checkingAccount);
+        entityManager.persist(bankAccount);
+
+        // Act - loan
+        Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+        entityManager.persist(testLoan);
+
+        loanAccount.setLoan(testLoan);
+        entityManager.persist(loanAccount);
+
+        Loan foundLoan = entityManager.find(Loan.class, testLoan.getLoanID());
+        double foundLoanTotalAmount = foundLoan.getTotalLoanAmount();
+
+        // Act - first transaction to redeem the loan
+        Transaction firstTransaction = new Transaction(checkingAccount, loanAccount, foundLoanTotalAmount);
+        entityManager.persist(firstTransaction);
+
+        // Act - second transaction that should throw exception
+        double secondTransfer = 0.01;
+        IllegalStateException exceptionThrown = assertThrows(IllegalStateException.class, () -> {
+            new Transaction(checkingAccount, loanAccount, secondTransfer);
+        });
+
+        // Assert
+        assertEquals("You cannot transfer money to this loan account since the loan has already been paid!", exceptionThrown.getMessage());
+    }
+
+    @Test
     public void testTransactionGreaterThanBalance() {
         // Arrange
         Client customer1 = new Client("customer1", false, "09876");
