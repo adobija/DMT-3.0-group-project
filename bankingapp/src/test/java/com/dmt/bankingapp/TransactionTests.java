@@ -111,14 +111,14 @@ public class TransactionTests {
         
         double checkingAccountBalance = 999999.99;
         checkingAccount.setAccountBalance(checkingAccountBalance, false);
+        entityManager.persist(loanAccount);
+        entityManager.persist(checkingAccount);
+        entityManager.persist(bankAccount);
+
         double principalAmount = 20000.0;
         double interestRate = 3.8;
         double commisionRate = 5.0;
         int loanDuration = 48;
-
-        entityManager.persist(loanAccount);
-        entityManager.persist(checkingAccount);
-        entityManager.persist(bankAccount);
 
         // Act - loan
         Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
@@ -161,14 +161,14 @@ public class TransactionTests {
         
         double checkingAccountBalance = 999999.99;
         checkingAccount.setAccountBalance(checkingAccountBalance, false);
+        entityManager.persist(loanAccount);
+        entityManager.persist(checkingAccount);
+        entityManager.persist(bankAccount);
+
         double principalAmount = 20000.0;
         double interestRate = 3.8;
         double commisionRate = 5.0;
         int loanDuration = 48;
-
-        entityManager.persist(loanAccount);
-        entityManager.persist(checkingAccount);
-        entityManager.persist(bankAccount);
 
         // Act - loan
         Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
