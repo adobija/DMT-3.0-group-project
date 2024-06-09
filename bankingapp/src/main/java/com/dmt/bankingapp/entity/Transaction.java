@@ -152,7 +152,7 @@ public class Transaction {
             }
         } else {
             // Handle the case where the loan is already paid
-            throw new IllegalStateException("You cannot transfer money to the loan account since the loan has already been paid!");
+            throw new IllegalStateException("You cannot transfer money to this loan account since the loan has already been paid!");
         }
     }
 }
