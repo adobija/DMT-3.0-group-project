@@ -37,7 +37,7 @@ public class Transaction {
         this.timestamp = LocalDateTime.now();
     
         // Checking the account balance for checking and saving accounts to avoid the balance falling below 0
-        if (receiver.getAccountType().equals(AccountType.CHECKING) || receiver.getAccountType().equals(AccountType.DEPOSIT)) {
+        if (giver.getAccountType().equals(AccountType.CHECKING) || giver.getAccountType().equals(AccountType.DEPOSIT)) {
             if (this.amount > giver.getAccountBalance()) {
                     throw new IllegalStateException("You cannot transfer more money than you have on the account!");
             }
