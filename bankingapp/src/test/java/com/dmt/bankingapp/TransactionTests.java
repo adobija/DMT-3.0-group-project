@@ -40,24 +40,25 @@ public class TransactionTests {
 
         Account giverAccount = new Account(giverAccountNumber, AccountType.DEPOSIT, client1);
         Account receiverAccount = new Account(receiverAccountNumber, AccountType.DEPOSIT, client2);
-        double amount = 500.0;
-        giverAccount.setAccountBalance(amount, false);
+        double initialAmount = 500.0;
+        giverAccount.setAccountBalance(initialAmount, false);
         entityManager.persist(giverAccount);
         entityManager.persist(receiverAccount);
 
         //Act
-        double amountInTransaction = 300.0;
-        Transaction transaction = new Transaction(giverAccount, receiverAccount, amountInTransaction);
+        double transactionAmount = 300.0;
+        Transaction transaction = new Transaction(giverAccount, receiverAccount, transactionAmount);
         entityManager.persist(transaction);
 
         Account foundGiverAccount = entityManager.find(Account.class, giverAccount.getAccountID());
         Account foundReceiverAccount = entityManager.find(Account.class, receiverAccount.getAccountID());
+
         //Assert
         assertThat(foundGiverAccount).isNotNull();
         assertThat(foundReceiverAccount).isNotNull();
 
-        assertEquals(amount-amountInTransaction, foundGiverAccount.getAccountBalance());
-        assertEquals(amountInTransaction, foundReceiverAccount.getAccountBalance());
+        assertEquals(initialAmount - transactionAmount, foundGiverAccount.getAccountBalance());
+        assertEquals(transactionAmount, foundReceiverAccount.getAccountBalance());
     }
 
     @Test
