@@ -1,7 +1,8 @@
 package com.dmt.bankingapp.entity;
 
 import jakarta.persistence.*;
-import org.mindrot.jbcrypt.BCrypt;
+
+import com.dmt.bankingapp.utils.HashedPasswordCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class Client {
     public Client(String clientName, boolean isAdmin, String clientPassword) {
         this.clientName = clientName;
         this.isAdmin = isAdmin;
-        this.clientPassword = createBcryptHashedPassword(clientPassword);
+        this.clientPassword = HashedPasswordCreator.createBcryptHashedPassword(clientPassword);
     }
 
     public Client() {}
@@ -70,7 +71,7 @@ public class Client {
     }
 
     public void setClientPassword(String clientPassword) {
-        this.clientPassword = createBcryptHashedPassword(clientPassword);
+        this.clientPassword = HashedPasswordCreator.createBcryptHashedPassword(clientPassword);
     }
 
     public List<Account> getAccountsList() {
@@ -110,12 +111,5 @@ public class Client {
     public void addDeposit(Deposit deposit) {
         deposit.setClient(this);
         this.deposits.add(deposit);
-    }
-
-    // Method to create bcrypted password from plain text to insert into database crypted password
-    private String createBcryptHashedPassword(String plainTextPassword) {
-        int numberOfRounds = 10;
-        String hashingSalt = BCrypt.gensalt(numberOfRounds);
-        return "{bcrypt}" + BCrypt.hashpw(plainTextPassword, hashingSalt);
     }
 }
