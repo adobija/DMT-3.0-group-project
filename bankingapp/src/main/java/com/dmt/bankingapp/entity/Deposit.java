@@ -58,10 +58,10 @@ public class Deposit {
         this.interestRate = interestRate;
         this.depositDuration = depositDuration;
 
-        // this.client = checkingAccount.getClient();
-        // if (client != null) {
-        //     client.addDeposit(this);
-        // }
+         this.client = checkingAccount.getClient();
+         if (client != null) {
+             client.addDeposit(this);
+         }
 
         this.totalDepositAmount = 0;
     }
