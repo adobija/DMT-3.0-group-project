@@ -23,5 +23,13 @@ public class AccountController {
         return "Account created successfully";
     }
 
-    
+    @GetMapping("/all")
+    public @ResponseBody List<Account> getAllAccounts() {
+        return accountRepository.findAll();
+    }
+
+    @GetMapping("/byAccountNumber")
+    public @ResponseBody Account getAccountByNumber(@RequestParam String accountNumber) {
+        return accountRepository.findByAccountNumber(accountNumber);
+    }
 }
