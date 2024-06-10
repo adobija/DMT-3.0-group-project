@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
-//    List<Transaction> findByAccountOfSender(Integer accountOfSender);
-//    List<Transaction> findByAccountOfReceiver(Integer accountOfReceiver);
+    List<Transaction> findByAccountOfSender(Integer accountOfSender);
+    List<Transaction> findByAccountOfReceiver(Integer accountOfReceiver);
 
 }
