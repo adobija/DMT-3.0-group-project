@@ -64,6 +64,7 @@ public class Deposit {
          }
 
         this.totalDepositAmount = 0;
+         this.timestamp = LocalDateTime.now();
     }
 
     public Deposit() {
