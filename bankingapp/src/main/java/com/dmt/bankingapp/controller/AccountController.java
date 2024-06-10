@@ -32,6 +32,9 @@ public class AccountController {
         }
 
         Client client = clientController.getByClientID(clientId);
+        if (client == null) {
+            return "Client not found";
+        }
         
         Account account = new Account(accountNumber, accountType, client);
         accountRepository.save(account);
