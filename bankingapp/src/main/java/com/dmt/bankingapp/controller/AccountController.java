@@ -17,6 +17,9 @@ public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private ClientController clientController;
+
     @PostMapping("/add")
     public @ResponseBody String addNewAccount(@RequestParam Account.AccountType accountType, @RequestParam int clientId) {
         String accountNumber = ""; 
@@ -27,8 +30,10 @@ public class AccountController {
                 accountNumber = generatedNumber;
             }
         }
+
+        Client client = clientController.getByClientID(clientId);
         
-        Account account = new Account(accountNumber, accountType, new Client()); // Client fetching and validation will be handled in the ClientController - to be created
+        Account account = new Account(accountNumber, accountType, client);
         accountRepository.save(account);
         return "Account created successfully";
     }
