@@ -11,7 +11,7 @@ public class Loan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "loanID")
+    @Column(name = "loanId")
     private int loanID;
 
     @ManyToOne

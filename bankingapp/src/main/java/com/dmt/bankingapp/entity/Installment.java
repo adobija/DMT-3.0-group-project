@@ -9,11 +9,11 @@ public class Installment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "installmentID")
+    @Column(name = "installmentId")
     private int installmentID;
 
     @ManyToOne
-    @JoinColumn(name = "loanID", referencedColumnName = "loanID")
+    @JoinColumn(name = "loanId", referencedColumnName = "loanId")
     private Loan loan;
 
     @Column(name = "installmentAmount")
