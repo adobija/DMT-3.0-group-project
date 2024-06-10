@@ -9,7 +9,7 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "accountId")
-    private int accountID;
+    private Integer accountID;
 
     @Column(name = "accountNumber")
     private String accountNumber;

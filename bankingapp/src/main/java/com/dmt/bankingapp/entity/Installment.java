@@ -10,7 +10,7 @@ public class Installment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "installmentId")
-    private int installmentID;
+    private Integer installmentID;
 
     @ManyToOne
     @JoinColumn(name = "loanId", referencedColumnName = "loanId")

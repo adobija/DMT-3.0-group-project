@@ -16,7 +16,7 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transactionId")
-    private int transactionID;
+    private Integer transactionID;
     
     @ManyToOne
     @JoinColumn(name = "accountOfSender", referencedColumnName = "accountID")

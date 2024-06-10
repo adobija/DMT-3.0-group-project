@@ -15,7 +15,7 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clientId")
-    private int clientID;
+    private Integer clientID;
 
     @Column(name = "clientName")
     private String clientName;

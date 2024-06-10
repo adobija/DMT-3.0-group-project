@@ -12,7 +12,7 @@ public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "loanId")
-    private int loanID;
+    private Integer loanID;
 
     @ManyToOne
     @JoinColumn(name = "loanAccount", referencedColumnName = "accountID")
