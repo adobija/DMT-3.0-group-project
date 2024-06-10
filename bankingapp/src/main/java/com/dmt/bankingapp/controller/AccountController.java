@@ -41,6 +41,7 @@ public class AccountController {
         return "Account created successfully";
     }
 
+    // DO WE NEED THIS METHOD???
     @PostMapping("/updateBalance")
     public @ResponseBody String updateBalance(@RequestParam int accountId, @RequestParam double amount, @RequestParam boolean isExpense) {
         Account account = accountRepository.findById(accountId).orElse(null);
@@ -53,6 +54,7 @@ public class AccountController {
         }
     }
 
+    // DO WE WANT THIS METHOD TO EXIST???
     @DeleteMapping("/remove")
     public @ResponseBody String removeAccount(@RequestParam int accountId) {
         Account account = accountRepository.findById(accountId).orElse(null);
