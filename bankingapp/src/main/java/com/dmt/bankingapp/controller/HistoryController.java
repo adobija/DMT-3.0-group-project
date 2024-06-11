@@ -56,22 +56,24 @@ public class HistoryController {
         List<Transaction> incomeTransactions = transactionRepository.findByReceiver(account);
         //All transaction where found account was giver
         List<Transaction> expenseTransactions = transactionRepository.findByGiver(account);
-
+        //Array list of history instance records
         ArrayList<History> historyArrayList = new ArrayList<>();
 
         for(Transaction x : incomeTransactions){
+            //for each loop to convert and add data from list of transactions to readable history records
             History historyRecord = HistoryRecordGenerator.castDataToCreateHistoryRecord(x,account);
             historyArrayList.add(historyRecord);
         }
         for(Transaction x : expenseTransactions){
+            //for each loop to convert and add data from list of transactions to readable history records
             History historyRecord = HistoryRecordGenerator.castDataToCreateHistoryRecord(x,account);
             historyArrayList.add(historyRecord);
         }
-
+        //Sort history to chronological order by date of transaction
         historyArrayList.sort(Comparator.comparing(History::dateOfTransaction));
 
 
-        //return list of transactions
+        //return list of transactions as History records
         return historyArrayList;
 
     }
