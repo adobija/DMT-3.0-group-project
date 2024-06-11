@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -75,6 +76,12 @@ public class HistoryController {
 
         //return list of transactions as History records
         return historyArrayList;
+    }
 
+    @GetMapping(path = "/checking/{accountNumber}")
+    public void getHistoryOfAccountByAccountNumberAdminOnly(@PathVariable String accountNumber){
+        //todo: finish this method
+        //todo: create tests for methods in each repository
+        //todo:
     }
 }
