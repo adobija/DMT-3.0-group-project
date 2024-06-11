@@ -7,6 +7,9 @@ import com.dmt.bankingapp.record.History;
 import java.time.LocalDateTime;
 
 public class HistoryRecordGenerator {
+    public HistoryRecordGenerator(Transaction transaction) {
+    }
+
     public static History castDataToCreateHistoryRecord(Transaction transaction, Account accountOfClientAccessing){
         boolean receivingTransaction;
         if(transaction.getGiver().getAccountNumber().equalsIgnoreCase(accountOfClientAccessing.getAccountNumber())){
@@ -18,7 +21,7 @@ public class HistoryRecordGenerator {
         LocalDateTime date;
         Integer id;
         if(receivingTransaction){
-            typeOf = "Reciving from: ";
+            typeOf = "Receiving from: ";
             contributorName = transaction.getGiver().getClient().getClientName();
             contributorAccountNumber = transaction.getGiver().getAccountNumber();
             amount = "+"+Double.toString(transaction.getAmount());

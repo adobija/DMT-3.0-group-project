@@ -1,4 +1,4 @@
-package com.dmt.bankingapp;
+package com.dmt.bankingapp.wip;
 
 public class RepositoriesTests {
 }
