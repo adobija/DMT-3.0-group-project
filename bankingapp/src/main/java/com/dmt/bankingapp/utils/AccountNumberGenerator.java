@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class AccountNumberGenerator {
 
-    public static String accountNumberGenerator() {
+    public static String generateAccountNumber() {
 
         Random randomNumber = new Random();
         String accountNumber = "2024DMT3.0_";

@@ -17,6 +17,21 @@ public class EndpointAccess {
                 // mask:
                 // .requestMatchers(HttpMethod.<REST API METHOD>,<URI as String>).<attribute>
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
+                //security for ClientController
+                .requestMatchers(HttpMethod.POST, "/client/add").permitAll()
+                .requestMatchers(HttpMethod.POST, "/client/editName").authenticated()
+                .requestMatchers(HttpMethod.POST, "/client/editPassword").authenticated()
+                .requestMatchers(HttpMethod.POST, "/client/editAdmin").authenticated()
+                .requestMatchers(HttpMethod.GET, "/client/all").authenticated()
+                .requestMatchers(HttpMethod.GET, "/client/byClientID").authenticated()
+                //security for AccountController
+                .requestMatchers(HttpMethod.POST, "/account/add").authenticated()
+                .requestMatchers(HttpMethod.POST, "/account/updateBalance").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/account/remove").authenticated()
+                .requestMatchers(HttpMethod.GET, "/account/all").authenticated()
+                .requestMatchers(HttpMethod.GET, "/account/byAccountNumber").authenticated()
+                //security for HistoryController
+                .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/history/*").authenticated()
         );
         // Set http login as Basic Auth
