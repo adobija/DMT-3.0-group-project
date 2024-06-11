@@ -65,6 +65,7 @@ public class ClientController {
 
     @GetMapping("/all")
     public @ResponseBody List<Client> getAllClients() {
+        
         return clientRepository.findAll();
     }
 
