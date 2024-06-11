@@ -1,10 +1,12 @@
-package com.dmt.bankingapp.utils;
+package com.dmt.bankingapp.record;
+
+import java.time.LocalDateTime;
 
 public record History(
         String contributorName,
         String contributorAccountNumber,
         String amount,
-        String dateOfTransaction,
+        LocalDateTime dateOfTransaction,
         Double balanceAfterTransaction,
         Integer transactionID
 ) {
