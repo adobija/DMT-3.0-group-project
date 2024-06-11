@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Transactional
-public class InstallmentTest {
+public class InstallmentTests {
 
     @Autowired
     private EntityManager entityManager;
