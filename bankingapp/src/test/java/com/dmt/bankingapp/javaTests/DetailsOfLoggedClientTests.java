@@ -1,4 +1,4 @@
-package com.dmt.bankingapp;
+package com.dmt.bankingapp.javaTests;
 
 import com.dmt.bankingapp.service.implementation.DetailsOfLoggedClientImpl;
 import jakarta.servlet.http.HttpServletRequest;
