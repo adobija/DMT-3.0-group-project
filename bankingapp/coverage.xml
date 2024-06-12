@@ -3,6 +3,9 @@
         <columns>
  
         </columns>
+        <coverage>
+
+        </coverage>
         <fileset/>
         <format/>
         <sourcepath/>
@@ -17,7 +20,9 @@
        </added>
         <chart>
         </chart>
-        <coverage/>
+        <coverage>
+
+        </coverage>
         <format/>
         <metrics/>
         <movers>
