@@ -42,29 +42,29 @@ public class AccountController {
     }
 
     // DO WE NEED THIS METHOD???
-    @PostMapping("/updateBalance")
-    public @ResponseBody String updateBalance(@RequestParam int accountId, @RequestParam double amount, @RequestParam boolean isExpense) {
-        Account account = accountRepository.findById(accountId).orElse(null);
-        if (account != null) {
-            account.setAccountBalance(amount, isExpense);
-            accountRepository.save(account);
-            return "Account balance updated successfully";
-        } else {
-            return "Account not found";
-        }
-    }
+    // @PostMapping("/updateBalance")
+    // public @ResponseBody String updateBalance(@RequestParam int accountId, @RequestParam double amount, @RequestParam boolean isExpense) {
+    //     Account account = accountRepository.findById(accountId).orElse(null);
+    //     if (account != null) {
+    //         account.setAccountBalance(amount, isExpense);
+    //         accountRepository.save(account);
+    //         return "Account balance updated successfully";
+    //     } else {
+    //         return "Account not found";
+    //     }
+    // }
 
     // DO WE WANT THIS METHOD TO EXIST???
-    @DeleteMapping("/remove")
-    public @ResponseBody String removeAccount(@RequestParam int accountId) {
-        Account account = accountRepository.findById(accountId).orElse(null);
-        if (account != null) {
-            accountRepository.delete(account);
-            return "Account deleted successfully";
-        } else {
-            return "Account not found";
-        }
-    }
+    // @DeleteMapping("/remove")
+    // public @ResponseBody String removeAccount(@RequestParam int accountId) {
+    //     Account account = accountRepository.findById(accountId).orElse(null);
+    //     if (account != null) {
+    //         accountRepository.delete(account);
+    //         return "Account deleted successfully";
+    //     } else {
+    //         return "Account not found";
+    //     }
+    // }
 
     @GetMapping("/all")
     public @ResponseBody List<Account> getAllAccounts() {

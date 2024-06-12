@@ -26,8 +26,8 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.GET, "/client/byClientID").authenticated()
                 //security for AccountController
                 .requestMatchers(HttpMethod.POST, "/account/add").authenticated()
-                .requestMatchers(HttpMethod.POST, "/account/updateBalance").authenticated()
-                .requestMatchers(HttpMethod.DELETE, "/account/remove").authenticated()
+                // .requestMatchers(HttpMethod.POST, "/account/updateBalance").authenticated()
+                // .requestMatchers(HttpMethod.DELETE, "/account/remove").authenticated()
                 .requestMatchers(HttpMethod.GET, "/account/all").authenticated()
                 .requestMatchers(HttpMethod.GET, "/account/byAccountNumber").authenticated()
                 //security for TransactionController
