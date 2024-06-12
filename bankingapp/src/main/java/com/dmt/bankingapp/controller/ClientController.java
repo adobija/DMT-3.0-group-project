@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.repository.ClientRepository;
+import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(path = "/client")
@@ -19,6 +22,9 @@ public class ClientController {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private DetailsOfLoggedClient detailsOfLoggedClient;
 
     @PostMapping("/add")  // curl.exe -d "clientName=NAME&clientPassword=PASSWORD&isAdmin=false" http://localhost:8080/client/add
     public @ResponseBody String addNewClient(@RequestParam String clientName, @RequestParam String clientPassword, @RequestParam boolean isAdmin) {
@@ -33,10 +39,11 @@ public class ClientController {
     }
 
     @PostMapping("/editName")
-    public @ResponseBody String editName(@RequestParam int clientId, @RequestParam String clientName) {
-        Client client = clientRepository.findById(clientId).orElse(null);
+    public @ResponseBody String editName(@RequestParam String newName, HttpServletRequest request) {
+        String currentName = detailsOfLoggedClient.getNameFromClient(request);
+        Client client = clientRepository.findByClientName(currentName);
         if (client != null) {
-            client.setClientName(clientName);
+            client.setClientName(newName);
             clientRepository.save(client);
             return "Client's name updated successfully";
         } else {
