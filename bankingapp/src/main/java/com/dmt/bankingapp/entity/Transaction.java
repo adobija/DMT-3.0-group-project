@@ -15,8 +15,8 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "transactionID")
-    private int transactionID;
+    @Column(name = "transactionId")
+    private Integer transactionID;
     
     @ManyToOne
     @JoinColumn(name = "accountOfSender", referencedColumnName = "accountID")
@@ -25,6 +25,7 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "accountOfReceiver", referencedColumnName = "accountID")
     private Account receiver;
+
     private double amount;
 
     @Column(name = "dateOfTransaction")
@@ -154,5 +155,16 @@ public class Transaction {
             // Handle the case where the loan is already paid
             throw new IllegalStateException("You cannot transfer money to this loan account since the loan has already been paid!");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "transactionID=" + transactionID +
+                ", giver=" + giver +
+                ", receiver=" + receiver +
+                ", amount=" + amount +
+                ", timestamp=" + timestamp +
+                '}';
     }
 }

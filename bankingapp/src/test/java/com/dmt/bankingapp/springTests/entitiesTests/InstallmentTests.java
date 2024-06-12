@@ -1,4 +1,4 @@
-package com.dmt.bankingapp;
+package com.dmt.bankingapp.springTests.entitiesTests;
 
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Account.AccountType;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Transactional
-public class InstallmentTest {
+public class InstallmentTests {
 
     @Autowired
     private EntityManager entityManager;
