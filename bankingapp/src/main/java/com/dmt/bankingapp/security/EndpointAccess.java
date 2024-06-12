@@ -17,7 +17,7 @@ public class EndpointAccess {
                 // mask:
                 // .requestMatchers(HttpMethod.<REST API METHOD>,<URI as String>).<attribute>
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
-                .requestMatchers(HttpMethod.GET, "/history/*").authenticated()
+                .requestMatchers(HttpMethod.GET, "/history/**").authenticated()
         );
         // Set http login as Basic Auth
         httpSecurity.httpBasic(Customizer.withDefaults());
