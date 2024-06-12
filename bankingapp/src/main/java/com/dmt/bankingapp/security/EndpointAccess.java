@@ -23,7 +23,7 @@ public class EndpointAccess {
         httpSecurity.httpBasic(Customizer.withDefaults());
 
         // Disable cross site request forgery token - more vulnerable
-        // httpSecurity.csrf(csrf -> csrf.disable());
+        httpSecurity.csrf(csrf -> csrf.disable());
 
         return httpSecurity.build();
     }

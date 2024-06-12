@@ -1,7 +1,6 @@
 package com.dmt.bankingapp.entity;
 
 import jakarta.persistence.*;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
 import java.util.List;
