@@ -52,10 +52,11 @@ public class ClientController {
     }
 
     @PostMapping("/editPassword")
-    public @ResponseBody String editPassword(@RequestParam int clientId, @RequestParam String clientPassword) {
-        Client client = clientRepository.findById(clientId).orElse(null);
+    public @ResponseBody String editPassword(@RequestParam String newPassword, HttpServletRequest request) {
+        String clientName = detailsOfLoggedClient.getNameFromClient(request);
+        Client client = clientRepository.findByClientName(clientName);
         if (client != null) {
-            client.setClientPassword(clientPassword);
+            client.setClientPassword(newPassword);
             clientRepository.save(client);
             return "Client's password updated successfully";
         } else {
@@ -64,8 +65,9 @@ public class ClientController {
     }
 
     @PostMapping("/editAdmin")
-    public @ResponseBody String editPermission(@RequestParam int clientId, @RequestParam boolean isAdmin) {
-        Client client = clientRepository.findById(clientId).orElse(null);
+    public @ResponseBody String editPermission(@RequestParam boolean isAdmin, HttpServletRequest request) {
+        String clientName = detailsOfLoggedClient.getNameFromClient(request);
+        Client client = clientRepository.findByClientName(clientName);
         if (client != null) {
             client.setAdmin(isAdmin);
             clientRepository.save(client);
@@ -77,7 +79,6 @@ public class ClientController {
 
     @GetMapping("/all")
     public @ResponseBody List<Client> getAllClients() {
-        
         return clientRepository.findAll();
     }
 
