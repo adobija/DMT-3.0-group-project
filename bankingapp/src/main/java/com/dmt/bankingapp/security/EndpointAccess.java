@@ -30,6 +30,10 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.DELETE, "/account/remove").authenticated()
                 .requestMatchers(HttpMethod.GET, "/account/all").authenticated()
                 .requestMatchers(HttpMethod.GET, "/account/byAccountNumber").authenticated()
+                //security for TransactionController
+                .requestMatchers(HttpMethod.POST, "/transaction/add").authenticated()
+                .requestMatchers(HttpMethod.GET, "/transaction/all").authenticated()
+                .requestMatchers(HttpMethod.GET, "/transaction/byAccountID").authenticated()
                 //security for HistoryController
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/history/*").authenticated()

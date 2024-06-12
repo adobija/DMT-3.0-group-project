@@ -3,6 +3,7 @@ package com.dmt.bankingapp.controller;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,11 +51,11 @@ public class TransactionController {
         return transactionRepository.findAll();
     }
 
-    @GetMapping("/byTransactionID")
+    @GetMapping("/byAccountID")
     public @ResponseBody List<Transaction> getByAccountId(@RequestParam String accountNumber) {
         Account account = accountRepository.findByAccountNumber(accountNumber);
         if (account == null) {
-            return new ArrayList<>(); // Or handle this case as you see fit
+            throw new NoSuchElementException("Account not found with account number: " + accountNumber);
         }
         
         List<Transaction> transactions = new ArrayList<>();
