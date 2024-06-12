@@ -21,8 +21,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Update db url
+      run: sed -i 's/<db_url>/${{ secrets.DB_URL }}/' bankingapp/src/main/resources/application.properties
+
+    - name: Update db username
+      run: sed -i 's/<db_username>/${{ secrets.DB_USERNAME }}/' bankingapp/src/main/resources/application.properties
+      
     - name: Update db password
       run: sed -i 's/<db_password>/${{ secrets.DB_PASSWORD }}/' bankingapp/src/main/resources/application.properties
+      
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
