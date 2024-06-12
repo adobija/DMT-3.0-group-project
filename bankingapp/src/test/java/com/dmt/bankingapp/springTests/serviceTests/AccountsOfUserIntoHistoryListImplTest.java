@@ -7,10 +7,8 @@ import com.dmt.bankingapp.record.History;
 import com.dmt.bankingapp.repository.AccountRepository;
 import com.dmt.bankingapp.repository.TransactionRepository;
 import com.dmt.bankingapp.service.implementation.AccountsOfUserIntoHistoryListImpl;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
