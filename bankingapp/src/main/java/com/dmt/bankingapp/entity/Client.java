@@ -1,7 +1,8 @@
 package com.dmt.bankingapp.entity;
 
 import jakarta.persistence.*;
-import org.mindrot.jbcrypt.BCrypt;
+
+import com.dmt.bankingapp.utils.HashedPasswordCreator;
 
 import java.util.ArrayList;
 import java.util.List;
