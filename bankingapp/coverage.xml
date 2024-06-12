@@ -1,8 +1,8 @@
 <clover-report>
     <current>
         <columns>
-             (one or more columns)
-        </columns/>
+ 
+        </columns>
         <fileset/>
         <format/>
         <sourcepath/>
@@ -12,19 +12,18 @@
     <historical>
        <added>
           <columns>
-                (a single column)
-          </columns/>
+
+          </columns>
        </added>
         <chart>
-              (one or more columns)
-        </chart/>
+        </chart>
         <coverage/>
         <format/>
         <metrics/>
         <movers>
           <columns>
-                (a single column)
-          </columns/>
+            
+          </columns>
         </movers>
         <overview/>
     </historical>
