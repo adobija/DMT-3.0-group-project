@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.repository.ClientRepository;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
+import org.mindrot.jbcrypt.BCrypt;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -56,9 +57,14 @@ public class ClientController {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         if (client != null) {
-            client.setClientPassword(newPassword);
-            clientRepository.save(client);
-            return "Client's password updated successfully";
+            String storedHashedPassword = client.getClientPassword().replace("{bcrypt}", ""); // Remove prefix for comparison
+            if (BCrypt.checkpw(newPassword, storedHashedPassword)) {
+                return "Please choose a new password that is different from the previous password";
+            } else {
+                client.setClientPassword(newPassword);
+                clientRepository.save(client);
+                return "Client's password updated successfully";
+            }
         } else {
             return "Client not found";
         }
