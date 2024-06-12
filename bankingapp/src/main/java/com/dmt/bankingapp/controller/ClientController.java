@@ -1,14 +1,11 @@
 package com.dmt.bankingapp.controller;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.repository.ClientRepository;
@@ -70,13 +67,18 @@ public class ClientController {
         }
     }
 
-    @PostMapping("/editAdmin")
-    public @ResponseBody String editPermission(@RequestParam boolean isAdmin, HttpServletRequest request) {
+    @PostMapping("/editAdmin/{clientId}")
+    public @ResponseBody String editPermission(@PathVariable int clientId, @RequestParam boolean isAdmin, HttpServletRequest request) throws IOException {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
-        if (client != null) {
-            client.setAdmin(isAdmin);
-            clientRepository.save(client);
+        if(!client.isAdmin()){
+            return "You don't have permission!";
+        }
+        Optional<Client> foundClientOptional = clientRepository.findById(clientId);
+        Client foundClient = foundClientOptional.get();
+        if (foundClient != null) {
+            foundClient.setAdmin(isAdmin);
+            clientRepository.save(foundClient);
             return "Client's permission updated successfully";
         } else {
             return "Client not found";
