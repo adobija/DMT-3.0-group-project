@@ -3,8 +3,9 @@ package com.dmt.bankingapp.service.implementation;
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.repository.ClientRepository;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
-import jakarta.persistence.PersistenceContext;
+
 import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

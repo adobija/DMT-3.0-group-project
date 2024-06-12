@@ -8,13 +8,13 @@ import com.dmt.bankingapp.repository.AccountRepository;
 import com.dmt.bankingapp.repository.TransactionRepository;
 import com.dmt.bankingapp.service.interfaceClass.AccountsOfUserIntoHistoryList;
 import com.dmt.bankingapp.utils.HistoryRecordGenerator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -34,7 +34,7 @@ public class AccountsOfUserIntoHistoryListImpl implements AccountsOfUserIntoHist
     }
 
     @Override
-    public ResponseEntity<ArrayList<History>> getStoredHistoryByClient(Client client) throws IOException {
+    public ResponseEntity<ArrayList<History>> getStoredHistoryByClient(Client client){
         //find instance of client's account
         List<Account> accountList = accountRepository.findByClient(client);
         if(accountList.isEmpty()){
