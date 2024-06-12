@@ -22,9 +22,14 @@ public class ClientController {
 
     @PostMapping("/add")  // curl.exe -d "clientName=NAME&clientPassword=PASSWORD&isAdmin=false" http://localhost:8080/client/add
     public @ResponseBody String addNewClient(@RequestParam String clientName, @RequestParam String clientPassword, @RequestParam boolean isAdmin) {
-        Client client = new Client(clientName, isAdmin, clientPassword);
-        clientRepository.save(client);
-        return "Account created successfully";
+        Client exists = clientRepository.findByClientName(clientName);
+        if (exists != null) {
+            return "Client with his user name already exists. Failed to create new client profile!";
+        } else {
+            Client client = new Client(clientName, isAdmin, clientPassword);
+            clientRepository.save(client);
+            return "New client profile created successfully";
+        }
     }
 
     @PostMapping("/editName")
