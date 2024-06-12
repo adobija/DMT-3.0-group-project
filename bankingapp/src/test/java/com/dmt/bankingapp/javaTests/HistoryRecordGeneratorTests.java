@@ -1,4 +1,4 @@
-package com.dmt.bankingapp.springTests.otherTests;
+package com.dmt.bankingapp.javaTests;
 
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
