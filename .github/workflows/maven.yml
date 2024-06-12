@@ -34,4 +34,9 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file bankingapp/pom.xml
+    # Code coverage check - TEST
+    - uses: themichaelhall/check-code-coverage@v2
+      with:
+        report: bankingapp/coverage.xml
+        required-percentage: 60
 
