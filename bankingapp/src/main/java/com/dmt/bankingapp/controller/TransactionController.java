@@ -1,6 +1,9 @@
 package com.dmt.bankingapp.controller;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +51,21 @@ public class TransactionController {
     }
 
     @GetMapping("/byTransactionID")
-    public @ResponseBody Transaction getByTransactionID(@RequestParam int transactionID) {
-        return transactionRepository.findById(transactionID).orElse(null);
+    public @ResponseBody List<Transaction> getByAccountId(@RequestParam String accountNumber) {
+        Account account = accountRepository.findByAccountNumber(accountNumber);
+        if (account == null) {
+            return new ArrayList<>(); // Or handle this case as you see fit
+        }
+        
+        List<Transaction> transactions = new ArrayList<>();
+        transactions.addAll(transactionRepository.findByGiver(account));
+        transactions.addAll(transactionRepository.findByReceiver(account));
+        
+        // Sort transactions by timestamp in ascending order
+        transactions = transactions.stream()
+                .sorted(Comparator.comparing(Transaction::getTimestamp))
+                .collect(Collectors.toList());
+        
+        return transactions;
     }
 }
