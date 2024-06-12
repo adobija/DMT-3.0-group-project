@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -100,6 +101,53 @@ public class TransactionRepositoryTests {
         assertEquals(transaction.getTransactionID(), foundTransaction.get().getTransactionID());
     }
 
+    @Test
+    @Transactional
+    public void transactionRepositoryTestFindByGiver(){
+        //arrange
+        Client clientOne = new Client("Giver",false, "password");
+        Client clientTwo = new Client("Receiver",false, "password");
+        entityManager.persist(clientOne);
+        entityManager.persist(clientTwo);
+
+        Account accountOne = new Account("testNumber", Account.AccountType.CHECKING, clientOne);
+        Account accountTwo = new Account("testNumber", Account.AccountType.CHECKING, clientTwo);
+        accountOne.setAccountBalance(5000.0, false);
+        entityManager.persist(accountOne);
+        entityManager.persist(accountTwo);
+        Transaction transaction = new Transaction(accountOne, accountTwo, 20.0);
+        entityManager.persist(transaction);
+        //act
+        List<Transaction> foundTransaction = transactionRepository.findByGiver(accountOne);
+        //assert
+        assertThat(foundTransaction).isNotNull();
+        assertThat(foundTransaction.isEmpty()).isFalse();
+        assertEquals(foundTransaction.get(0).getGiver().getClient(), clientOne);
+    }
+
+    @Test
+    @Transactional
+    public void transactionRepositoryTestFindByReceiver(){
+        //arrange
+        Client clientOne = new Client("Giver",false, "password");
+        Client clientTwo = new Client("Receiver",false, "password");
+        entityManager.persist(clientOne);
+        entityManager.persist(clientTwo);
+
+        Account accountOne = new Account("testNumber", Account.AccountType.CHECKING, clientOne);
+        Account accountTwo = new Account("testNumber", Account.AccountType.CHECKING, clientTwo);
+        accountOne.setAccountBalance(5000.0, false);
+        entityManager.persist(accountOne);
+        entityManager.persist(accountTwo);
+        Transaction transaction = new Transaction(accountOne, accountTwo, 20.0);
+        entityManager.persist(transaction);
+        //act
+        List<Transaction> foundTransaction = transactionRepository.findByReceiver(accountTwo);
+        //assert
+        assertThat(foundTransaction).isNotNull();
+        assertThat(foundTransaction.isEmpty()).isFalse();
+        assertEquals(foundTransaction.get(0).getReceiver().getClient(), clientTwo);
+    }
 
 
 }

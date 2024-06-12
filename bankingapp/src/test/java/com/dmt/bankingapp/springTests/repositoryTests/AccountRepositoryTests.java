@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,6 +80,28 @@ public class AccountRepositoryTests {
         assertEquals(account.getClient(), foundAccount.get().getClient());
     }
 
+    @Test
+    @Transactional
+    public void accountRepositoryTestFindByClient(){
+        //arrange
+        Client client = new Client("TestClient", false, "password");
+        entityManager.persist(client);
+        Account accountOne = new Account("TestNumber1", Account.AccountType.CHECKING, client);
+        Account accountTwo = new Account("TestNumber2", Account.AccountType.CHECKING, client);
+        Account accountThree = new Account("TestNumber3", Account.AccountType.CHECKING, client);
+        entityManager.persist(accountOne);
+        entityManager.persist(accountTwo);
+        entityManager.persist(accountThree);
+        //act
+        List<Account> foundAccounts = accountRepository.findByClient(client);
+        //assert
+        assertThat(foundAccounts).isNotNull();
+        assertThat(foundAccounts.size() == 3);
+        assertThat(foundAccounts.isEmpty()).isFalse();
+        assertEquals(foundAccounts.get(0).getAccountNumber(), accountOne.getAccountNumber());
+        assertEquals(foundAccounts.get(1).getAccountNumber(), accountTwo.getAccountNumber());
+        assertEquals(foundAccounts.get(2).getAccountNumber(), accountThree.getAccountNumber());
+    }
 
 
 }

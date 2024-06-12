@@ -75,6 +75,20 @@ public class ClientRepositoryTests {
 
     }
 
+    @Test
+    @Transactional
+    public void clientRepositoryTestFindByClientName(){
+        //arrange
+        String username = "TestClient";
+        Client client = new Client(username,false, "password");
+        entityManager.persist(client);
+        //act
+        Client foundClient = clientRepository.findByClientName(username);
+        //assert
+        assertThat(foundClient).isNotNull();
+        assertEquals(client, foundClient);
+    }
+
 
 
 }

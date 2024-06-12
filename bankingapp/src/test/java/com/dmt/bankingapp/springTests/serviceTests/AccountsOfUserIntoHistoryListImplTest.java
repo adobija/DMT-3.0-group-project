@@ -64,7 +64,7 @@ public class AccountsOfUserIntoHistoryListImplTest {
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
         History body = response.getBody().get(0);
-        assertEquals(body.typeOf(), "Sending to:");
+        assertEquals(body.typeOf(), "Sending to: ");
         assertEquals(body.contributorAccountNumber(), accountTwo.getAccountNumber());
         assertEquals(body.contributorName(), accountTwo.getClient().getClientName());
         assertEquals(body.amount(), "-"+transaction.getAmount()+" zł");
