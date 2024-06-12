@@ -1,3 +1,31 @@
 <clover-report>
-
+    <current>
+        <columns>
+             (one or more columns)
+        </columns/>
+        <fileset/>
+        <format/>
+        <sourcepath/>
+        <testsources/>
+        <testresults/>
+    </current>
+    <historical>
+       <added>
+          <columns>
+                (a single column)
+          </columns/>
+       </added>
+        <chart>
+              (one or more columns)
+        </chart/>
+        <coverage/>
+        <format/>
+        <metrics/>
+        <movers>
+          <columns>
+                (a single column)
+          </columns/>
+        </movers>
+        <overview/>
+    </historical>
 </clover-report>
