@@ -13,7 +13,7 @@ public class Deposit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "depositID")
-    private int depositID;
+    private Integer depositID;
 
     @ManyToOne
     @JoinColumn(name = "depositAccount", referencedColumnName = "accountID")
@@ -37,7 +37,7 @@ public class Deposit {
     @Column(name = "depositDuration")
     private int depositDuration;
 
-    @Column(name = "intrestRate")
+    @Column(name = "interestRate")
     private double interestRate;
 
     @Column(name = "totalDepositAmount")
