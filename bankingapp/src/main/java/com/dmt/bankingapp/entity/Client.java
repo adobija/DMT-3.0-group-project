@@ -25,6 +25,10 @@ public class Client {
     @Column(name = "bcryptClientPassword", length = 68)
     private String clientPassword;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "checkingAccountId", referencedColumnName = "accountId")
+    private Account checkingAccount;
+
     @OneToMany(mappedBy = "client", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private List<Account> accounts = new ArrayList<>();
 
@@ -72,6 +76,14 @@ public class Client {
 
     public void setClientPassword(String clientPassword) {
         this.clientPassword = createBcryptHashedPassword(clientPassword);
+    }
+
+    public Account getCheckingAccount() {
+        return checkingAccount;
+    }
+
+    public void setCheckingAccount(Account checkingAccount) {
+        this.checkingAccount = checkingAccount;
     }
 
     public List<Account> getAccountsList() {

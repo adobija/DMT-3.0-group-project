@@ -38,6 +38,9 @@ public class ClientController {
             Client client = new Client(clientName, isAdmin, clientPassword);
             clientRepository.save(client);
             accountService.addNewAccount(Account.AccountType.CHECKING, client);
+            client.addAccount(accountService.getLatestAccount());
+            client.setCheckingAccount(accountService.getLatestAccount());
+            clientRepository.save(client);
             return "New client profile created successfully";
         }
     }
