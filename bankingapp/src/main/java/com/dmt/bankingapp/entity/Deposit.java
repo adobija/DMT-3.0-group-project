@@ -108,11 +108,36 @@ public class Deposit {
         return principalDepositAmount;
     }
 
+    public void setDepositID(int depositID) {
+        this.depositID = depositID;
+    }
+
     public void setClient(Client client) {
         this.client = client;
     }
-    public void setDepositID(Integer depositID) {
-        this.depositID = depositID;
+ 
+    public void setDepositAccount(Account depositAccount) {
+        this.depositAccount = depositAccount;
+    }
+
+    public void setPrincipalDepositAmount(double principalDepositAmount) {
+        this.principalDepositAmount = principalDepositAmount;
+    }
+
+    public void setDepositDuration(int depositDuration) {
+        this.depositDuration = depositDuration;
+    }
+
+    public void setInterestRate(double interestRate) {
+        this.interestRate = interestRate;
+    }
+
+    public void setTotalDepositAmount(double totalDepositAmount) {
+        this.totalDepositAmount = totalDepositAmount;
+    }
+
+    public void setDateOfDeposit(LocalDateTime timestamp) {
+        this.dateOfDeposit = timestamp;
     }
 
     public static double calculateFixedTermDeposit(double depositAmount, int numberOfMonthsOnDeposit, int interestRate) {
