@@ -31,6 +31,9 @@ public class DepositController {
 
     @PostMapping("/addNewDeposit")
     public @ResponseBody String addNewDeposit(@RequestParam String checkingAccountNumber,
+            @RequestParam Account depositAccount,
+            @RequestParam double principalAmount,
+            @RequestParam double interestRate,
             @RequestParam double depositAmount,
             @RequestParam String bankAccountNumber,
             @RequestParam String depositType,
@@ -49,6 +52,8 @@ public class DepositController {
             return "Client not found";
         }
 
+        // Deposit deposit = new Deposit(depositAccount, checkingAccount, principalAmount, depositAmount, depositType, depositDuration, depositInterestRate);
+        
         return "Deposit added successfully";
     }
 

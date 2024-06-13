@@ -65,7 +65,7 @@ public class Deposit {
     }
 
     public Deposit() {
-        
+
     }
 
     public Integer getDepositID() {
@@ -144,7 +144,6 @@ public class Deposit {
         double interest = depositAmount * (numberOfMonthsOnDeposit / 12) * (interestRate / 100);
         return depositAmount + interest;
     }
-
 
     public static double calculateProgressiveDeposit(double depositAmount, int numberOfQuarters) {
         if (numberOfQuarters > 4) {
