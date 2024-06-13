@@ -1,10 +1,11 @@
 package com.dmt.bankingapp.entity;
 
 import jakarta.persistence.*;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.dmt.bankingapp.utils.BcryptPasswordGenerator.createBcryptHashedPassword;
 
 @Entity
 @Table(name = "Clients")
@@ -12,8 +13,8 @@ public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "clientID")
-    private int clientID;
+    @Column(name = "clientId")
+    private Integer clientID;
 
     @Column(name = "clientName")
     private String clientName;
@@ -113,9 +114,5 @@ public class Client {
     }
 
     // Method to create bcrypted password from plain text to insert into database crypted password
-    private String createBcryptHashedPassword(String plainTextPassword) {
-        int numberOfRounds = 10;
-        String hashingSalt = BCrypt.gensalt(numberOfRounds);
-        return "{bcrypt}" + BCrypt.hashpw(plainTextPassword, hashingSalt);
-    }
+    // Change location of this method to utils
 }

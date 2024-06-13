@@ -6,9 +6,6 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "Deposits")
 public class Deposit {

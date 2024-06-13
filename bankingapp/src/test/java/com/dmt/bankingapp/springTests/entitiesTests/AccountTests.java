@@ -1,4 +1,4 @@
-package com.dmt.bankingapp;
+package com.dmt.bankingapp.springTests.entitiesTests;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

@@ -8,14 +8,14 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "accountID")
-    private int accountID;
+    @Column(name = "accountId")
+    private Integer accountID;
 
     @Column(name = "accountNumber")
     private String accountNumber;
 
     @ManyToOne
-    @JoinColumn(name = "clientID")
+    @JoinColumn(name = "clientId")
     private Client client;
 
     @Column(name = "accountBalance")
@@ -26,7 +26,7 @@ public class Account {
     private AccountType accountType;
 
     @OneToOne
-    @JoinColumn(name = "loanID", referencedColumnName = "loanID", nullable = true)
+    @JoinColumn(name = "loanId", referencedColumnName = "loanId", nullable = true)
     private Loan loan;
 
     public Account(String accountNumber, AccountType accountType, Client client) {
