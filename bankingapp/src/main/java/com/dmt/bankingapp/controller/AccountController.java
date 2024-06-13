@@ -16,8 +16,8 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping("/add")
-    public @ResponseBody String addNewAccount(@RequestParam Account.AccountType accountType, @RequestParam int clientId, @RequestParam Client client) {
-        return accountService.addNewAccount(accountType, clientId, client);
+    public @ResponseBody String addNewAccount(@RequestParam Account.AccountType accountType, @RequestParam Client client) {
+        return accountService.addNewAccount(accountType, client);
     }
 
     @GetMapping("/all")

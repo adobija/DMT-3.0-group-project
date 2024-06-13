@@ -46,7 +46,7 @@ public class LoanController {
         }
 
         // Create a new loan account using the AccountService's method
-        String response = accountService.addNewAccount(Account.AccountType.LOAN, client.getClientID(), client);
+        String response = accountService.addNewAccount(Account.AccountType.LOAN, client);
         if (!response.contains("Account created successfully")) {
             return response;
         }

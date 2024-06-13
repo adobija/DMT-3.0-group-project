@@ -21,10 +21,10 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.POST, "/client/add").permitAll()
                 .requestMatchers(HttpMethod.POST, "/client/editName").authenticated()
                 .requestMatchers(HttpMethod.POST, "/client/editPassword").authenticated()
-                .requestMatchers(HttpMethod.POST, "/client/editAdmin").authenticated()
+                .requestMatchers(HttpMethod.POST, "/client/editAdmin/*").authenticated()
                 .requestMatchers(HttpMethod.GET, "/client/all").authenticated()
                 .requestMatchers(HttpMethod.GET, "/client/byClientID").authenticated()
-                .requestMatchers(HttpMethod.POST, "/client/editAdmin/*").authenticated()
+                
                 //security for AccountController
                 .requestMatchers(HttpMethod.POST, "/account/add").authenticated()
                 // .requestMatchers(HttpMethod.POST, "/account/updateBalance").authenticated()
@@ -35,6 +35,10 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.POST, "/transaction/add").authenticated()
                 .requestMatchers(HttpMethod.GET, "/transaction/all").authenticated()
                 .requestMatchers(HttpMethod.GET, "/transaction/byAccountID").authenticated()
+                //security for LoanController
+                .requestMatchers(HttpMethod.POST, "/loan/add").authenticated()
+                .requestMatchers(HttpMethod.GET, "/loan/all").authenticated()
+                .requestMatchers(HttpMethod.GET, "/loan/byLoanId").authenticated()
                 //security for HistoryController
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/history/**").authenticated()

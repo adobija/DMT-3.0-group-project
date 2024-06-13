@@ -16,7 +16,7 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public String addNewAccount(Account.AccountType accountType, int clientId, Client client) {
+    public String addNewAccount(Account.AccountType accountType, Client client) {
         String accountNumber = "";
         while (accountNumber.isEmpty()) {
             String generatedNumber = AccountNumberGenerator.generateAccountNumber();
