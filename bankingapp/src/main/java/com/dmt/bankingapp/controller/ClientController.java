@@ -7,8 +7,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.repository.ClientRepository;
+import com.dmt.bankingapp.service.AccountService;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -24,6 +26,9 @@ public class ClientController {
     @Autowired
     private DetailsOfLoggedClient detailsOfLoggedClient;
 
+    @Autowired
+    private AccountService accountService;
+
     @PostMapping("/add")  // curl.exe -d "clientName=NAME&clientPassword=PASSWORD&isAdmin=false" http://localhost:8080/client/add
     public @ResponseBody String addNewClient(@RequestParam String clientName, @RequestParam String clientPassword, @RequestParam boolean isAdmin) {
         Client exists = clientRepository.findByClientName(clientName);
@@ -32,6 +37,7 @@ public class ClientController {
         } else {
             Client client = new Client(clientName, isAdmin, clientPassword);
             clientRepository.save(client);
+            accountService.addNewAccount(Account.AccountType.CHECKING, client.getClientID(), client);
             return "New client profile created successfully";
         }
     }

@@ -2,8 +2,10 @@ package com.dmt.bankingapp.controller;
 
 import com.dmt.bankingapp.entity.Loan;
 import com.dmt.bankingapp.entity.Account;
+import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.repository.LoanRepository;
 import com.dmt.bankingapp.repository.AccountRepository;
+import com.dmt.bankingapp.service.AccountService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,25 +23,41 @@ public class LoanController {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private AccountService accountService;
+
     @PostMapping("/add")
-    public @ResponseBody String addNewLoan(@RequestParam String loanAccountNumber,
-                                           @RequestParam String checkingAccountNumber,
+    public @ResponseBody String addNewLoan(@RequestParam String checkingAccountNumber,
                                            @RequestParam double principalAmount,
                                            @RequestParam double interestRate,
                                            @RequestParam double commisionRate,
                                            @RequestParam int loanDuration,
                                            @RequestParam String bankAccountNumber) {
-        Account loanAccount = accountRepository.findByAccountNumber(loanAccountNumber);
         Account checkingAccount = accountRepository.findByAccountNumber(checkingAccountNumber);
         Account bankAccount = accountRepository.findByAccountNumber(bankAccountNumber);
 
-        if (loanAccount == null || checkingAccount == null || bankAccount == null) {
+        if (checkingAccount == null || bankAccount == null) {
             return "One or more accounts not found";
         }
 
+        Client client = checkingAccount.getClient();
+        if (client == null) {
+            return "Client not found";
+        }
+
+        // Create a new loan account using the AccountService's method
+        String response = accountService.addNewAccount(Account.AccountType.LOAN, client.getClientID(), client);
+        if (!response.contains("Account created successfully")) {
+            return response;
+        }
+
+        // Fetch the newly created loan account
+        Account loanAccount = accountService.getLatestAccount();
+
         Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
         loanRepository.save(loan);
-        return "Loan created successfully";
+
+        return "Loan and loan account created successfully";
     }
 
     @GetMapping("/all")
