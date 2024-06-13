@@ -1,15 +1,18 @@
 package com.dmt.bankingapp.controller;
 
 import com.dmt.bankingapp.entity.Loan;
+import com.dmt.bankingapp.entity.Transaction;
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.repository.LoanRepository;
+import com.dmt.bankingapp.repository.TransactionRepository;
 import com.dmt.bankingapp.repository.AccountRepository;
 import com.dmt.bankingapp.service.AccountService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +25,9 @@ public class LoanController {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @Autowired
     private AccountService accountService;
@@ -55,6 +61,33 @@ public class LoanController {
         Account loanAccount = accountService.getLatestAccount();
 
         Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+
+        // Calculating commision and amount of intrests
+        double intrestForBank = loan.intrestAmount(principalAmount, interestRate, loanDuration);
+        double commisionForBank = loan.commisionAmout(principalAmount, commisionRate);
+        // Setting date of loan
+        loan.setDateOfLoan(LocalDateTime.now());
+        // Money transfer from the account where loan is launched to the checking
+        // account of the customer
+        Transaction t1 = new Transaction(loanAccount, checkingAccount, principalAmount);
+        transactionRepository.save(t1);
+        // Profit from intrest transfer from the account where loan is launched to the
+        // bank's account
+        Transaction t2 = new Transaction(loanAccount, bankAccount, intrestForBank);
+        transactionRepository.save(t2);
+        // Profit from commision transfer from the account where loan is launched to the
+        // bank's account
+        Transaction t3 = new Transaction(loanAccount, bankAccount, commisionForBank);
+        transactionRepository.save(t3);
+        // Updating total amount of the loan
+        double totalLoanAmount = principalAmount + intrestForBank + commisionForBank;
+        loan.setTotalLoanAmout(totalLoanAmount);
+        loan.setLeftToPay(totalLoanAmount);
+        // Generating installments
+        loan.generateInstallments();
+        // Setting loan to active
+        loan.setIsActive(true);
+
         loanRepository.save(loan);
         loanAccount.setLoan(loan);
         accountRepository.save(loanAccount);
