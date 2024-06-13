@@ -56,6 +56,8 @@ public class LoanController {
 
         Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
         loanRepository.save(loan);
+        loanAccount.setLoan(loan);
+        accountRepository.save(loanAccount);
 
         return "Loan and loan account created successfully";
     }
