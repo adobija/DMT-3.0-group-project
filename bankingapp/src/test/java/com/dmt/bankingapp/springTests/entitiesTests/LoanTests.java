@@ -47,7 +47,7 @@ public class LoanTests {
         assertEquals(checkingAccount, loan.getCheckingAccount());
         assertEquals(bankAccount, loan.getBankAccount());
         assertEquals(principalAmount, loan.getPrincipalLoanAmount());
-        assertEquals(interestRate, loan.getIntrestRate());
+        assertEquals(interestRate, loan.getInterestRate());
         assertEquals(commisionRate, loan.getCommisionRate());
         assertEquals(loanDuration, loan.getLoanDuration());
         assertNotNull(loan.getClient());
@@ -71,7 +71,7 @@ public class LoanTests {
         loan.setPrincipalLoanAmout(principalAmount);
         loan.setTotalLoanAmout(totalAmount);
         loan.setLoanDuration(loanDuration);
-        loan.setIntrestRate(interestRate);
+        loan.setInterestRate(interestRate);
         loan.setCommisionRate(commisionRate);
         loan.setDateOfLoan(timestamp);
 
@@ -80,7 +80,7 @@ public class LoanTests {
         assertEquals(principalAmount, loan.getPrincipalLoanAmount());
         assertEquals(totalAmount, loan.getTotalLoanAmount());
         assertEquals(loanDuration, loan.getLoanDuration());
-        assertEquals(interestRate, loan.getIntrestRate());
+        assertEquals(interestRate, loan.getInterestRate());
         assertEquals(commisionRate, loan.getCommisionRate());
         assertEquals(timestamp, loan.getDateOfLoan());
     }

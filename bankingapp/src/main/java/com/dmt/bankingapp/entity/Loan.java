@@ -32,8 +32,8 @@ public class Loan {
     @Column(name = "loanDuration")
     private int loanDuration;
 
-    @Column(name = "intrestRate")
-    private double intrestRate;
+    @Column(name = "interestRate")
+    private double interestRate;
 
     @Column(name = "totalLoanAmount")
     private double totalLoanAmount;
@@ -57,13 +57,13 @@ public class Loan {
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL)
     private List<Installment> installments = new ArrayList<>();
 
-    public Loan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate,
+    public Loan(Account loanAccount, Account checkingAccount, double principalAmount, double interestRate,
             double commisionRate, int loanDuration, Account bankAccount) {
         this.loanAccount = loanAccount;
         this.checkingAccount = checkingAccount;
         this.bankAccount = bankAccount;
         this.principalLoanAmount = principalAmount;
-        this.intrestRate = intrestRate;
+        this.interestRate = interestRate;
         this.commisionRate = commisionRate;
         this.loanDuration = loanDuration;
 
@@ -72,7 +72,7 @@ public class Loan {
             client.addLoan(this);
         }
 
-        grantLoan(this.loanAccount, this.checkingAccount, this.principalLoanAmount, this.intrestRate, this.commisionRate, this.loanDuration, this.bankAccount);
+        grantLoan(this.loanAccount, this.checkingAccount, this.principalLoanAmount, this.interestRate, this.commisionRate, this.loanDuration, this.bankAccount);
 
         if (this.totalLoanAmount > 0) {
             this.isActive = true;
@@ -150,12 +150,12 @@ public class Loan {
         return this.leftToPay;
     }
 
-    public void setIntrestRate(double rateInPercent) {
-        this.intrestRate = rateInPercent;
+    public void setInterestRate(double rateInPercent) {
+        this.interestRate = rateInPercent;
     }
 
-    public double getIntrestRate() {
-        return this.intrestRate;
+    public double getInterestRate() {
+        return this.interestRate;
     }
 
     public void setCommisionRate(double commsionInPercent) {
@@ -181,8 +181,8 @@ public class Loan {
     // Method to calculate the amount of interests that bank charges for launching
     // the loan, basing on amout of money to be borrowed, intrest rate and duration
     // of the loan
-    public double intrestAmount(double principalAmount, double intrestRate, int loanDuration) {
-        double convertedRate = intrestRate * 0.01; // converting from % value to decimal value (i.e. 3% to 0.03)
+    public double intrestAmount(double principalAmount, double interestRate, int loanDuration) {
+        double convertedRate = interestRate * 0.01; // converting from % value to decimal value (i.e. 3% to 0.03)
         double total = principalAmount * (1 + ((convertedRate * loanDuration) / 12));
         double intrestAmount = total - principalAmount;
         return intrestAmount;
@@ -190,7 +190,7 @@ public class Loan {
 
     // Method to calculate commision charged by the bank when granting the loan
     public double commisionAmout(double principalAmount, double commisionRate) {
-        double decimalRate = intrestRate * 0.01; // converting from % value to decimal value (i.e. 3% to 0.03)
+        double decimalRate = interestRate * 0.01; // converting from % value to decimal value (i.e. 3% to 0.03)
         double commision = principalAmount * decimalRate;
         return commision;
     }
