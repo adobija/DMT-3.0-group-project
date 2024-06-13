@@ -120,9 +120,8 @@ public class InstallmentTests {
 
         double testInstallmentAmount = foundInstallments.get(0).getInstallmentAmount();
         double overpayment = 120.50;
-        double paymentThreeInstallments = (testInstallmentAmount * 3) + overpayment;
 
-        // Simulate installment payments
+        // Act - Simulate installment payments
         for (int i = 0; i < 3; i++) {
             Installment installment = foundInstallments.get(i);
             installment.setIsPaid(true);
@@ -176,8 +175,7 @@ public class InstallmentTests {
         Loan foundLoan = entityManager.find(Loan.class, loan.getLoanID());
         List<Installment> foundInstallments = foundLoan.getInstallments();
 
-        // Simulate full repayment
-        double totalLoanAmount = foundLoan.getTotalLoanAmount();
+        // Act - Simulate full repayment
         for (Installment installment : foundInstallments) {
             installment.setIsPaid(true);
             installment.setPaidAmount(installment.getInstallmentAmount());
