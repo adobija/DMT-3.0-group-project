@@ -31,29 +31,24 @@ public class Deposit {
     @JoinColumn(name = "client", referencedColumnName = "clientID")
     private Client client;
 
-    @Column(name = "principalDepositAmount")
-    private double principalDepositAmount;
-
-    @Column(name = "depositDuration")
-    private int depositDuration;
-
     @Column(name = "interestRate")
     private double interestRate;
 
+    @Column(name = "depositDuration")
+    private int depositDuration;
+      
     @Column(name = "totalDepositAmount")
     private double totalDepositAmount;
 
     @Column(name = "dateOfDeposit")
     private LocalDateTime dateOfDeposit;
 
-    public Deposit(Account depositAccount, Account checkingAccount, double principalAmount, double interestRate, int depositDuration, Account bankAccount
+    public Deposit( double interestRate, int depositDuration, Account checkingAccount, double totalDepositAmount
          ) {
-        this.depositAccount = depositAccount;
         this.checkingAccount = checkingAccount;
-        this.bankAccount = bankAccount;
-        this.principalDepositAmount = principalAmount;
         this.interestRate = interestRate;
         this.depositDuration = depositDuration;
+        this.totalDepositAmount = totalDepositAmount;
 
          this.client = checkingAccount.getClient();
          if (client != null) {
@@ -70,10 +65,6 @@ public class Deposit {
 
     public Integer getDepositID() {
         return depositID;
-    }
-
-    public Account getDepositAccount() {
-        return this.depositAccount;
     }
 
     public Account getCheckingAccount() {
@@ -104,24 +95,8 @@ public class Deposit {
         return totalDepositAmount;
     }
 
-    public double getPrincipalDepositAmount() {
-        return principalDepositAmount;
-    }
-
-    public void setDepositID(int depositID) {
-        this.depositID = depositID;
-    }
-
     public void setClient(Client client) {
         this.client = client;
-    }
- 
-    public void setDepositAccount(Account depositAccount) {
-        this.depositAccount = depositAccount;
-    }
-
-    public void setPrincipalDepositAmount(double principalDepositAmount) {
-        this.principalDepositAmount = principalDepositAmount;
     }
 
     public void setDepositDuration(int depositDuration) {
