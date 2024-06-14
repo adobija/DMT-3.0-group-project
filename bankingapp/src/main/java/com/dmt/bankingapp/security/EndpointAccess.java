@@ -43,6 +43,8 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/history/**").authenticated()
 
+                //security for DepositController
+                .requestMatchers(HttpMethod.POST, "/deposit/addNewDeposit").authenticated()
         );
         // Set http login as Basic Auth
         httpSecurity.httpBasic(Customizer.withDefaults());
