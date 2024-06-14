@@ -6,7 +6,7 @@ on:
     branches: [ "38_deployment_test" ]
 
 env:
-  build-number: ${{github_run_number}}
+  build-number: ${GITHUB_RUN_NUMBER}
 
 jobs:
   build:
