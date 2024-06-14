@@ -42,6 +42,7 @@ public class EndpointAccess {
                 //security for HistoryController
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/history/**").authenticated()
+
         );
         // Set http login as Basic Auth
         httpSecurity.httpBasic(Customizer.withDefaults());
