@@ -53,7 +53,7 @@ public class TransactionController {
         try {
             Transaction transaction = new Transaction(giver, receiver, amount);
             transactionRepository.save(transaction);
-            return "Transaction created successfully";
+            return "Transaction created successfully! Amount transfered: " + transaction.getAmount();
         } catch (IllegalStateException e) {
             return e.getMessage();
         }
