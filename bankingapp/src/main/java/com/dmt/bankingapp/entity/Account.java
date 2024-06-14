@@ -29,6 +29,9 @@ public class Account {
     @JoinColumn(name = "loanId", referencedColumnName = "loanId", nullable = true)
     private Loan loan;
 
+    @OneToOne(mappedBy = "checkingAccount", cascade = CascadeType.ALL)
+    private Client checkingAccountClient;
+
     public Account(String accountNumber, AccountType accountType, Client client) {
         this.accountNumber = accountNumber;
         this.accountBalance = 0.0;
