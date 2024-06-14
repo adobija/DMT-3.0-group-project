@@ -44,7 +44,7 @@ public class Deposit {
     private LocalDateTime dateOfDeposit;
 
     public Deposit( double interestRate, int depositDuration, Account checkingAccount, double totalDepositAmount, String depositType) {
-        {
+        
         this.checkingAccount = checkingAccount;
         this.interestRate = interestRate;
         this.depositDuration = depositDuration;
@@ -57,8 +57,9 @@ public class Deposit {
 
         this.totalDepositAmount = 0;
         this.dateOfDeposit = LocalDateTime.now();
-    }
-
+        
+        }
+        
     public Deposit() {
 
     }
