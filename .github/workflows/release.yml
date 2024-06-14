@@ -19,7 +19,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - run: cd bankingapp && mvn clean package -DskipTests
-      - run: mkdir staging && mv target/bankingapp.jar target/bankingapp-${{ env.build-number }}.jar && cp target/*.jar staging
+      - run: mkdir staging && mv /home/runner/work/banking-app/banking-app/bankingapp/target/bankingapp-0.0.1-SNAPSHOT.jar /home/runner/work/banking-app/banking-app/bankingapp/target/bankingapp-0.0.1-SNAPSHOT-${{ env.build-number }}.jar && cp target/*.jar staging
       - uses: actions/upload-artifact@v3
         with:
           name: Package
