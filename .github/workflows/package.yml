@@ -1,7 +1,7 @@
 name: Java CI to create and upload release on pull request
 on:
-  push:
-    branches: [ "38_deployment_test" ]
+#  push:
+#    branches: [ "38_deployment_test" ]
   pull_request:
     branches: [ "38_deployment_test" ]
 
