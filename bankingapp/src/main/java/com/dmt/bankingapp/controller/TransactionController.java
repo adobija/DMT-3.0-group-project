@@ -59,8 +59,24 @@ public class TransactionController {
         }
     }
 
+    @GetMapping("/outgoingTransactions")
+    public @ResponseBody List<Transaction> getClientOutgoingTransactions(HttpServletRequest request) {
+        String clientName = detailsOfLoggedClient.getNameFromClient(request);
+        Client client = clientRepository.findByClientName(clientName);
+        Account checking = client.getCheckingAccount();
+        return transactionRepository.findByGiver(checking);
+    }
+
+    @GetMapping("/incomingTransactions")
+    public @ResponseBody List<Transaction> getClientIncomingTransactions(HttpServletRequest request) {
+        String clientName = detailsOfLoggedClient.getNameFromClient(request);
+        Client client = clientRepository.findByClientName(clientName);
+        Account checking = client.getCheckingAccount();
+        return transactionRepository.findByReceiver(checking);
+    }
+
     @GetMapping("/everyTransaction")
-    public @ResponseBody List<Transaction> getAllTransactions(HttpServletRequest request) {
+    public @ResponseBody List<Transaction> getEveryTransaction(HttpServletRequest request) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
