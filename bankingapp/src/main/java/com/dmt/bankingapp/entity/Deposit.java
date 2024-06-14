@@ -36,20 +36,20 @@ public class Deposit {
 
     @Column(name = "depositDuration")
     private int depositDuration;
-      
+
     @Column(name = "totalDepositAmount")
     private double totalDepositAmount;
 
     @Column(name = "dateOfDeposit")
     private LocalDateTime dateOfDeposit;
 
-    public Deposit( double interestRate, int depositDuration, Account checkingAccount, double totalDepositAmount
-         ) {
+    public Deposit( double interestRate, int depositDuration, Account checkingAccount, double totalDepositAmount, String depositType) {
+        {
         this.checkingAccount = checkingAccount;
         this.interestRate = interestRate;
         this.depositDuration = depositDuration;
         this.totalDepositAmount = totalDepositAmount;
-
+    
          this.client = checkingAccount.getClient();
          if (client != null) {
              client.addDeposit(this);
@@ -70,7 +70,7 @@ public class Deposit {
     public Account getCheckingAccount() {
         return this.checkingAccount;
     }
-    
+
     public Account getBankAccount() {
         return this.bankAccount;
     }
@@ -115,7 +115,8 @@ public class Deposit {
         this.dateOfDeposit = timestamp;
     }
 
-    public static double calculateFixedTermDeposit(double depositAmount, int numberOfMonthsOnDeposit, int interestRate) {
+    public static double calculateFixedTermDeposit(double depositAmount, int numberOfMonthsOnDeposit,
+            int interestRate) {
         double interest = depositAmount * (numberOfMonthsOnDeposit / 12) * (interestRate / 100);
         return depositAmount + interest;
     }
