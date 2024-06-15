@@ -24,4 +24,4 @@ jobs:
         with:
           name: Package
           path: staging
-          retention-days: 3
+          retention-days: 1
