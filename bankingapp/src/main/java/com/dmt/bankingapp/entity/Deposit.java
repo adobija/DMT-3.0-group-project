@@ -96,6 +96,10 @@ public class Deposit {
         return this.totalDepositAmount;
     }
 
+    public double getReturnOfInvestment() {
+        return returnOfInvestment;
+    }
+
     public void setClient(Client client) {
         this.client = client;
     }
