@@ -44,7 +44,7 @@ public class Transaction {
             if (giver.getAccountBalance() < 0 && !receiver.getAccountType().equals(AccountType.BANK)) {
                 throw new IllegalStateException("You cannot transfer from the loan account!");
             }
-            // ... after loan is paid
+            // ... after loan is redeemed
             if (giver.getAccountBalance() == 0 && giver.getLoan() != null) {
                 throw new IllegalStateException("You cannot transfer from the loan account!");
             }            
