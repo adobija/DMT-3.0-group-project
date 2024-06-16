@@ -43,23 +43,30 @@ public class Deposit {
     @Column(name = "dateOfDeposit")
     private LocalDateTime dateOfDeposit;
 
-    public Deposit( double interestRate, int depositDuration, Account checkingAccount, double totalDepositAmount, String depositType) {
-        
+    @Column(name = "returnOfInvestment")
+    private double returnOfInvestment;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "depositType", nullable = true)
+    private DepositType depositType;
+
+    public Deposit(double interestRate, int depositDuration, Account checkingAccount, double totalDepositAmount, DepositType depositType) {
+
         this.checkingAccount = checkingAccount;
         this.interestRate = interestRate;
         this.depositDuration = depositDuration;
         this.totalDepositAmount = totalDepositAmount;
-    
-         this.client = checkingAccount.getClient();
-         if (client != null) {
-             client.addDeposit(this);
-         }
+        this.depositType = depositType;
 
-        this.totalDepositAmount = 0;
-        this.dateOfDeposit = LocalDateTime.now();
-        
+        this.client = checkingAccount.getClient();
+        if (client != null) {
+            client.addDeposit(this);
         }
-        
+
+        this.dateOfDeposit = LocalDateTime.now();
+
+    }
+
     public Deposit() {
 
     }
@@ -76,12 +83,16 @@ public class Deposit {
         return this.bankAccount;
     }
 
-    public double getDepositDuration() {
+    public int getDepositDuration() {
         return this.depositDuration;
     }
 
     public double getInterestRate() {
         return this.interestRate;
+    }
+
+    public DepositType getDepositType() {
+        return this.depositType;
     }
 
     public Client getClient() {
@@ -93,7 +104,7 @@ public class Deposit {
     }
 
     public double getTotalDepositAmount() {
-        return totalDepositAmount;
+        return this.totalDepositAmount;
     }
 
     public void setClient(Client client) {
@@ -116,27 +127,47 @@ public class Deposit {
         this.dateOfDeposit = timestamp;
     }
 
-    public static double calculateFixedTermDeposit(double depositAmount, int numberOfMonthsOnDeposit,
-            int interestRate) {
-        double interest = depositAmount * (numberOfMonthsOnDeposit / 12) * (interestRate / 100);
-        return depositAmount + interest;
+    public enum DepositType {
+        FIXED,
+        PROGRESSIVE
     }
 
-    public static double calculateProgressiveDeposit(double depositAmount, int numberOfQuarters) {
-        if (numberOfQuarters > 4) {
-            throw new IllegalArgumentException("Number of quarters cannot exceed 4.");
+    public void setDepositType(DepositType depositType) {
+        this.depositType = depositType;
+    }
+
+    public void calculateFixedTermDeposit() {
+        double depositAmount = getTotalDepositAmount();
+        int numberOfMonthsOnDeposit = getDepositDuration();
+        double interestRate = getInterestRate();
+
+        double interest = depositAmount * (numberOfMonthsOnDeposit / 12) * (interestRate / 100);
+        this.returnOfInvestment = depositAmount + interest;
+
+    }
+
+    public void calculateProgressiveDeposit() {
+
+        double depositAmount = getTotalDepositAmount();
+        int numberOfMonthsOnDeposit = getDepositDuration();
+
+        double interestRate = 0.01;
+
+        int numberOfQuarters = (int) numberOfMonthsOnDeposit / 3;
+
+        if (numberOfQuarters > 12) {
+            throw new IllegalArgumentException("Number of quarters cannot exceed 12.");
         }
 
-        double[] interestRates = { 0.02, 0.04, 0.06, 0.08 }; // Quarterly interest rates
-
         for (int i = 0; i < numberOfQuarters; i++) {
-            double interest = depositAmount * interestRates[i];
+            double interest = depositAmount * interestRate;
             depositAmount += interest;
+            interestRate += 0.01;
         }
 
         BigDecimal roundToTwoDecimalPlaces = new BigDecimal(Double.toString(depositAmount));
         roundToTwoDecimalPlaces = roundToTwoDecimalPlaces.setScale(2, RoundingMode.HALF_UP);
-        return roundToTwoDecimalPlaces.doubleValue();
-    }
 
+        this.returnOfInvestment = roundToTwoDecimalPlaces.doubleValue();
+    }
 }
