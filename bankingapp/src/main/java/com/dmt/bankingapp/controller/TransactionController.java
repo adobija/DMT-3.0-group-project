@@ -43,11 +43,21 @@ public class TransactionController {
     private DetailsOfLoggedClient detailsOfLoggedClient;
 
     @PostMapping("/add") // curl.exe -d "giverAccountID=1&receiverAccountID=2&amount=100.0" http://localhost:8080/transaction/add
-    public @ResponseBody String addNewTransaction(@RequestParam int giverAccountID, @RequestParam int receiverAccountID, @RequestParam double amount) {
+    public @ResponseBody String addNewTransaction(@RequestParam int giverAccountID, @RequestParam int receiverAccountID, @RequestParam double amount, HttpServletRequest request) {
+        String clientName = detailsOfLoggedClient.getNameFromClient(request);
+        Client client = clientRepository.findByClientName(clientName);
+        
         Account giver = accountRepository.findById(giverAccountID).orElse(null);
+        if (giver == null) {
+            return "Giver account not found";
+        }
+        if (!giver.getClient().equals(client)) {
+            return "You are not permitted to transfer money from an account you do not own";
+        }
+
         Account receiver = accountRepository.findById(receiverAccountID).orElse(null);
-        if (giver == null || receiver == null) {
-            return "Giver or Receiver account not found";
+        if (receiver == null) {
+            return "Receiver account not found";
         }
         
         try {
