@@ -38,12 +38,18 @@ public class Transaction {
         this.amount = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(amount);
         this.timestamp = LocalDateTime.now();
 
-        // Restricting making transfers from loan accounts after loan is granted
-        if (giver.getAccountType().equals(AccountType.LOAN) && giver.getAccountBalance() < 0 && !receiver.getAccountType().equals(AccountType.BANK)) {
-            throw new IllegalStateException("You cannot transfer from the loan account!");
+        // Restricting making transfers from loan accounts ...
+        if (giver.getAccountType().equals(AccountType.LOAN)) {
+            // ... after loan is launched - only transfers to a bank account are allowed
+            if (giver.getAccountBalance() < 0 && !receiver.getAccountType().equals(AccountType.BANK)) {
+                throw new IllegalStateException("You cannot transfer from the loan account!");
+            }
+            // ... after loan is paid
+            if (giver.getAccountBalance() == 0 && giver.getLoan() != null) {
+                throw new IllegalStateException("You cannot transfer from the loan account!");
+            }            
         }
 
-    
         // Checking the account balance for checking and saving accounts to avoid the balance falling below 0
         if (giver.getAccountType().equals(AccountType.CHECKING) || giver.getAccountType().equals(AccountType.DEPOSIT)) {
             if (this.amount > giver.getAccountBalance()) {
