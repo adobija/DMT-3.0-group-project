@@ -28,4 +28,43 @@ public class DepositTests {
         // Assert
         assertEquals(1200, returnOfInvestment);
     }
+
+    @Test
+    public void calculateProgressiveDepositTest() {
+
+        // Arrange
+        double depositAmount = 1000;
+        int numberOfMonthsOnDeposit = 12;
+
+
+        Deposit depositProgressive = new Deposit();
+        depositProgressive.setTotalDepositAmount(depositAmount);
+        depositProgressive.setDepositDuration(numberOfMonthsOnDeposit);
+
+        // Act
+        depositProgressive.calculateProgressiveDeposit();
+        double returnOfInvestment = depositProgressive.getReturnOfInvestment();
+
+        // Assert
+        assertEquals(1103.55, returnOfInvestment);
+    }
+
+    @Test
+    public void calculateProgressiveDepositTest2() {
+
+        // Arrange
+        double depositAmount = 1000;
+        int numberOfMonthsOnDeposit = 24;
+
+        Deposit depositProgressive = new Deposit();
+        depositProgressive.setTotalDepositAmount(depositAmount);
+        depositProgressive.setDepositDuration(numberOfMonthsOnDeposit);
+
+        // Act
+        depositProgressive.calculateProgressiveDeposit();
+        double returnOfInvestment = depositProgressive.getReturnOfInvestment();
+
+        // Assert
+        assertEquals(1419.37, returnOfInvestment);
+    }
 }
