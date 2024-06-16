@@ -16,16 +16,8 @@ public class Deposit {
     private Integer depositID;
 
     @ManyToOne
-    @JoinColumn(name = "depositAccount", referencedColumnName = "accountID")
-    private Account depositAccount;
-
-    @ManyToOne
     @JoinColumn(name = "checkingAccount", referencedColumnName = "accountID")
     private Account checkingAccount;
-
-    @ManyToOne
-    @JoinColumn(name = "bankAccount", referencedColumnName = "accountID")
-    private Account bankAccount;
 
     @ManyToOne
     @JoinColumn(name = "client", referencedColumnName = "clientID")
@@ -50,7 +42,8 @@ public class Deposit {
     @Column(name = "depositType", nullable = true)
     private DepositType depositType;
 
-    public Deposit(double interestRate, int depositDuration, Account checkingAccount, double totalDepositAmount, DepositType depositType) {
+    public Deposit(double interestRate, int depositDuration, Account checkingAccount, double totalDepositAmount,
+            DepositType depositType) {
 
         this.checkingAccount = checkingAccount;
         this.interestRate = interestRate;
@@ -77,10 +70,6 @@ public class Deposit {
 
     public Account getCheckingAccount() {
         return this.checkingAccount;
-    }
-
-    public Account getBankAccount() {
-        return this.bankAccount;
     }
 
     public int getDepositDuration() {
@@ -150,9 +139,7 @@ public class Deposit {
 
         double depositAmount = getTotalDepositAmount();
         int numberOfMonthsOnDeposit = getDepositDuration();
-
         double interestRate = 0.01;
-
         int numberOfQuarters = (int) numberOfMonthsOnDeposit / 3;
 
         if (numberOfQuarters > 12) {
