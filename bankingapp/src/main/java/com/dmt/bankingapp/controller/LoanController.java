@@ -53,12 +53,14 @@ public class LoanController {
                                            HttpServletRequest request) {
         String currentName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(currentName);
-        
         Account checkingAccount = client.getCheckingAccount();
-        Account bankAccount = accountRepository.findByAccountNumber(bankAccountNumber);
+        if (checkingAccount == null) {
+            return "Checking account has not been found";
+        }
 
-        if (checkingAccount == null || bankAccount == null) {
-            return "One or more accounts not found";
+        Account bankAccount = accountRepository.findByAccountNumber(bankAccountNumber);
+        if (bankAccount == null) {
+            return "Bank account has not been found";
         }
 
         // Create a new loan account using the AccountService's method
