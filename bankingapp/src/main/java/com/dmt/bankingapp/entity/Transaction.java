@@ -38,6 +38,11 @@ public class Transaction {
         this.amount = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(amount);
         this.timestamp = LocalDateTime.now();
 
+        // Restricting transfers for amounts less than 0.01
+        if (this.amount < 0.01 || this.amount > 2147483647) {
+            throw new IllegalStateException("You cannot transfer less than 0.01!");
+        }
+
         // Restricting making transfers from loan accounts ...
         if (giver.getAccountType().equals(AccountType.LOAN)) {
             // ... after loan is launched - only transfers to a bank account are allowed
