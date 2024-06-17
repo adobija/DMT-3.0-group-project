@@ -124,7 +124,4 @@ public class Client {
         deposit.setClient(this);
         this.deposits.add(deposit);
     }
-
-    // Method to create bcrypted password from plain text to insert into database crypted password
-    // Change location of this method to utils
 }
