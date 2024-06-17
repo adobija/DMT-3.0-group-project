@@ -51,12 +51,14 @@ public class DepositController {
 
         String currentName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(currentName);
-        
         Account checkingAccount = client.getCheckingAccount();
-        Account bankAccount = accountRepository.findByAccountNumber("BANK_DEPOSIT");
-
         if (checkingAccount == null) {
-            return "One or more accounts not found";
+            return "Checking account has not been found";
+        }
+
+        Account bankAccount = accountRepository.findByAccountNumber("BANK_DEPOSIT");
+        if (bankAccount == null) {
+            return "Bank account has not been found";
         }
 
         DepositType depositTypeValue = null;
