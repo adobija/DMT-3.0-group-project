@@ -103,6 +103,10 @@ public class Deposit {
         this.client = client;
     }
 
+    public void setCheckingAccount(Account checkingAccount) {
+        this.checkingAccount = checkingAccount;
+    }
+
     public void setDepositDuration(int depositDuration) {
         this.depositDuration = depositDuration;
     }
