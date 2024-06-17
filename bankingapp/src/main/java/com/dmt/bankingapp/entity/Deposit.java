@@ -12,15 +12,15 @@ public class Deposit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "depositID")
+    @Column(name = "depositId")
     private Integer depositID;
 
     @ManyToOne
-    @JoinColumn(name = "checkingAccount", referencedColumnName = "accountID")
+    @JoinColumn(name = "checkingAccount", referencedColumnName = "accountId")
     private Account checkingAccount;
 
     @ManyToOne
-    @JoinColumn(name = "client", referencedColumnName = "clientID")
+    @JoinColumn(name = "client", referencedColumnName = "clientId")
     private Client client;
 
     @Column(name = "interestRate")

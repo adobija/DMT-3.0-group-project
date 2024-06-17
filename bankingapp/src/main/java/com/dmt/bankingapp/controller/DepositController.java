@@ -85,7 +85,7 @@ public class DepositController {
             break;
 
             case PROGRESSIVE:
-                deposit.calculateFixedTermDeposit();
+                deposit.calculateProgressiveDeposit();
             break;
         }
 
