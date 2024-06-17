@@ -1,10 +1,10 @@
 package com.dmt.bankingapp.entity;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
+
+import com.dmt.bankingapp.utils.DecimalPlacesAdjuster;
 
 @Entity
 @Table(name = "Deposits")
@@ -57,7 +57,6 @@ public class Deposit {
         }
 
         this.dateOfDeposit = LocalDateTime.now();
-
     }
 
     public Deposit() {
@@ -134,13 +133,11 @@ public class Deposit {
         int numberOfMonthsOnDeposit = getDepositDuration();
         double interestRate = getInterestRate();
 
-        double interest = depositAmount * (numberOfMonthsOnDeposit / 12) * (interestRate / 100);
-        this.returnOfInvestment = depositAmount + interest;
-
+        double interest = depositAmount * (numberOfMonthsOnDeposit / 12.0) * (interestRate / 100.0);
+        this.returnOfInvestment = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(depositAmount + interest);
     }
 
     public void calculateProgressiveDeposit() {
-
         double depositAmount = getTotalDepositAmount();
         int numberOfMonthsOnDeposit = getDepositDuration();
         double interestRate = 0.01;
@@ -156,9 +153,6 @@ public class Deposit {
             interestRate += 0.01;
         }
 
-        BigDecimal roundToTwoDecimalPlaces = new BigDecimal(Double.toString(depositAmount));
-        roundToTwoDecimalPlaces = roundToTwoDecimalPlaces.setScale(2, RoundingMode.HALF_UP);
-
-        this.returnOfInvestment = roundToTwoDecimalPlaces.doubleValue();
+        this.returnOfInvestment = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(depositAmount);
     }
 }
