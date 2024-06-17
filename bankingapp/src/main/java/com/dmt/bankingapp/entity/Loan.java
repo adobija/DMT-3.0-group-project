@@ -191,7 +191,7 @@ public class Loan {
 
     // Method to calculate commision charged by the bank when granting the loan
     public double commisionAmout(double principalAmount, double commisionRate) {
-        double decimalRate = interestRate * 0.01; // converting from % value to decimal value (i.e. 3% to 0.03)
+        double decimalRate = commisionRate * 0.01; // converting from % value to decimal value (i.e. 3% to 0.03)
         double commision = principalAmount * decimalRate;
         return DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(commision);
     }
