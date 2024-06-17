@@ -57,9 +57,6 @@ public class DepositController {
         }
 
         Account bankAccount = accountRepository.findByAccountNumber("BANK_DEPOSIT");
-        if (bankAccount == null) {
-            return "Bank account has not been found";
-        }
 
         DepositType depositTypeValue = null;
 
