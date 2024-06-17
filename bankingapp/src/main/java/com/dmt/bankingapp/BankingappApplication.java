@@ -35,8 +35,8 @@ public class BankingappApplication {
 
 			if(checkIfExist == null){
 				Client bank = new Client("BankOwner", true, "dmtprojekt2024");
-				Account accountForLoans = new Account("BANK_LOAN", Account.AccountType.LOAN, bank);
-				Account accountForDeposits = new Account("BANK_DEPOSIT", Account.AccountType.DEPOSIT, bank);
+				Account accountForLoans = new Account("BANK_LOAN", Account.AccountType.BANK, bank);
+				Account accountForDeposits = new Account("BANK_DEPOSIT", Account.AccountType.BANK, bank);
 				accountForLoans.setAccountBalance(30000000, false);
 
 				clientRepository.save(bank);
@@ -45,5 +45,4 @@ public class BankingappApplication {
 			}
 		};
 	}
-
 }
