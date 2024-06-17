@@ -2,6 +2,8 @@ package com.dmt.bankingapp.springTests.entitiesTests;
 
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
+import com.dmt.bankingapp.entity.Deposit;
+import com.dmt.bankingapp.entity.Loan;
 import com.dmt.bankingapp.entity.Account.AccountType;
 
 import jakarta.persistence.EntityManager;
@@ -100,5 +102,87 @@ public class ClientTests {
         List<Account> accounts = fetchedClient.getAccountsList();
         assertEquals(account1.getAccountNumber(), accounts.get(0).getAccountNumber());
         assertEquals(account2.getAccountNumber(), accounts.get(1).getAccountNumber());
+    }
+
+    // Test to check whether it is possible to assign more than one loan to the client
+    @Test
+    @Transactional
+    public void testManyLoansForOneClient() {
+        // Arrange - create a new client
+        Client client = new Client("testClient", false, "password");
+        entityManager.persist(client);
+
+        // Arrange - create accounts needed for the loans
+        Account loanAccount1 = new Account("loanAcc1", AccountType.LOAN, client);
+        Account checkingAccount1 = new Account("checkAcc1", AccountType.CHECKING, client);
+        Account bankAccount1 = new Account("bankAcc1", AccountType.BANK, client);
+        entityManager.persist(loanAccount1);
+        entityManager.persist(checkingAccount1);
+        entityManager.persist(bankAccount1);
+
+        // Arrange - create multiple loans for the client
+        Loan loan1 = new Loan(loanAccount1, checkingAccount1, 5000.00, 5.5, 1.5, 24, bankAccount1);
+        loan1.setClient(client);
+        entityManager.persist(loan1);
+
+        Account loanAccount2 = new Account("loanAcc2", AccountType.LOAN, client);
+        Account checkingAccount2 = new Account("checkAcc2", AccountType.CHECKING, client);
+        Account bankAccount2 = new Account("bankAcc2", AccountType.BANK, client);
+        entityManager.persist(loanAccount2);
+        entityManager.persist(checkingAccount2);
+        entityManager.persist(bankAccount2);
+
+        Loan loan2 = new Loan(loanAccount2, checkingAccount2, 10000.00, 4.5, 1.0, 36, bankAccount2);
+        loan2.setClient(client);
+        entityManager.persist(loan2);
+
+        // Act - fetch the client from the database
+        Client fetchedClient = entityManager.find(Client.class, client.getClientID());
+
+        // Assert - check that the client has two loans
+        assertThat(fetchedClient).isNotNull();
+        assertThat(fetchedClient.getLoansList()).hasSize(2);
+
+        // Assert - Check that the loans belong to the correct client
+        List<Loan> loans = fetchedClient.getLoansList();
+        assertEquals(loan1.getPrincipalLoanAmount(), loans.get(0).getPrincipalLoanAmount());
+        assertEquals(loan2.getPrincipalLoanAmount(), loans.get(1).getPrincipalLoanAmount());
+    }
+
+    // Test to check whether it is possible to assign more than one deposit to the client
+    @Test
+    @Transactional
+    public void testManyDepositsForOneClient() {
+        // Arrange - create a new client
+        Client client = new Client("testClient", false, "password");
+        entityManager.persist(client);
+
+        // Arrange - create accounts needed for the deposits
+        Account checkingAccount1 = new Account("checkAcc1", AccountType.CHECKING, client);
+        entityManager.persist(checkingAccount1);
+
+        // Arrange - create multiple deposits for the client
+        Deposit deposit1 = new Deposit(5.0, 12, checkingAccount1, 2000.00, Deposit.DepositType.FIXED);
+        deposit1.setClient(client);
+        entityManager.persist(deposit1);
+
+        Account checkingAccount2 = new Account("checkAcc2", AccountType.CHECKING, client);
+        entityManager.persist(checkingAccount2);
+
+        Deposit deposit2 = new Deposit(4.0, 24, checkingAccount2, 3000.00, Deposit.DepositType.PROGRESSIVE);
+        deposit2.setClient(client);
+        entityManager.persist(deposit2);
+
+        // Act - fetch the client from the database
+        Client fetchedClient = entityManager.find(Client.class, client.getClientID());
+
+        // Assert - check that the client has two deposits
+        assertThat(fetchedClient).isNotNull();
+        assertThat(fetchedClient.getDepositsList()).hasSize(2);
+
+        // Assert - Check that the deposits belong to the correct client
+        List<Deposit> deposits = fetchedClient.getDepositsList();
+        assertEquals(deposit1.getTotalDepositAmount(), deposits.get(0).getTotalDepositAmount());
+        assertEquals(deposit2.getTotalDepositAmount(), deposits.get(1).getTotalDepositAmount());
     }
 }
