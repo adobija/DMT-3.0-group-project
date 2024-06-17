@@ -38,9 +38,14 @@ public class Transaction {
         this.amount = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(amount);
         this.timestamp = LocalDateTime.now();
 
-        // Restricting transfers for amounts less than 0.01
-        if (this.amount < 0.01 || this.amount > 2147483647) {
-            throw new IllegalStateException("You cannot transfer less than 0.01!");
+        // Restricting transfers for negative amounts
+        if (this.amount < 0) {
+            throw new IllegalStateException("You cannot transfer negative amount!");
+        }
+
+        // Restricting transfers for amounts greater than 1 billion
+        if (this.amount > 1000000000) {
+            throw new IllegalStateException("You cannot transfer more than 1 billion!");
         }
 
         // Restricting making transfers from loan accounts ...
