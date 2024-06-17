@@ -1,7 +1,5 @@
 package com.dmt.bankingapp.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.repository.AccountRepository;
+import com.dmt.bankingapp.repository.ClientRepository;
 import com.dmt.bankingapp.repository.DepositRepository;
 import com.dmt.bankingapp.repository.TransactionRepository;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
@@ -37,6 +36,9 @@ public class DepositController {
     private TransactionRepository transactionRepository;
 
     @Autowired
+    private ClientRepository clientRepository;
+
+    @Autowired
     private DetailsOfLoggedClient detailsOfLoggedClient;
 
     @PostMapping("/addNewDeposit")
@@ -47,22 +49,15 @@ public class DepositController {
             @RequestParam String depositType,
             HttpServletRequest request) {
 
-        Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
-
-        List<Account> checkingAccount = accountRepository.findByClient(client);
+        String currentName = detailsOfLoggedClient.getNameFromClient(request);
+        Client client = clientRepository.findByClientName(currentName);
         
-        Account foundAccount = null;
-        for (Account account : checkingAccount) {
-            if (account.getAccountType().equals(Account.AccountType.CHECKING)) {
-                foundAccount = account;
-                break;
-            }
-        }
-        if (foundAccount == null) {
-            return "You don't have a checking account";
-        }
-
+        Account checkingAccount = client.getCheckingAccount();
         Account bankAccount = accountRepository.findByAccountNumber("BANK_DEPOSIT");
+
+        if (checkingAccount == null || bankAccount == null) {
+            return "One or more accounts not found";
+        }
 
         DepositType depositTypeValue = null;
 
@@ -76,7 +71,7 @@ public class DepositController {
         } 
         
 
-        Deposit deposit = new Deposit(10, depositDuration, foundAccount, totalDepositAmount, depositTypeValue);
+        Deposit deposit = new Deposit(10, depositDuration, checkingAccount, totalDepositAmount, depositTypeValue);
         
         switch (deposit.getDepositType()) {
 
@@ -89,7 +84,7 @@ public class DepositController {
             break;
         }
 
-        Transaction t1 = new Transaction(foundAccount, bankAccount, totalDepositAmount);
+        Transaction t1 = new Transaction(checkingAccount, bankAccount, totalDepositAmount);
         transactionRepository.save(t1);
 
         depositRepository.save(deposit);

@@ -49,7 +49,7 @@ public class TransactionController {
         
         Account giver = accountRepository.findById(giverAccountID).orElse(null);
         if (giver == null) {
-            return "Giver account not found";
+            return "Sender's account has not been found";
         }
         if (!giver.getClient().equals(client)) {
             return "You are not permitted to transfer money from an account you do not own";
@@ -57,7 +57,7 @@ public class TransactionController {
 
         Account receiver = accountRepository.findById(receiverAccountID).orElse(null);
         if (receiver == null) {
-            return "Receiver account not found";
+            return "Receiver's account has not been found";
         }
         
         try {
