@@ -61,7 +61,6 @@ public class DepositController {
         DepositType depositTypeValue = null;
 
         if (depositType.equalsIgnoreCase("FIXED")) {
-
             depositTypeValue = DepositType.FIXED;
         }
 
