@@ -43,6 +43,11 @@ public class Transaction {
             throw new IllegalStateException("You cannot transfer negative amount!");
         }
 
+        // Restricting transfers for 0
+        if (this.amount == 0) {
+            throw new IllegalStateException("You cannot transfer 0!");
+        }
+
         // Restricting transfers for amounts greater than 1 billion
         if (this.amount > 1000000000) {
             throw new IllegalStateException("You cannot transfer more than 1 billion!");
