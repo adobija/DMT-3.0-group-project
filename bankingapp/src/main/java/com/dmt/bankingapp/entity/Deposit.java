@@ -96,6 +96,10 @@ public class Deposit {
         return this.totalDepositAmount;
     }
 
+    public double getReturnOfInvestment() {
+        return returnOfInvestment;
+    }
+
     public void setClient(Client client) {
         this.client = client;
     }
@@ -140,7 +144,7 @@ public class Deposit {
         double depositAmount = getTotalDepositAmount();
         int numberOfMonthsOnDeposit = getDepositDuration();
         double interestRate = 0.01;
-        int numberOfQuarters = (int) numberOfMonthsOnDeposit / 3;
+        int numberOfQuarters = numberOfMonthsOnDeposit / 3;
 
         if (numberOfQuarters > 12) {
             throw new IllegalArgumentException("Number of quarters cannot exceed 12.");
