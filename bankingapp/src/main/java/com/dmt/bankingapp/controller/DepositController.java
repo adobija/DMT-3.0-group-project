@@ -68,11 +68,9 @@ public class DepositController {
             depositTypeValue = DepositType.PROGRESSIVE;
         } 
         
-
         Deposit deposit = new Deposit(10, depositDuration, checkingAccount, totalDepositAmount, depositTypeValue);
         
         switch (deposit.getDepositType()) {
-
             case FIXED:
                 deposit.calculateFixedTermDeposit();
             break;
