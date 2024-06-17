@@ -24,17 +24,16 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.POST, "/client/editAdmin/*").authenticated()
                 .requestMatchers(HttpMethod.GET, "/client/all").authenticated()
                 .requestMatchers(HttpMethod.GET, "/client/byClientID").authenticated()
-                
                 //security for AccountController
                 .requestMatchers(HttpMethod.POST, "/account/add").authenticated()
-                // .requestMatchers(HttpMethod.POST, "/account/updateBalance").authenticated()
-                // .requestMatchers(HttpMethod.DELETE, "/account/remove").authenticated()
                 .requestMatchers(HttpMethod.GET, "/account/all").authenticated()
                 .requestMatchers(HttpMethod.GET, "/account/byAccountNumber").authenticated()
                 //security for TransactionController
                 .requestMatchers(HttpMethod.POST, "/transaction/add").authenticated()
-                .requestMatchers(HttpMethod.GET, "/transaction/all").authenticated()
-                .requestMatchers(HttpMethod.GET, "/transaction/byAccountID").authenticated()
+                .requestMatchers(HttpMethod.GET, "/transaction/outgoingTransactions").authenticated()
+                .requestMatchers(HttpMethod.GET, "/transaction/incomingTransactions").authenticated()
+                .requestMatchers(HttpMethod.GET, "/transaction/everyTransaction").authenticated()
+                .requestMatchers(HttpMethod.GET, "/transaction/byAccountNumber").authenticated()
                 //security for LoanController
                 .requestMatchers(HttpMethod.POST, "/loan/add").authenticated()
                 .requestMatchers(HttpMethod.GET, "/loan/all").authenticated()

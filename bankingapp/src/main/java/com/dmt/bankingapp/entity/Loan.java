@@ -1,9 +1,12 @@
 package com.dmt.bankingapp.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.dmt.bankingapp.utils.DecimalPlacesAdjuster;
 
 @Entity
 @Table(name = "Loans")
@@ -62,7 +65,7 @@ public class Loan {
         this.loanAccount = loanAccount;
         this.checkingAccount = checkingAccount;
         this.bankAccount = bankAccount;
-        this.principalLoanAmount = principalAmount;
+        this.principalLoanAmount = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(principalAmount);
         this.interestRate = interestRate;
         this.commisionRate = commisionRate;
         this.loanDuration = loanDuration;
@@ -109,7 +112,7 @@ public class Loan {
     }
 
     public void setPrincipalLoanAmout(double principalAmount) {
-        this.principalLoanAmount = principalAmount;
+        this.principalLoanAmount = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(principalAmount);
     }
 
     public double getPrincipalLoanAmount() {
@@ -117,7 +120,7 @@ public class Loan {
     }
 
     public void setTotalLoanAmout(double totalAmount) {
-        this.totalLoanAmount = totalAmount;
+        this.totalLoanAmount = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(totalAmount);
     }
 
     public double getTotalLoanAmount() {
@@ -141,7 +144,7 @@ public class Loan {
     }
 
     public void setLeftToPay(double leftToPay) {
-        this.leftToPay = leftToPay;
+        this.leftToPay = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(leftToPay);
     }
 
     public double getLeftToPay() {
@@ -183,22 +186,26 @@ public class Loan {
         double convertedRate = interestRate * 0.01; // converting from % value to decimal value (i.e. 3% to 0.03)
         double total = principalAmount * (1 + ((convertedRate * loanDuration) / 12));
         double intrestAmount = total - principalAmount;
-        return intrestAmount;
+        return DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(intrestAmount);
     }
 
     // Method to calculate commision charged by the bank when granting the loan
     public double commisionAmout(double principalAmount, double commisionRate) {
         double decimalRate = interestRate * 0.01; // converting from % value to decimal value (i.e. 3% to 0.03)
         double commision = principalAmount * decimalRate;
-        return commision;
+        return DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(commision);
     }
 
     // Method to generate installments for the loan and saving them to the list of installments
     public void generateInstallments() {
-        double installmentAmount = this.totalLoanAmount / this.loanDuration;
-        for (int i = 1; i <= this.loanDuration; i++) {
+        double modulo = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(this.totalLoanAmount % this.loanDuration);
+        double wholeInstalment = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces((this.totalLoanAmount - modulo) / this.loanDuration);
+        Installment firstInstallment = new Installment(this, wholeInstalment + modulo, this.dateOfLoan.plusMonths(1));
+        this.installments.add(firstInstallment);
+        
+        for (int i = 2; i <= this.loanDuration; i++) {
             LocalDateTime dueDate = this.dateOfLoan.plusMonths(i);
-            Installment installment = new Installment(this, installmentAmount, dueDate);
+            Installment installment = new Installment(this, wholeInstalment, dueDate);
             this.installments.add(installment);
         }
     }

@@ -7,10 +7,16 @@ import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.repository.LoanRepository;
 import com.dmt.bankingapp.repository.TransactionRepository;
 import com.dmt.bankingapp.repository.AccountRepository;
+import com.dmt.bankingapp.repository.ClientRepository;
 import com.dmt.bankingapp.service.AccountService;
+import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,23 +38,27 @@ public class LoanController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private ClientRepository clientRepository;
+
+    @Autowired
+    private DetailsOfLoggedClient detailsOfLoggedClient;
+
     @PostMapping("/add")
-    public @ResponseBody String addNewLoan(@RequestParam String checkingAccountNumber,
-                                           @RequestParam double principalAmount,
+    public @ResponseBody String addNewLoan(@RequestParam double principalAmount,
                                            @RequestParam double interestRate,
                                            @RequestParam double commisionRate,
                                            @RequestParam int loanDuration,
-                                           @RequestParam String bankAccountNumber) {
-        Account checkingAccount = accountRepository.findByAccountNumber(checkingAccountNumber);
+                                           @RequestParam String bankAccountNumber,
+                                           HttpServletRequest request) {
+        String currentName = detailsOfLoggedClient.getNameFromClient(request);
+        Client client = clientRepository.findByClientName(currentName);
+        
+        Account checkingAccount = client.getCheckingAccount();
         Account bankAccount = accountRepository.findByAccountNumber(bankAccountNumber);
 
         if (checkingAccount == null || bankAccount == null) {
             return "One or more accounts not found";
-        }
-
-        Client client = checkingAccount.getClient();
-        if (client == null) {
-            return "Client not found";
         }
 
         // Create a new loan account using the AccountService's method
@@ -71,7 +81,7 @@ public class LoanController {
         // account of the customer
         Transaction t1 = new Transaction(loanAccount, checkingAccount, principalAmount);
         transactionRepository.save(t1);
-        // Profit from intrest transfer from the account where loan is launched to the
+        // Profit from interest transfer from the account where loan is launched to the
         // bank's account
         Transaction t2 = new Transaction(loanAccount, bankAccount, intrestForBank);
         transactionRepository.save(t2);
@@ -96,12 +106,22 @@ public class LoanController {
     }
 
     @GetMapping("/all")
-    public @ResponseBody List<Loan> getAllLoans() {
+    public @ResponseBody List<Loan> getAllLoans(HttpServletRequest request) {
+        String requesterName = detailsOfLoggedClient.getNameFromClient(request);
+        Client requester = clientRepository.findByClientName(requesterName);
+        if(!requester.isAdmin()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
+        }
         return loanRepository.findAll();
     }
 
     @GetMapping("/byLoanId")
-    public @ResponseBody Loan getLoanById(@RequestParam int loanID) {
+    public @ResponseBody Loan getLoanById(@RequestParam int loanID, HttpServletRequest request) {
+        String requesterName = detailsOfLoggedClient.getNameFromClient(request);
+        Client requester = clientRepository.findByClientName(requesterName);
+        if(!requester.isAdmin()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
+        }
         Optional<Loan> loanOptional = loanRepository.findById(loanID);
         return loanOptional.orElse(null);
     }
