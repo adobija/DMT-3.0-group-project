@@ -28,7 +28,7 @@ public class LoanRepositoryTests {
     @Test
     @Transactional
     public void loanRepositoryTestInsertion() {
-        // arrange
+        // Arrange
         Client client = new Client("TestClient", false, "password");
         Account loanAccount = new Account("loanAccountNumber", Account.AccountType.CHECKING, client);
         Account checkingAccount = new Account("checkingAccountNumber", Account.AccountType.CHECKING, client);
@@ -45,17 +45,17 @@ public class LoanRepositoryTests {
         loan.setLeftToPay(10500.00);
         loan.setIsActive(true);
 
-        // act
+        // Act
         Loan savedLoan = loanRepository.save(loan);
 
-        // assert
+        // Assert
         assertThat(entityManager.find(Loan.class, savedLoan.getLoanID())).isEqualTo(loan);
     }
 
     @Test
     @Transactional
     public void loanRepositoryTestUpdate() {
-        // arrange
+        // Arrange
         Client client = new Client("TestClient", false, "password");
         Account loanAccount = new Account("loanAccountNumber", Account.AccountType.CHECKING, client);
         Account checkingAccount = new Account("checkingAccountNumber", Account.AccountType.CHECKING, client);
@@ -76,18 +76,18 @@ public class LoanRepositoryTests {
 
         double newPrincipalAmount = 12000.00;
 
-        // act
+        // Act
         loan.setPrincipalLoanAmout(newPrincipalAmount);
         loanRepository.save(loan);
 
-        // assert
+        // Assert
         assertThat(entityManager.find(Loan.class, loan.getLoanID()).getPrincipalLoanAmount()).isEqualTo(newPrincipalAmount);
     }
 
     @Test
     @Transactional
     public void loanRepositoryTestDelete() {
-        // arrange
+        // Arrange
         Client client = new Client("TestClient", false, "password");
         Account loanAccount = new Account("loanAccountNumber", Account.AccountType.CHECKING, client);
         Account checkingAccount = new Account("checkingAccountNumber", Account.AccountType.CHECKING, client);
@@ -106,17 +106,17 @@ public class LoanRepositoryTests {
 
         entityManager.persist(loan);
 
-        // act
+        // Act
         loanRepository.delete(loan);
 
-        // assert
+        // Assert
         assertThat(entityManager.find(Loan.class, loan.getLoanID())).isNull();
     }
 
     @Test
     @Transactional
     public void loanRepositoryTestFindById() {
-        // arrange
+        // Arrange
         Client client = new Client("TestClient", false, "password");
         Account loanAccount = new Account("loanAccountNumber", Account.AccountType.CHECKING, client);
         Account checkingAccount = new Account("checkingAccountNumber", Account.AccountType.CHECKING, client);
@@ -135,10 +135,10 @@ public class LoanRepositoryTests {
 
         entityManager.persist(loan);
 
-        // act
+        // Act
         Optional<Loan> foundLoan = loanRepository.findById(loan.getLoanID());
 
-        // assert
+        // Assert
         assertThat(foundLoan)
                 .isNotNull()
                 .contains(loan);
