@@ -55,7 +55,7 @@ public class DepositController {
         Account checkingAccount = client.getCheckingAccount();
         Account bankAccount = accountRepository.findByAccountNumber("BANK_DEPOSIT");
 
-        if (checkingAccount == null || bankAccount == null) {
+        if (checkingAccount == null) {
             return "One or more accounts not found";
         }
 
