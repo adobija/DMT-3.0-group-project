@@ -35,7 +35,7 @@ public class ClientController {
     public @ResponseBody String addNewClient(@RequestParam String clientName, @RequestParam String clientPassword, @RequestParam boolean isAdmin) {
         Client exists = clientRepository.findByClientName(clientName);
         if (exists != null) {
-            return "Client with his user name already exists. Failed to create new client profile!";
+            return "Client with this user name already exists - failed to create new client profile";
         } else {
             Client client = new Client(clientName, isAdmin, clientPassword);
             clientRepository.save(client);
@@ -49,6 +49,9 @@ public class ClientController {
 
     @PostMapping("/editName")
     public @ResponseBody String editName(@RequestParam String newName, HttpServletRequest request) {
+        if (clientRepository.findByClientName(newName) != null) {
+            return "Name has already been used - failed to update client's name";
+        }
         String currentName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(currentName);
         if (client != null) {
