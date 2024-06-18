@@ -17,16 +17,11 @@ public class EndpointAccess {
                 // mask:
                 // .requestMatchers(HttpMethod.<REST API METHOD>,<URI as String>).<attribute>
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
+                //security for RegisterController
+                .requestMatchers(HttpMethod.POST, "/register/newClient").permitAll()
                 //security for ClientController
-                .requestMatchers(HttpMethod.POST, "/client/add").permitAll()
-                .requestMatchers(HttpMethod.POST, "/client/editName").authenticated()
-                .requestMatchers(HttpMethod.POST, "/client/editPassword").authenticated()
-                .requestMatchers(HttpMethod.POST, "/client/editAdmin/*").authenticated()
-                .requestMatchers(HttpMethod.GET, "/client/all").authenticated()
-                .requestMatchers(HttpMethod.GET, "/client/byClientID").authenticated()
-                .requestMatchers(HttpMethod.GET, "/client/checkingBalance").authenticated()
-                .requestMatchers(HttpMethod.GET, "/client/depositsBalance").authenticated()
-                .requestMatchers(HttpMethod.GET, "/client/loansBalance").authenticated()
+                .requestMatchers(HttpMethod.POST, "/client/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/client/**").authenticated()
                 //security for AccountController
                 .requestMatchers(HttpMethod.POST, "/account/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/account/**").authenticated()
