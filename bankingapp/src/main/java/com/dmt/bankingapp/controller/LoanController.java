@@ -51,7 +51,6 @@ public class LoanController {
     @PostMapping("/add")
     public @ResponseBody String addNewLoan(@RequestParam double principalAmount,
                                            @RequestParam double interestRate,
-                                           @RequestParam double commisionRate,
                                            @RequestParam int loanDuration,
                                            @RequestParam String bankAccountNumber,
                                            HttpServletRequest request) {
