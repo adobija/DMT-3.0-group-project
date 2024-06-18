@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/loan")
@@ -41,7 +40,7 @@ public class LoanController {
     private DetailsOfLoggedClient detailsOfLoggedClient;
 
     @Autowired
-    private ComissionRepository comissionRepository;
+    private CommissionRepository commissionRepository;
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -73,7 +72,7 @@ public class LoanController {
         Account loanAccount = accountService.getLatestAccount();
 
         // Fetch live commission rate
-        int commisionRate = comissionRepository.findByComissionOf("LOAN").getCommissionRateInPercent();
+        int commisionRate = commissionRepository.findByComissionOf("LOAN").getCommissionRateInPercent();
 
         Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
 

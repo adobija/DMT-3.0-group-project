@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "Comissions")
-public class Comission {
+public class Commission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +17,7 @@ public class Comission {
     @Column(name = "commissionRateInPercent")
     private int commissionRateInPercent;
 
-    public Comission(int commissionRateInPercent, String comissionOf) {
+    public Commission(int commissionRateInPercent, String comissionOf) {
         this.commissionRateInPercent = commissionRateInPercent;
         this.comissionOf = comissionOf;
     }
@@ -26,11 +26,11 @@ public class Comission {
         return commisionId;
     }
 
-    public String getComissionOf() {
+    public String getCommissionOf() {
         return comissionOf;
     }
 
-    public void setComissionOf(String comissionOf) {
+    public void setCommissionOf(String comissionOf) {
         this.comissionOf = comissionOf;
     }
 

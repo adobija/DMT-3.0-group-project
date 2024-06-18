@@ -39,7 +39,7 @@ public class DepositController {
     private DetailsOfLoggedClient detailsOfLoggedClient;
 
     @Autowired
-    private ComissionRepository comissionRepository;
+    private CommissionRepository commissionRepository;
 
     @PostMapping("/addNewDeposit")
     public @ResponseBody String addNewDeposit(
@@ -69,7 +69,7 @@ public class DepositController {
         } 
 
         // Fetch live commision of deposit
-        int commissionRate = comissionRepository.findByComissionOf("DEPOSIT").getCommissionRateInPercent();
+        int commissionRate = commissionRepository.findByCommissionOf("DEPOSIT").getCommissionRateInPercent();
 
         Deposit deposit = new Deposit(commissionRate, depositDuration, checkingAccount, totalDepositAmount, depositTypeValue);
         

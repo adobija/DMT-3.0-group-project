@@ -1,9 +1,9 @@
 package com.dmt.bankingapp.controller;
 
 import com.dmt.bankingapp.entity.Client;
-import com.dmt.bankingapp.entity.Comission;
+import com.dmt.bankingapp.entity.Commission;
 import com.dmt.bankingapp.repository.ClientRepository;
-import com.dmt.bankingapp.repository.ComissionRepository;
+import com.dmt.bankingapp.repository.CommissionRepository;
 import com.dmt.bankingapp.service.implementation.DetailsOfLoggedClientImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +24,14 @@ public class CommissionController {
     private final ClientRepository clientRepository;
 
     @Autowired
-    private final ComissionRepository comissionRepository;
+    private final CommissionRepository commissionRepository;
 
     @Autowired
     private final DetailsOfLoggedClientImpl detailsOfLoggedClient;
 
-    public CommissionController(ClientRepository clientRepository, ComissionRepository comissionRepository, DetailsOfLoggedClientImpl detailsOfLoggedClient) {
+    public CommissionController(ClientRepository clientRepository, CommissionRepository commissionRepository, DetailsOfLoggedClientImpl detailsOfLoggedClient) {
         this.clientRepository = clientRepository;
-        this.comissionRepository = comissionRepository;
+        this.commissionRepository = commissionRepository;
         this.detailsOfLoggedClient = detailsOfLoggedClient;
     }
 
@@ -43,7 +43,7 @@ public class CommissionController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
         //Get commission record of loan
-        Comission commissionInstance = comissionRepository.findByComissionOf("LOAN");
+        Commission commissionInstance = commissionRepository.findByCommissionOf("LOAN");
         //Check if new commission rate is different
         if(commissionRateAsPercent == commissionInstance.getCommissionRateInPercent()){
             throw new ResponseStatusException(HttpStatus.IM_USED, "New commission rate must be different from previous one!");
@@ -53,18 +53,18 @@ public class CommissionController {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Insert valid new commission rate");
         }
         //Create instance of previous commission rate
-        Comission oldCommission = commissionInstance;
+        Commission oldCommission = commissionInstance;
         //Change name of oldCommission
-        String newName = oldCommission.getComissionOf() + " to " + LocalDateTime.now().toString();
-        oldCommission.setComissionOf(newName);
+        String newName = oldCommission.getCommissionOf() + " to " + LocalDateTime.now().toString();
+        oldCommission.setCommissionOf(newName);
         //Get old commission rate
         int oldRate = commissionInstance.getCommissionRateInPercent();
         oldCommission.setCommissionRateInPercent(oldRate);
         //Set new commission rate
         commissionInstance.setCommissionRateInPercent(commissionRateAsPercent);
         //Save to db
-        comissionRepository.save(commissionInstance);
-        comissionRepository.save(oldCommission);
+        commissionRepository.save(commissionInstance);
+        commissionRepository.save(oldCommission);
 
         //return
         return "Successfully updated commission rate for LOANS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent();
@@ -78,7 +78,7 @@ public class CommissionController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
         //Get commission record of deposit
-        Comission commissionInstance = comissionRepository.findByComissionOf("DEPOSIT");
+        Commission commissionInstance = commissionRepository.findByCommissionOf("DEPOSIT");
         //Check if new commission rate is different
         if(commissionRateAsPercent == commissionInstance.getCommissionRateInPercent()){
             throw new ResponseStatusException(HttpStatus.IM_USED, "New commission rate must be different from previous one!");
@@ -88,18 +88,18 @@ public class CommissionController {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Insert valid new commission rate");
         }
         //Create instance of previous commission rate
-        Comission oldCommission = commissionInstance;
+        Commission oldCommission = commissionInstance;
         //Change name of oldCommission
-        String newName = oldCommission.getComissionOf() + " to " + LocalDateTime.now().toString();
-        oldCommission.setComissionOf(newName);
+        String newName = oldCommission.getCommissionOf() + " to " + LocalDateTime.now().toString();
+        oldCommission.setCommissionOf(newName);
         //Get old commission rate
         int oldRate = commissionInstance.getCommissionRateInPercent();
         oldCommission.setCommissionRateInPercent(oldRate);
         //Set new commission rate
         commissionInstance.setCommissionRateInPercent(commissionRateAsPercent);
         //Save to db
-        comissionRepository.save(commissionInstance);
-        comissionRepository.save(oldCommission);
+        commissionRepository.save(commissionInstance);
+        commissionRepository.save(oldCommission);
 
         //return
         return "Successfully updated commission rate for DEPOSITS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent();

@@ -2,10 +2,10 @@ package com.dmt.bankingapp;
 
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
-import com.dmt.bankingapp.entity.Comission;
+import com.dmt.bankingapp.entity.Commission;
 import com.dmt.bankingapp.repository.AccountRepository;
 import com.dmt.bankingapp.repository.ClientRepository;
-import com.dmt.bankingapp.repository.ComissionRepository;
+import com.dmt.bankingapp.repository.CommissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -26,12 +26,12 @@ public class BankingappApplication {
 	private final AccountRepository accountRepository;
 
 	@Autowired
-	private final ComissionRepository comissionRepository;
+	private final CommissionRepository commissionRepository;
 
-	public BankingappApplication(ClientRepository clientRepository, AccountRepository accountRepository, ComissionRepository comissionRepository) {
+	public BankingappApplication(ClientRepository clientRepository, AccountRepository accountRepository, CommissionRepository commissionRepository) {
 		this.clientRepository = clientRepository;
 		this.accountRepository = accountRepository;
-		this.comissionRepository = comissionRepository;
+		this.commissionRepository = commissionRepository;
 	}
 
 	@Bean
@@ -50,16 +50,16 @@ public class BankingappApplication {
 				accountRepository.save(accountForLoans);
 			}
 
-			Comission checkComissionForLoan = comissionRepository.findByComissionOf("LOAN");
-			Comission checkComissionForDeposit = comissionRepository.findByComissionOf("DEPOSIT");
+			Commission checkCommissionForLoan = commissionRepository.findByCommissionOf("LOAN");
+			Commission checkCommissionForDeposit = commissionRepository.findByCommissionOf("DEPOSIT");
 
-			if(checkComissionForLoan == null){
-				Comission comissionForLoan = new Comission(10, "LOAN");
-				comissionRepository.save(comissionForLoan);
+			if(checkCommissionForLoan == null){
+				Commission commissionForLoan = new Commission(10, "LOAN");
+				commissionRepository.save(commissionForLoan);
 			}
-			if(checkComissionForDeposit == null){
-				Comission comissionForDeposit = new Comission(10, "DEPOSIT");
-				comissionRepository.save(comissionForDeposit);
+			if(checkCommissionForDeposit == null){
+				Commission commissionForDeposit = new Commission(10, "DEPOSIT");
+				commissionRepository.save(commissionForDeposit);
 			}
 
 
