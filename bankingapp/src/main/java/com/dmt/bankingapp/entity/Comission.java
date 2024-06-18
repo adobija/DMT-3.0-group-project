@@ -17,10 +17,9 @@ public class Comission {
     @Column(name = "commissionRateInPercent")
     private int commissionRateInPercent;
 
-    public Comission(int commissionRateInPercent, String comissionOf, Integer commisionId) {
+    public Comission(int commissionRateInPercent, String comissionOf) {
         this.commissionRateInPercent = commissionRateInPercent;
         this.comissionOf = comissionOf;
-        this.commisionId = commisionId;
     }
 
     public Integer getCommisionId() {
