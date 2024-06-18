@@ -3,23 +3,26 @@ package com.dmt.bankingapp.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Comissions")
+@Table(name = "Commissions")
 public class Commission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comissionId")
+    @Column(name = "commissionId")
     private Integer commisionId;
 
-    @Column(name = "comissionOf")
-    private String comissionOf;
+    @Column(name = "commissionOf")
+    private String commissionOf;
 
     @Column(name = "commissionRateInPercent")
     private int commissionRateInPercent;
 
-    public Commission(int commissionRateInPercent, String comissionOf) {
+    public Commission(int commissionRateInPercent, String commissionOf) {
         this.commissionRateInPercent = commissionRateInPercent;
-        this.comissionOf = comissionOf;
+        this.commissionOf = commissionOf;
+    }
+
+    public Commission() {
     }
 
     public Integer getCommisionId() {
@@ -27,11 +30,11 @@ public class Commission {
     }
 
     public String getCommissionOf() {
-        return comissionOf;
+        return commissionOf;
     }
 
-    public void setCommissionOf(String comissionOf) {
-        this.comissionOf = comissionOf;
+    public void setCommissionOf(String commissionOf) {
+        this.commissionOf = commissionOf;
     }
 
     public int getCommissionRateInPercent() {
