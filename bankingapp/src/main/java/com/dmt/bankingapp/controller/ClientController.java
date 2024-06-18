@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
+import com.dmt.bankingapp.entity.Deposit;
 import com.dmt.bankingapp.repository.ClientRepository;
 import com.dmt.bankingapp.service.AccountService;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
@@ -118,4 +119,34 @@ public class ClientController {
         }
         return clientRepository.findByClientID(clientID);
     }
+
+    @GetMapping("/checkingBalance")
+    public @ResponseBody double getCheckingBalance(HttpServletRequest request) {
+        String clientName = detailsOfLoggedClient.getNameFromClient(request);
+        Client client = clientRepository.findByClientName(clientName);
+        return client.getCheckingAccount().getAccountBalance();
+    }
+
+    @GetMapping("/depositsBalance")
+    public @ResponseBody String getDepositsBalance(HttpServletRequest request) {
+        String clientName = detailsOfLoggedClient.getNameFromClient(request);
+        Client client = clientRepository.findByClientName(clientName);
+        List<Deposit> deposits = client.getDepositsList();
+        StringBuilder depositsBalance = new StringBuilder();
+        
+        for (Deposit deposit : deposits) {
+            depositsBalance.append(deposit.getDepositID())
+                        .append(": ")
+                        .append(deposit.getTotalDepositAmount())
+                        .append("\n");
+        }
+        
+        // Remove the last newline in the output
+        if (depositsBalance.length() > 0) {
+            depositsBalance.setLength(depositsBalance.length() - 1);
+        }
+        
+        return depositsBalance.toString();
+    }
+
 }
