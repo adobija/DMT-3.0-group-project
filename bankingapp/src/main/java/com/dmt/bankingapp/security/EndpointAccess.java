@@ -24,6 +24,9 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.POST, "/client/editAdmin/*").authenticated()
                 .requestMatchers(HttpMethod.GET, "/client/all").authenticated()
                 .requestMatchers(HttpMethod.GET, "/client/byClientID").authenticated()
+                .requestMatchers(HttpMethod.GET, "/client/checkingBalance").authenticated()
+                .requestMatchers(HttpMethod.GET, "/client/depositsBalance").authenticated()
+                .requestMatchers(HttpMethod.GET, "/client/loansBalance").authenticated()
                 //security for AccountController
                 .requestMatchers(HttpMethod.POST, "/account/add").authenticated()
                 .requestMatchers(HttpMethod.GET, "/account/all").authenticated()
@@ -32,7 +35,7 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.POST, "/transaction/add").authenticated()
                 .requestMatchers(HttpMethod.GET, "/transaction/outgoingTransactions").authenticated()
                 .requestMatchers(HttpMethod.GET, "/transaction/incomingTransactions").authenticated()
-                .requestMatchers(HttpMethod.GET, "/transaction/everyTransaction").authenticated()
+                .requestMatchers(HttpMethod.GET, "/transaction/getAll").authenticated()
                 .requestMatchers(HttpMethod.GET, "/transaction/byAccountNumber").authenticated()
                 //security for LoanController
                 .requestMatchers(HttpMethod.POST, "/loan/add").authenticated()
