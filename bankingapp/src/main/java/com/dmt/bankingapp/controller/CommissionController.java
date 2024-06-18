@@ -21,16 +21,12 @@ import java.time.LocalDateTime;
 public class CommissionController {
 
     @Autowired
-    private final ClientRepository clientRepository;
-
-    @Autowired
     private final CommissionRepository commissionRepository;
 
     @Autowired
     private final DetailsOfLoggedClientImpl detailsOfLoggedClient;
 
-    public CommissionController(ClientRepository clientRepository, CommissionRepository commissionRepository, DetailsOfLoggedClientImpl detailsOfLoggedClient) {
-        this.clientRepository = clientRepository;
+    public CommissionController(CommissionRepository commissionRepository, DetailsOfLoggedClientImpl detailsOfLoggedClient) {
         this.commissionRepository = commissionRepository;
         this.detailsOfLoggedClient = detailsOfLoggedClient;
     }
