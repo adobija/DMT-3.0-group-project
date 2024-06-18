@@ -1,5 +1,6 @@
 package com.dmt.bankingapp.controller;
 
+import com.dmt.bankingapp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -7,10 +8,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dmt.bankingapp.entity.Account;
-import com.dmt.bankingapp.repository.AccountRepository;
-import com.dmt.bankingapp.repository.ClientRepository;
-import com.dmt.bankingapp.repository.DepositRepository;
-import com.dmt.bankingapp.repository.TransactionRepository;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,6 +38,9 @@ public class DepositController {
     @Autowired
     private DetailsOfLoggedClient detailsOfLoggedClient;
 
+    @Autowired
+    private ComissionRepository comissionRepository;
+
     @PostMapping("/addNewDeposit")
     public @ResponseBody String addNewDeposit(
 
@@ -67,8 +67,11 @@ public class DepositController {
         else if (depositType.equalsIgnoreCase("PROGRESSIVE")) {
             depositTypeValue = DepositType.PROGRESSIVE;
         } 
-        
-        Deposit deposit = new Deposit(, depositDuration, checkingAccount, totalDepositAmount, depositTypeValue);
+
+        // Fetch live commision of deposit
+        int commissionRate = comissionRepository.findByComissionOf("DEPOSIT").getCommissionRateInPercent();
+
+        Deposit deposit = new Deposit(commissionRate, depositDuration, checkingAccount, totalDepositAmount, depositTypeValue);
         
         switch (deposit.getDepositType()) {
             case FIXED:

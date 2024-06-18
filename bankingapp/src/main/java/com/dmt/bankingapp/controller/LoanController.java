@@ -1,13 +1,7 @@
 package com.dmt.bankingapp.controller;
 
-import com.dmt.bankingapp.entity.Loan;
-import com.dmt.bankingapp.entity.Transaction;
-import com.dmt.bankingapp.entity.Account;
-import com.dmt.bankingapp.entity.Client;
-import com.dmt.bankingapp.repository.LoanRepository;
-import com.dmt.bankingapp.repository.TransactionRepository;
-import com.dmt.bankingapp.repository.AccountRepository;
-import com.dmt.bankingapp.repository.ClientRepository;
+import com.dmt.bankingapp.entity.*;
+import com.dmt.bankingapp.repository.*;
 import com.dmt.bankingapp.service.AccountService;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 
@@ -46,6 +40,9 @@ public class LoanController {
     @Autowired
     private DetailsOfLoggedClient detailsOfLoggedClient;
 
+    @Autowired
+    private ComissionRepository comissionRepository;
+
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @PostMapping("/add")
@@ -74,6 +71,9 @@ public class LoanController {
 
         // Fetch the newly created loan account
         Account loanAccount = accountService.getLatestAccount();
+
+        // Fetch live commission rate
+        int commisionRate = comissionRepository.findByComissionOf("LOAN").getCommissionRateInPercent();
 
         Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
 
