@@ -1,5 +1,7 @@
 package com.dmt.bankingapp.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -42,6 +44,8 @@ public class TransactionController {
     @Autowired
     private DetailsOfLoggedClient detailsOfLoggedClient;
 
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     @PostMapping("/add") // curl.exe -d "giverAccountID=1&receiverAccountID=2&amount=100.0" http://localhost:8080/transaction/add
     public @ResponseBody String addNewTransaction(@RequestParam int giverAccountID, @RequestParam int receiverAccountID, @RequestParam double amount, HttpServletRequest request) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
@@ -78,16 +82,18 @@ public class TransactionController {
         StringBuilder output = new StringBuilder();
         
         for (Transaction transaction : outgoing) {
+            LocalDateTime timestamp = transaction.getTimestamp();
+            String formattedTimestamp = timestamp.format(formatter);
+
             output.append(transaction.getTransactionID())
                         .append(": ")
-                        .append(transaction.getTimestamp())
+                        .append(formattedTimestamp)
                         .append("  amount: ")
                         .append(transaction.getAmount())
                         .append("  recipient: ")
                         .append(transaction.getReceiver().getAccountNumber())
                         .append("\n");
         }
-        
         // Remove the last newline in the output
         if (output.length() > 0) {
             output.setLength(output.length() - 1);
@@ -104,16 +110,18 @@ public class TransactionController {
         StringBuilder output = new StringBuilder();
         
         for (Transaction transaction : incoming) {
+            LocalDateTime timestamp = transaction.getTimestamp();
+            String formattedTimestamp = timestamp.format(formatter);
+
             output.append(transaction.getTransactionID())
                         .append(": ")
-                        .append(transaction.getTimestamp())
+                        .append(formattedTimestamp)
                         .append("  amount: ")
                         .append(transaction.getAmount())
                         .append("  sender: ")
                         .append(transaction.getGiver().getAccountNumber())
                         .append("\n");
         }
-        
         // Remove the last newline in the output
         if (output.length() > 0) {
             output.setLength(output.length() - 1);
@@ -121,18 +129,41 @@ public class TransactionController {
         return output.toString();
     }
 
-    @GetMapping("/everyTransaction")
-    public @ResponseBody List<Transaction> getEveryTransaction(HttpServletRequest request) {
+    @GetMapping("/getAll")
+    public @ResponseBody String getEveryTransaction(HttpServletRequest request) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
-        if(!requester.isAdmin()){
+        if (!requester.isAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
-        return transactionRepository.findAll();
+        List<Transaction> all = transactionRepository.findAll();
+        StringBuilder output = new StringBuilder();
+
+        for (Transaction transaction : all) {
+            LocalDateTime timestamp = transaction.getTimestamp();
+            String formattedTimestamp = timestamp.format(formatter);
+
+            output.append(transaction.getTransactionID())
+                        .append(": ")
+                        .append(formattedTimestamp)
+                        .append("  amount: ")
+                        .append(transaction.getAmount())
+                        .append("  sender: ")
+                        .append(transaction.getGiver().getAccountNumber())
+                        .append("  recipient: ")
+                        .append(transaction.getReceiver().getAccountNumber())
+                        .append("\n");
+        }
+
+        // Remove the last newline in the output
+        if (output.length() > 0) {
+            output.setLength(output.length() - 1);
+        }
+        return output.toString();
     }
 
     @GetMapping("/byAccountNumber")
-    public @ResponseBody List<Transaction> getByAccountId(@RequestParam String accountNumber, HttpServletRequest request) {
+    public @ResponseBody String getByAccountId(@RequestParam String accountNumber, HttpServletRequest request) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
@@ -153,6 +184,29 @@ public class TransactionController {
                 .sorted(Comparator.comparing(Transaction::getTimestamp))
                 .collect(Collectors.toList());
         
-        return transactions;
+        // Format output data to a string
+        StringBuilder output = new StringBuilder();
+
+        for (Transaction transaction : transactions) {
+            LocalDateTime timestamp = transaction.getTimestamp();
+            String formattedTimestamp = timestamp.format(formatter);
+
+            output.append(transaction.getTransactionID())
+                        .append(": ")
+                        .append(formattedTimestamp)
+                        .append("  amount: ")
+                        .append(transaction.getAmount())
+                        .append("  sender: ")
+                        .append(transaction.getGiver().getAccountNumber())
+                        .append("  recipient: ")
+                        .append(transaction.getReceiver().getAccountNumber())
+                        .append("\n");
+        }
+
+        // Remove the last newline in the output
+        if (output.length() > 0) {
+            output.setLength(output.length() - 1);
+        }
+        return output.toString();
     }
 }

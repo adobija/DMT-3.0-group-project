@@ -35,7 +35,7 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.POST, "/transaction/add").authenticated()
                 .requestMatchers(HttpMethod.GET, "/transaction/outgoingTransactions").authenticated()
                 .requestMatchers(HttpMethod.GET, "/transaction/incomingTransactions").authenticated()
-                .requestMatchers(HttpMethod.GET, "/transaction/everyTransaction").authenticated()
+                .requestMatchers(HttpMethod.GET, "/transaction/getAll").authenticated()
                 .requestMatchers(HttpMethod.GET, "/transaction/byAccountNumber").authenticated()
                 //security for LoanController
                 .requestMatchers(HttpMethod.POST, "/loan/add").authenticated()
