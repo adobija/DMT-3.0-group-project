@@ -70,19 +70,55 @@ public class TransactionController {
     }
 
     @GetMapping("/outgoingTransactions")
-    public @ResponseBody List<Transaction> getClientOutgoingTransactions(HttpServletRequest request) {
+    public @ResponseBody String getClientOutgoingTransactions(HttpServletRequest request) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         Account checking = client.getCheckingAccount();
-        return transactionRepository.findByGiver(checking);
+        List<Transaction> outgoing = transactionRepository.findByGiver(checking);
+        StringBuilder output = new StringBuilder();
+        
+        for (Transaction transaction : outgoing) {
+            output.append(transaction.getTransactionID())
+                        .append(": ")
+                        .append(transaction.getTimestamp())
+                        .append("  amount: ")
+                        .append(transaction.getAmount())
+                        .append("  recipient: ")
+                        .append(transaction.getReceiver().getAccountNumber())
+                        .append("\n");
+        }
+        
+        // Remove the last newline in the output
+        if (output.length() > 0) {
+            output.setLength(output.length() - 1);
+        }
+        return output.toString();
     }
 
     @GetMapping("/incomingTransactions")
-    public @ResponseBody List<Transaction> getClientIncomingTransactions(HttpServletRequest request) {
+    public @ResponseBody String getClientIncomingTransactions(HttpServletRequest request) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         Account checking = client.getCheckingAccount();
-        return transactionRepository.findByReceiver(checking);
+        List<Transaction> incoming = transactionRepository.findByReceiver(checking);
+        StringBuilder output = new StringBuilder();
+        
+        for (Transaction transaction : incoming) {
+            output.append(transaction.getTransactionID())
+                        .append(": ")
+                        .append(transaction.getTimestamp())
+                        .append("  amount: ")
+                        .append(transaction.getAmount())
+                        .append("  sender: ")
+                        .append(transaction.getGiver().getAccountNumber())
+                        .append("\n");
+        }
+        
+        // Remove the last newline in the output
+        if (output.length() > 0) {
+            output.setLength(output.length() - 1);
+        }
+        return output.toString();
     }
 
     @GetMapping("/everyTransaction")
