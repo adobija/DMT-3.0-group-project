@@ -42,11 +42,11 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.GET, "/loan/all").authenticated()
                 .requestMatchers(HttpMethod.GET, "/loan/byLoanId").authenticated()
                 //security for HistoryController
-                .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/history/**").authenticated()
-
                 //security for DepositController
                 .requestMatchers(HttpMethod.POST, "/deposit/addNewDeposit").authenticated()
+                //security for CommissionController
+                .requestMatchers(HttpMethod.POST, "/commission/**").authenticated()
         );
         // Set http login as Basic Auth
         httpSecurity.httpBasic(Customizer.withDefaults());
