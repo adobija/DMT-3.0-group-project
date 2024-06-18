@@ -28,23 +28,18 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.GET, "/client/depositsBalance").authenticated()
                 .requestMatchers(HttpMethod.GET, "/client/loansBalance").authenticated()
                 //security for AccountController
-                .requestMatchers(HttpMethod.POST, "/account/add").authenticated()
-                .requestMatchers(HttpMethod.GET, "/account/all").authenticated()
-                .requestMatchers(HttpMethod.GET, "/account/byAccountNumber").authenticated()
+                .requestMatchers(HttpMethod.POST, "/account/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/account/**").authenticated()
                 //security for TransactionController
-                .requestMatchers(HttpMethod.POST, "/transaction/add").authenticated()
-                .requestMatchers(HttpMethod.GET, "/transaction/outgoingTransactions").authenticated()
-                .requestMatchers(HttpMethod.GET, "/transaction/incomingTransactions").authenticated()
-                .requestMatchers(HttpMethod.GET, "/transaction/getAll").authenticated()
-                .requestMatchers(HttpMethod.GET, "/transaction/byAccountNumber").authenticated()
+                .requestMatchers(HttpMethod.POST, "/transaction/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/transaction/**").authenticated()
                 //security for LoanController
-                .requestMatchers(HttpMethod.POST, "/loan/add").authenticated()
-                .requestMatchers(HttpMethod.GET, "/loan/all").authenticated()
-                .requestMatchers(HttpMethod.GET, "/loan/byLoanId").authenticated()
+                .requestMatchers(HttpMethod.POST, "/loan/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/loan/**").authenticated()
                 //security for HistoryController
                 .requestMatchers(HttpMethod.GET, "/history/**").authenticated()
                 //security for DepositController
-                .requestMatchers(HttpMethod.POST, "/deposit/addNewDeposit").authenticated()
+                .requestMatchers(HttpMethod.POST, "/deposit/**").authenticated()
                 //security for CommissionController
                 .requestMatchers(HttpMethod.POST, "/commission/**").authenticated()
         );
