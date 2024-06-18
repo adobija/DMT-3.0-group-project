@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.entity.Deposit;
+import com.dmt.bankingapp.entity.Loan;
 import com.dmt.bankingapp.repository.ClientRepository;
 import com.dmt.bankingapp.service.AccountService;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
@@ -147,6 +148,27 @@ public class ClientController {
         }
         
         return depositsBalance.toString();
+    }
+
+    @GetMapping("/loansBalance")
+    public @ResponseBody String getLoansBalance(HttpServletRequest request) {
+        String clientName = detailsOfLoggedClient.getNameFromClient(request);
+        Client client = clientRepository.findByClientName(clientName);
+        List<Loan> loans = client.getLoansList();
+        StringBuilder loansBalance = new StringBuilder();
+
+        double total = 0;
+        
+        for (Loan loan : loans) {
+            total += loan.getLeftToPay();
+            loansBalance.append(loan.getLoanID())
+                        .append(": ")
+                        .append(loan.getLeftToPay())
+                        .append("\n");
+        }
+        loansBalance.append("Remaining total amount of loans: " + total);
+        
+        return loansBalance.toString();
     }
 
 }

@@ -26,6 +26,7 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.GET, "/client/byClientID").authenticated()
                 .requestMatchers(HttpMethod.GET, "/client/checkingBalance").authenticated()
                 .requestMatchers(HttpMethod.GET, "/client/depositsBalance").authenticated()
+                .requestMatchers(HttpMethod.GET, "/client/loansBalance").authenticated()
                 //security for AccountController
                 .requestMatchers(HttpMethod.POST, "/account/add").authenticated()
                 .requestMatchers(HttpMethod.GET, "/account/all").authenticated()
