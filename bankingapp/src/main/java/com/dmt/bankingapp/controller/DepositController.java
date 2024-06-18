@@ -2,6 +2,7 @@ package com.dmt.bankingapp.controller;
 
 import com.dmt.bankingapp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,6 +19,7 @@ import com.dmt.bankingapp.entity.Deposit.DepositType;
 import com.dmt.bankingapp.entity.Transaction;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping(path = "/deposit")
@@ -53,7 +55,7 @@ public class DepositController {
         Client client = clientRepository.findByClientName(currentName);
         Account checkingAccount = client.getCheckingAccount();
         if (checkingAccount == null) {
-            return "Checking account has not been found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Checking account has not been found");
         }
 
         Account bankAccount = accountRepository.findByAccountNumber("BANK_DEPOSIT");

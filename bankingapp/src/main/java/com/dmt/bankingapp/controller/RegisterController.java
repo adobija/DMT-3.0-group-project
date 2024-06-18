@@ -6,7 +6,9 @@ import com.dmt.bankingapp.repository.AccountRepository;
 import com.dmt.bankingapp.repository.ClientRepository;
 import com.dmt.bankingapp.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping(path = "/register")
@@ -25,7 +27,7 @@ public class RegisterController {
     public @ResponseBody String addNewClient(@RequestParam String clientName, @RequestParam String clientPassword) {
         Client exists = clientRepository.findByClientName(clientName);
         if (exists != null) {
-            return "Client with this user name already exists - failed to create new client profile";
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Client with this user name already exists - failed to create new client profile");
         } else {
             Client client = new Client(clientName, false, clientPassword);
             clientRepository.save(client);

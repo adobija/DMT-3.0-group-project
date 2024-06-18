@@ -36,7 +36,7 @@ public class ClientController {
     @PostMapping("/editName")
     public @ResponseBody String editName(@RequestParam String newName, HttpServletRequest request) {
         if (clientRepository.findByClientName(newName) != null) {
-            return "Name has already been used - failed to update client's name";
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Name has already been used - failed to update client's name");
         }
         String currentName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(currentName);
@@ -45,7 +45,7 @@ public class ClientController {
             clientRepository.save(client);
             return "Client's name updated successfully";
         } else {
-            return "Client not found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
         }
     }
 
@@ -56,14 +56,14 @@ public class ClientController {
         if (client != null) {
             String storedHashedPassword = client.getClientPassword().replace("{bcrypt}", ""); // Remove prefix for comparison
             if (BCrypt.checkpw(newPassword, storedHashedPassword)) {
-                return "Please choose a new password that is different from the previous password";
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Please choose a new password that is different from the previous password");
             } else {
                 client.setClientPassword(newPassword);
                 clientRepository.save(client);
                 return "Client's password updated successfully";
             }
         } else {
-            return "Client not found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
         }
     }
 
@@ -72,7 +72,7 @@ public class ClientController {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
-            return "You don't have permission!";
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
         Optional<Client> foundClientOptional = clientRepository.findById(clientId);
         Client foundClient = foundClientOptional.get();
@@ -81,7 +81,7 @@ public class ClientController {
             clientRepository.save(foundClient);
             return "Client's permission updated successfully";
         } else {
-            return "Client not found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
         }
     }
 
