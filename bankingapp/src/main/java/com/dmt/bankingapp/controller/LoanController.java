@@ -177,7 +177,7 @@ public class LoanController {
                 .append(loan.getClient().getClientID())
                 .append("\nduration: ")
                 .append(loan.getLoanDuration())
-                .append("\nintrest: ")
+                .append("\ninterest: ")
                 .append(loan.getInterestRate())
                 .append("\ncommision: ")
                 .append(loan.getCommisionRate())
