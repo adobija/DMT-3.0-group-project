@@ -33,22 +33,6 @@ public class ClientController {
     @Autowired
     private AccountService accountService;
 
-    @PostMapping("/add")  // curl.exe -d "clientName=NAME&clientPassword=PASSWORD&isAdmin=false" http://localhost:8080/client/add
-    public @ResponseBody String addNewClient(@RequestParam String clientName, @RequestParam String clientPassword, @RequestParam boolean isAdmin) {
-        Client exists = clientRepository.findByClientName(clientName);
-        if (exists != null) {
-            return "Client with this user name already exists - failed to create new client profile";
-        } else {
-            Client client = new Client(clientName, isAdmin, clientPassword);
-            clientRepository.save(client);
-            accountService.addNewAccount(Account.AccountType.CHECKING, client);
-            client.addAccount(accountService.getLatestAccount());
-            client.setCheckingAccount(accountService.getLatestAccount());
-            clientRepository.save(client);
-            return "New client profile created successfully";
-        }
-    }
-
     @PostMapping("/editName")
     public @ResponseBody String editName(@RequestParam String newName, HttpServletRequest request) {
         if (clientRepository.findByClientName(newName) != null) {
