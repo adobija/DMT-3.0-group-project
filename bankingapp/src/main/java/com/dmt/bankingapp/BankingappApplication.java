@@ -51,7 +51,7 @@ public class BankingappApplication {
 			}
 
 			Comission checkComissionForLoan = comissionRepository.findByComissionOf("LOAN");
-			Comission checkComissionForDeposit = comissionRepository.findByComissionOf("LOAN");
+			Comission checkComissionForDeposit = comissionRepository.findByComissionOf("DEPOSIT");
 
 			if(checkComissionForLoan == null){
 				Comission comissionForLoan = new Comission(10, "LOAN");
