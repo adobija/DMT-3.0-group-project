@@ -12,6 +12,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.time.LocalDateTime;
+
 @SpringBootApplication
 public class BankingappApplication {
 
@@ -54,11 +56,11 @@ public class BankingappApplication {
 			Commission checkCommissionForDeposit = commissionRepository.findByCommissionOf("DEPOSIT");
 
 			if(checkCommissionForLoan == null){
-				Commission commissionForLoan = new Commission(10, "LOAN");
+				Commission commissionForLoan = new Commission(10, "LOAN", LocalDateTime.now());
 				commissionRepository.save(commissionForLoan);
 			}
 			if(checkCommissionForDeposit == null){
-				Commission commissionForDeposit = new Commission(10, "DEPOSIT");
+				Commission commissionForDeposit = new Commission(10, "DEPOSIT", LocalDateTime.now());
 				commissionRepository.save(commissionForDeposit);
 			}
 
