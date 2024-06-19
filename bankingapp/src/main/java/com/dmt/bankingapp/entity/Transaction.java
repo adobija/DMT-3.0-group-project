@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.dmt.bankingapp.entity.Account.AccountType;
+import com.dmt.bankingapp.utils.DecimalPlacesAdjuster;
 
 @Entity
 @Table(name = "Transactions")
@@ -34,9 +35,36 @@ public class Transaction {
     public Transaction(Account giver, Account receiver, double amount) {
         this.giver = giver;
         this.receiver = receiver;
-        this.amount = amount;
+        this.amount = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(amount);
         this.timestamp = LocalDateTime.now();
-    
+
+        // Restricting transfers for negative amounts
+        if (this.amount < 0) {
+            throw new IllegalStateException("You cannot transfer negative amount!");
+        }
+
+        // Restricting transfers for 0
+        if (this.amount == 0) {
+            throw new IllegalStateException("You cannot transfer 0!");
+        }
+
+        // Restricting transfers for amounts greater than 1 billion
+        if (this.amount > 1000000000) {
+            throw new IllegalStateException("You cannot transfer more than 1 billion!");
+        }
+
+        // Restricting making transfers from loan accounts ...
+        if (giver.getAccountType().equals(AccountType.LOAN)) {
+            // ... after loan is launched - only transfers to a bank account are allowed
+            if (giver.getAccountBalance() < 0 && !receiver.getAccountType().equals(AccountType.BANK)) {
+                throw new IllegalStateException("You cannot transfer from the loan account!");
+            }
+            // ... after loan is redeemed
+            if (giver.getAccountBalance() == 0 && giver.getLoan() != null) {
+                throw new IllegalStateException("You cannot transfer from the loan account!");
+            }            
+        }
+
         // Checking the account balance for checking and saving accounts to avoid the balance falling below 0
         if (giver.getAccountType().equals(AccountType.CHECKING) || giver.getAccountType().equals(AccountType.DEPOSIT)) {
             if (this.amount > giver.getAccountBalance()) {
@@ -77,7 +105,7 @@ public class Transaction {
     }
 
     public void setAmount(double amount) {
-        this.amount = amount;
+        this.amount = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(amount);
     }
 
     public LocalDateTime getTimestamp() {
@@ -85,8 +113,8 @@ public class Transaction {
     }
 
     public void manipulateTransaction(Account giver, Account receiver, double amount){
-        giver.setAccountBalance(amount, true);
-        receiver.setAccountBalance(amount, false);
+        giver.setAccountBalance(DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(amount), true);
+        receiver.setAccountBalance(DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(amount), false);
     }
 
     public int getTransactionID() {
@@ -104,7 +132,7 @@ public class Transaction {
     public void processLoanPayments(Account giver, Account receiver, double amount) {
         Loan loan = receiver.getLoan();
         if (loan.getIsActive()) {
-            double amountLeft = amount;
+            double amountLeft = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(amount);
             double amountUsedForPayments = 0;
             List<Installment> loanInstallments = loan.getInstallments();
     

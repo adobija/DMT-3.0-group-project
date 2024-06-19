@@ -28,7 +28,7 @@ public class TransactionTests {
 
     @Test
     public void testNewTransaction() {
-        //Arrange
+        // Arrange
         String giverClient = "clientFirst";
         String receiverClient = "clientSecond";
 
@@ -45,7 +45,7 @@ public class TransactionTests {
         entityManager.persist(giverAccount);
         entityManager.persist(receiverAccount);
 
-        //Act
+        // Act
         double transactionAmount = 300.0;
         Transaction transaction = new Transaction(giverAccount, receiverAccount, transactionAmount);
         entityManager.persist(transaction);
@@ -53,7 +53,7 @@ public class TransactionTests {
         Account foundGiverAccount = entityManager.find(Account.class, giverAccount.getAccountID());
         Account foundReceiverAccount = entityManager.find(Account.class, receiverAccount.getAccountID());
 
-        //Assert
+        // Assert
         assertThat(foundGiverAccount).isNotNull();
         assertThat(foundReceiverAccount).isNotNull();
 
@@ -62,8 +62,8 @@ public class TransactionTests {
     }
 
     @Test
-    public void testDateAndTime(){
-        //Arrange
+    public void testDateAndTime() {
+        // Arrange
         String giverClient = "clientFirst";
         String receiverClient = "clientSecond";
 
@@ -85,17 +85,17 @@ public class TransactionTests {
         entityManager.persist(transaction);
         String now = LocalDateTime.now().toString().split("\\.")[0];
 
-        //Act
+        // Act
         Transaction transaction1 = entityManager.find(Transaction.class, transaction.getTransactionID());
 
-        //LocalDateTime look like YYYY-MM-DD{timezone}HH:MM:SS.{9 decimal points for milisecond}
-        //so I am comparing whole string before coma
+        // LocalDateTime look like YYYY-MM-DD{timezone}HH:MM:SS.{9 decimal points for millisecond}
+        // so I am comparing the whole string before the comma
         String timestampFromTransactionRecord = transaction1.getTimestamp().toString().split("\\.")[0];
 
-        //Assert
+        // Assert
         assertEquals(now, timestampFromTransactionRecord);
     }
-    
+
     @Test
     public void testTransactionGreaterThanLoan() {
         // Arrange
@@ -108,7 +108,7 @@ public class TransactionTests {
         Account loanAccount = new Account("loanAccNum", AccountType.LOAN, loanTaker);
         Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, loanTaker);
         Account bankAccount = new Account("bankAccNum", AccountType.BANK, bankClient);
-        
+
         double checkingAccountBalance = 999999.99;
         checkingAccount.setAccountBalance(checkingAccountBalance, false);
         entityManager.persist(loanAccount);
@@ -120,26 +120,30 @@ public class TransactionTests {
         double commisionRate = 5.0;
         int loanDuration = 48;
 
-        // Act - loan
+        // Act - loan creation
         Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+        testLoan.setDateOfLoan(LocalDateTime.now());
+        double totalLoanAmount = principalAmount + testLoan.intrestAmount(principalAmount, interestRate, loanDuration) + testLoan.commisionAmout(principalAmount, commisionRate);
+        testLoan.setTotalLoanAmout(totalLoanAmount);
+        testLoan.setLeftToPay(totalLoanAmount);
+        testLoan.generateInstallments();
+        testLoan.setIsActive(true);
         entityManager.persist(testLoan);
 
         loanAccount.setLoan(testLoan);
         entityManager.persist(loanAccount);
 
-        Loan foundLoan = entityManager.find(Loan.class, testLoan.getLoanID());
-        double foundLoanTotalAmount = foundLoan.getTotalLoanAmount();
         double overpay = 999.99;
-        double initialTransferAmount = foundLoanTotalAmount + overpay;
+        double initialTransferAmount = totalLoanAmount + overpay;
 
         // Act - transaction
         Transaction testTransaction = new Transaction(checkingAccount, loanAccount, initialTransferAmount);
         entityManager.persist(testTransaction);
 
+        // Assert
         Transaction foundTransaction = entityManager.find(Transaction.class, testTransaction.getTransactionID());
         double foundTransferAmount = foundTransaction.getAmount();
 
-        // Assert
         assertThat(foundTransaction).isNotNull();
         assertNotEquals(initialTransferAmount, foundTransferAmount);
         assertEquals(initialTransferAmount, foundTransferAmount + overpay, 0.01);
@@ -158,7 +162,7 @@ public class TransactionTests {
         Account loanAccount = new Account("loanAccNum", AccountType.LOAN, loanTaker);
         Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, loanTaker);
         Account bankAccount = new Account("bankAccNum", AccountType.BANK, bankClient);
-        
+
         double checkingAccountBalance = 999999.99;
         checkingAccount.setAccountBalance(checkingAccountBalance, false);
         entityManager.persist(loanAccount);
@@ -170,18 +174,21 @@ public class TransactionTests {
         double commisionRate = 5.0;
         int loanDuration = 48;
 
-        // Act - loan
+        // Act - loan creation
         Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+        testLoan.setDateOfLoan(LocalDateTime.now());
+        double totalLoanAmount = principalAmount + testLoan.intrestAmount(principalAmount, interestRate, loanDuration) + testLoan.commisionAmout(principalAmount, commisionRate);
+        testLoan.setTotalLoanAmout(totalLoanAmount);
+        testLoan.setLeftToPay(totalLoanAmount);
+        testLoan.generateInstallments();
+        testLoan.setIsActive(true);
         entityManager.persist(testLoan);
 
         loanAccount.setLoan(testLoan);
         entityManager.persist(loanAccount);
 
-        Loan foundLoan = entityManager.find(Loan.class, testLoan.getLoanID());
-        double foundLoanTotalAmount = foundLoan.getTotalLoanAmount();
-
         // Act - first transaction to redeem the loan
-        Transaction firstTransaction = new Transaction(checkingAccount, loanAccount, foundLoanTotalAmount);
+        Transaction firstTransaction = new Transaction(checkingAccount, loanAccount, totalLoanAmount);
         entityManager.persist(firstTransaction);
 
         // Act - second transaction that should throw exception
@@ -205,10 +212,11 @@ public class TransactionTests {
 
         Account checkingAccount1 = new Account("checkingAccNum1", AccountType.CHECKING, customer1);
         Account checkingAccount2 = new Account("checkingAccNum2", AccountType.CHECKING, customer2);
-        
+
         double checkingAccountBalance1 = 99.99;
         checkingAccount1.setAccountBalance(checkingAccountBalance1, false);
         entityManager.persist(checkingAccount1);
+        entityManager.persist(checkingAccount2);
 
         // Act
         double testTransfer = 100;

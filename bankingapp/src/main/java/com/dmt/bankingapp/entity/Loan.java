@@ -1,9 +1,12 @@
 package com.dmt.bankingapp.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.dmt.bankingapp.utils.DecimalPlacesAdjuster;
 
 @Entity
 @Table(name = "Loans")
@@ -32,8 +35,8 @@ public class Loan {
     @Column(name = "loanDuration")
     private int loanDuration;
 
-    @Column(name = "intrestRate")
-    private double intrestRate;
+    @Column(name = "interestRate")
+    private double interestRate;
 
     @Column(name = "totalLoanAmount")
     private double totalLoanAmount;
@@ -57,13 +60,13 @@ public class Loan {
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL)
     private List<Installment> installments = new ArrayList<>();
 
-    public Loan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate,
+    public Loan(Account loanAccount, Account checkingAccount, double principalAmount, double interestRate,
             double commisionRate, int loanDuration, Account bankAccount) {
         this.loanAccount = loanAccount;
         this.checkingAccount = checkingAccount;
         this.bankAccount = bankAccount;
-        this.principalLoanAmount = principalAmount;
-        this.intrestRate = intrestRate;
+        this.principalLoanAmount = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(principalAmount);
+        this.interestRate = interestRate;
         this.commisionRate = commisionRate;
         this.loanDuration = loanDuration;
 
@@ -71,8 +74,6 @@ public class Loan {
         if (client != null) {
             client.addLoan(this);
         }
-
-        grantLoan(this.loanAccount, this.checkingAccount, this.principalLoanAmount, this.intrestRate, this.commisionRate, this.loanDuration, this.bankAccount);
 
         if (this.totalLoanAmount > 0) {
             this.isActive = true;
@@ -111,7 +112,7 @@ public class Loan {
     }
 
     public void setPrincipalLoanAmout(double principalAmount) {
-        this.principalLoanAmount = principalAmount;
+        this.principalLoanAmount = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(principalAmount);
     }
 
     public double getPrincipalLoanAmount() {
@@ -119,7 +120,7 @@ public class Loan {
     }
 
     public void setTotalLoanAmout(double totalAmount) {
-        this.totalLoanAmount = totalAmount;
+        this.totalLoanAmount = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(totalAmount);
     }
 
     public double getTotalLoanAmount() {
@@ -143,19 +144,19 @@ public class Loan {
     }
 
     public void setLeftToPay(double leftToPay) {
-        this.leftToPay = leftToPay;
+        this.leftToPay = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(leftToPay);
     }
 
     public double getLeftToPay() {
         return this.leftToPay;
     }
 
-    public void setIntrestRate(double rateInPercent) {
-        this.intrestRate = rateInPercent;
+    public void setInterestRate(double rateInPercent) {
+        this.interestRate = rateInPercent;
     }
 
-    public double getIntrestRate() {
-        return this.intrestRate;
+    public double getInterestRate() {
+        return this.interestRate;
     }
 
     public void setCommisionRate(double commsionInPercent) {
@@ -181,52 +182,31 @@ public class Loan {
     // Method to calculate the amount of interests that bank charges for launching
     // the loan, basing on amout of money to be borrowed, intrest rate and duration
     // of the loan
-    public double intrestAmount(double principalAmount, double intrestRate, int loanDuration) {
-        double convertedRate = intrestRate * 0.01; // converting from % value to decimal value (i.e. 3% to 0.03)
+    public double intrestAmount(double principalAmount, double interestRate, int loanDuration) {
+        double convertedRate = interestRate * 0.01; // converting from % value to decimal value (i.e. 3% to 0.03)
         double total = principalAmount * (1 + ((convertedRate * loanDuration) / 12));
         double intrestAmount = total - principalAmount;
-        return intrestAmount;
+        return DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(intrestAmount);
     }
 
     // Method to calculate commision charged by the bank when granting the loan
     public double commisionAmout(double principalAmount, double commisionRate) {
-        double decimalRate = intrestRate * 0.01; // converting from % value to decimal value (i.e. 3% to 0.03)
+        double decimalRate = commisionRate * 0.01; // converting from % value to decimal value (i.e. 3% to 0.03)
         double commision = principalAmount * decimalRate;
-        return commision;
+        return DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(commision);
     }
 
     // Method to generate installments for the loan and saving them to the list of installments
     public void generateInstallments() {
-        double installmentAmount = this.totalLoanAmount / this.loanDuration;
-        for (int i = 1; i <= this.loanDuration; i++) {
+        double modulo = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(this.totalLoanAmount % this.loanDuration);
+        double wholeInstalment = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces((this.totalLoanAmount - modulo) / this.loanDuration);
+        Installment firstInstallment = new Installment(this, wholeInstalment + modulo, this.dateOfLoan.plusMonths(1));
+        this.installments.add(firstInstallment);
+        
+        for (int i = 2; i <= this.loanDuration; i++) {
             LocalDateTime dueDate = this.dateOfLoan.plusMonths(i);
-            Installment installment = new Installment(this, installmentAmount, dueDate);
+            Installment installment = new Installment(this, wholeInstalment, dueDate);
             this.installments.add(installment);
         }
-    }
-
-    public void grantLoan(Account loanAccount, Account checkingAccount, double principalAmount, double intrestRate,
-            double commisionRate, int loanDuration, Account bankAccount) {
-        // Calculating commision and amount of intrests
-        double intrestForBank = intrestAmount(principalAmount, intrestRate, loanDuration);
-        double commisionForBank = commisionAmout(principalAmount, commisionRate);
-        // Setting date of loan
-        setDateOfLoan(LocalDateTime.now());
-        // Money transfer from the account where loan is launched to the checking
-        // account of the customer + setting time and date for the loan
-        new Transaction(loanAccount, checkingAccount, principalAmount);
-        setDateOfLoan(LocalDateTime.now());
-        // Profit from intrest transfer from the account where loan is launched to the
-        // bank's account
-        new Transaction(loanAccount, bankAccount, intrestForBank);
-        // Profit from commision transfer from the account where loan is launched to the
-        // bank's account
-        new Transaction(loanAccount, bankAccount, commisionForBank);
-        // Updating total amount of the loan
-        double totalLoanAmount = principalAmount + intrestForBank + commisionForBank;
-        setTotalLoanAmout(totalLoanAmount);
-        setLeftToPay(totalLoanAmount);
-
-        generateInstallments();
     }
 }

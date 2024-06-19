@@ -25,6 +25,10 @@ public class Client {
     @Column(name = "bcryptClientPassword", length = 68)
     private String clientPassword;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "checkingAccountId", referencedColumnName = "accountId")
+    private Account checkingAccount;
+
     @OneToMany(mappedBy = "client", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private List<Account> accounts = new ArrayList<>();
 
@@ -74,6 +78,14 @@ public class Client {
         this.clientPassword = createBcryptHashedPassword(clientPassword);
     }
 
+    public Account getCheckingAccount() {
+        return checkingAccount;
+    }
+
+    public void setCheckingAccount(Account checkingAccount) {
+        this.checkingAccount = checkingAccount;
+    }
+
     public List<Account> getAccountsList() {
         return accounts;
     }
@@ -112,7 +124,4 @@ public class Client {
         deposit.setClient(this);
         this.deposits.add(deposit);
     }
-
-    // Method to create bcrypted password from plain text to insert into database crypted password
-    // Change location of this method to utils
 }
