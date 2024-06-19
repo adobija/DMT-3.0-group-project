@@ -2,7 +2,6 @@ package com.dmt.bankingapp.controller;
 
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.entity.Commission;
-import com.dmt.bankingapp.repository.ClientRepository;
 import com.dmt.bankingapp.repository.CommissionRepository;
 import com.dmt.bankingapp.service.implementation.DetailsOfLoggedClientImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,7 +53,7 @@ public class CommissionController {
         String newName = oldCommission.getCommissionOf() + " rate till " + LocalDateTime.now().toString();
         oldCommission.setCommissionOf(newName);
         //Get old commission rate
-        int oldRate = commissionInstance.getCommissionRateInPercent();
+        double oldRate = commissionInstance.getCommissionRateInPercent();
         oldCommission.setCommissionRateInPercent(oldRate);
         //Set new commission rate
         commissionInstance.setCommissionRateInPercent(commissionRateAsPercent);
@@ -89,7 +88,7 @@ public class CommissionController {
         String newName = oldCommission.getCommissionOf() + " rate till " + LocalDateTime.now().toString();
         oldCommission.setCommissionOf(newName);
         //Get old commission rate
-        int oldRate = commissionInstance.getCommissionRateInPercent();
+        double oldRate = commissionInstance.getCommissionRateInPercent();
         oldCommission.setCommissionRateInPercent(oldRate);
         //Set new commission rate
         commissionInstance.setCommissionRateInPercent(commissionRateAsPercent);
@@ -124,7 +123,7 @@ public class CommissionController {
         String newName = oldCommission.getCommissionOf() + " rate till " + LocalDateTime.now().toString();
         oldCommission.setCommissionOf(newName);
         //Get old commission rate
-        int oldRate = commissionInstance.getCommissionRateInPercent();
+        double oldRate = commissionInstance.getCommissionRateInPercent();
         oldCommission.setCommissionRateInPercent(oldRate);
         //Set new commission rate
         commissionInstance.setCommissionRateInPercent(interestRateAsPercent);

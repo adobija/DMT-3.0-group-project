@@ -71,7 +71,7 @@ public class DepositController {
         } 
 
         // Fetch live commision of deposit
-        int commissionRate = commissionRepository.findByCommissionOf("DEPOSIT").getCommissionRateInPercent();
+        double commissionRate = commissionRepository.findByCommissionOf("DEPOSIT").getCommissionRateInPercent();
 
         Deposit deposit = new Deposit(commissionRate, depositDuration, checkingAccount, totalDepositAmount, depositTypeValue);
         

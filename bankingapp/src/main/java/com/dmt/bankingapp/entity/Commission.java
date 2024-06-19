@@ -17,12 +17,12 @@ public class Commission {
     private String commissionOf;
 
     @Column(name = "commissionRateInPercent")
-    private int commissionRateInPercent;
+    private double commissionRateInPercent;
 
     @Column(name = "creationTime")
     private LocalDateTime creationTime;
 
-    public Commission(int commissionRateInPercent, String commissionOf, LocalDateTime creationTime) {
+    public Commission(double commissionRateInPercent, String commissionOf, LocalDateTime creationTime) {
         this.commissionRateInPercent = commissionRateInPercent;
         this.commissionOf = commissionOf;
         this.creationTime = creationTime;
@@ -43,11 +43,11 @@ public class Commission {
         this.commissionOf = commissionOf;
     }
 
-    public int getCommissionRateInPercent() {
+    public double getCommissionRateInPercent() {
         return commissionRateInPercent;
     }
 
-    public void setCommissionRateInPercent(int commissionRateInPercent) {
+    public void setCommissionRateInPercent(double commissionRateInPercent) {
         this.commissionRateInPercent = commissionRateInPercent;
     }
 
