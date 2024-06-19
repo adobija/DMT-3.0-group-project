@@ -46,6 +46,7 @@ public class BankingappApplication {
 				Account accountForLoans = new Account("BANK_LOAN", Account.AccountType.BANK, bank);
 				Account accountForDeposits = new Account("BANK_DEPOSIT", Account.AccountType.BANK, bank);
 				accountForLoans.setAccountBalance(30000000, false);
+				accountForDeposits.setAccountBalance(100000, false);
 
 				clientRepository.save(bank);
 				accountRepository.save(accountForDeposits);
