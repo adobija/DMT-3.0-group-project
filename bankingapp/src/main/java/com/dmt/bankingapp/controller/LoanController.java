@@ -71,10 +71,10 @@ public class LoanController {
         Account loanAccount = accountService.getLatestAccount();
 
         // Fetch live commission rate
-        int commisionRate = commissionRepository.findByCommissionOf("LOAN_COMMISSION").getCommissionRateInPercent();
+        double commisionRate = commissionRepository.findByCommissionOf("LOAN_COMMISSION").getCommissionRateInPercent();
 
         // Fetch live interest rate
-        int interestRate = commissionRepository.findByCommissionOf("LOAN_INTEREST").getCommissionRateInPercent();
+        double interestRate = commissionRepository.findByCommissionOf("LOAN_INTEREST").getCommissionRateInPercent();
 
         Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
 
