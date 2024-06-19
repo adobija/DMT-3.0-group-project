@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 import com.dmt.bankingapp.utils.DecimalPlacesAdjuster;
+import org.springframework.cglib.core.Local;
 
 @Entity
 @Table(name = "Deposits")
@@ -44,6 +45,9 @@ public class Deposit {
     @Enumerated(EnumType.STRING)
     @Column(name = "depositType", nullable = true)
     private DepositType depositType;
+
+    @Column(name = "dateOfWithdrawn")
+    private LocalDateTime dateOfWithdrawn;
 
     public Deposit(double interestRate, int depositDuration, Account checkingAccount, double totalDepositAmount,
             DepositType depositType) {
@@ -169,5 +173,17 @@ public class Deposit {
         }
 
         this.returnOfInvestment = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(depositAmount);
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public void setDateOfWithdrawn(LocalDateTime dateOfWithdrawn) {
+        this.dateOfWithdrawn = dateOfWithdrawn;
+    }
+
+    public LocalDateTime getDateOfWithdrawn() {
+        return dateOfWithdrawn;
     }
 }
