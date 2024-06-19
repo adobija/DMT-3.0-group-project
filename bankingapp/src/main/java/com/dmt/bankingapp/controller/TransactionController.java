@@ -53,15 +53,15 @@ public class TransactionController {
         
         Account giver = accountRepository.findById(giverAccountID).orElse(null);
         if (giver == null) {
-            return "Sender's account has not been found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sender's account has not been found");
         }
         if (!giver.getClient().equals(client)) {
-            return "You are not permitted to transfer money from an account you do not own";
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not permitted to transfer money from an account you do not own");
         }
 
         Account receiver = accountRepository.findById(receiverAccountID).orElse(null);
         if (receiver == null) {
-            return "Receiver's account has not been found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Receiver's account has not been found");
         }
         
         try {
@@ -69,7 +69,7 @@ public class TransactionController {
             transactionRepository.save(transaction);
             return "Transaction created successfully! Amount transfered: " + transaction.getAmount();
         } catch (IllegalStateException e) {
-            return e.getMessage();
+            throw new ResponseStatusException(HttpStatus.valueOf(500), e.getMessage());
         }
     }
 

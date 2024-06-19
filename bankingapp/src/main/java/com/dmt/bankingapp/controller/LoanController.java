@@ -1,13 +1,7 @@
 package com.dmt.bankingapp.controller;
 
-import com.dmt.bankingapp.entity.Loan;
-import com.dmt.bankingapp.entity.Transaction;
-import com.dmt.bankingapp.entity.Account;
-import com.dmt.bankingapp.entity.Client;
-import com.dmt.bankingapp.repository.LoanRepository;
-import com.dmt.bankingapp.repository.TransactionRepository;
-import com.dmt.bankingapp.repository.AccountRepository;
-import com.dmt.bankingapp.repository.ClientRepository;
+import com.dmt.bankingapp.entity.*;
+import com.dmt.bankingapp.repository.*;
 import com.dmt.bankingapp.service.AccountService;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 
@@ -22,7 +16,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/loan")
@@ -46,12 +39,13 @@ public class LoanController {
     @Autowired
     private DetailsOfLoggedClient detailsOfLoggedClient;
 
+    @Autowired
+    private CommissionRepository commissionRepository;
+
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @PostMapping("/add")
     public @ResponseBody String addNewLoan(@RequestParam double principalAmount,
-                                           @RequestParam double interestRate,
-                                           @RequestParam double commisionRate,
                                            @RequestParam int loanDuration,
                                            @RequestParam String bankAccountNumber,
                                            HttpServletRequest request) {
@@ -59,12 +53,12 @@ public class LoanController {
         Client client = clientRepository.findByClientName(currentName);
         Account checkingAccount = client.getCheckingAccount();
         if (checkingAccount == null) {
-            return "Checking account has not been found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Checking account has not been found");
         }
 
         Account bankAccount = accountRepository.findByAccountNumber(bankAccountNumber);
         if (bankAccount == null) {
-            return "Bank account has not been found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bank account has not been found");
         }
 
         // Create a new loan account using the AccountService's method
@@ -75,6 +69,12 @@ public class LoanController {
 
         // Fetch the newly created loan account
         Account loanAccount = accountService.getLatestAccount();
+
+        // Fetch live commission rate
+        int commisionRate = commissionRepository.findByCommissionOf("LOAN_COMMISSION").getCommissionRateInPercent();
+
+        // Fetch live interest rate
+        int interestRate = commissionRepository.findByCommissionOf("LOAN_INTEREST").getCommissionRateInPercent();
 
         Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
 

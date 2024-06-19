@@ -33,26 +33,10 @@ public class ClientController {
     @Autowired
     private AccountService accountService;
 
-    @PostMapping("/add")  // curl.exe -d "clientName=NAME&clientPassword=PASSWORD&isAdmin=false" http://localhost:8080/client/add
-    public @ResponseBody String addNewClient(@RequestParam String clientName, @RequestParam String clientPassword, @RequestParam boolean isAdmin) {
-        Client exists = clientRepository.findByClientName(clientName);
-        if (exists != null) {
-            return "Client with this user name already exists - failed to create new client profile";
-        } else {
-            Client client = new Client(clientName, isAdmin, clientPassword);
-            clientRepository.save(client);
-            accountService.addNewAccount(Account.AccountType.CHECKING, client);
-            client.addAccount(accountService.getLatestAccount());
-            client.setCheckingAccount(accountService.getLatestAccount());
-            clientRepository.save(client);
-            return "New client profile created successfully";
-        }
-    }
-
     @PostMapping("/editName")
     public @ResponseBody String editName(@RequestParam String newName, HttpServletRequest request) {
         if (clientRepository.findByClientName(newName) != null) {
-            return "Name has already been used - failed to update client's name";
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Name has already been used - failed to update client's name");
         }
         String currentName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(currentName);
@@ -61,7 +45,7 @@ public class ClientController {
             clientRepository.save(client);
             return "Client's name updated successfully";
         } else {
-            return "Client not found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
         }
     }
 
@@ -72,14 +56,14 @@ public class ClientController {
         if (client != null) {
             String storedHashedPassword = client.getClientPassword().replace("{bcrypt}", ""); // Remove prefix for comparison
             if (BCrypt.checkpw(newPassword, storedHashedPassword)) {
-                return "Please choose a new password that is different from the previous password";
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Please choose a new password that is different from the previous password");
             } else {
                 client.setClientPassword(newPassword);
                 clientRepository.save(client);
                 return "Client's password updated successfully";
             }
         } else {
-            return "Client not found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
         }
     }
 
@@ -88,7 +72,7 @@ public class ClientController {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
-            return "You don't have permission!";
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
         Optional<Client> foundClientOptional = clientRepository.findById(clientId);
         Client foundClient = foundClientOptional.get();
@@ -97,7 +81,7 @@ public class ClientController {
             clientRepository.save(foundClient);
             return "Client's permission updated successfully";
         } else {
-            return "Client not found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
         }
     }
 

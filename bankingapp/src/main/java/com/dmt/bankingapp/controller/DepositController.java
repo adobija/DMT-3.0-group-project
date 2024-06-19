@@ -1,16 +1,14 @@
 package com.dmt.bankingapp.controller;
 
+import com.dmt.bankingapp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dmt.bankingapp.entity.Account;
-import com.dmt.bankingapp.repository.AccountRepository;
-import com.dmt.bankingapp.repository.ClientRepository;
-import com.dmt.bankingapp.repository.DepositRepository;
-import com.dmt.bankingapp.repository.TransactionRepository;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +19,7 @@ import com.dmt.bankingapp.entity.Deposit.DepositType;
 import com.dmt.bankingapp.entity.Transaction;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping(path = "/deposit")
@@ -41,6 +40,9 @@ public class DepositController {
     @Autowired
     private DetailsOfLoggedClient detailsOfLoggedClient;
 
+    @Autowired
+    private CommissionRepository commissionRepository;
+
     @PostMapping("/addNewDeposit")
     public @ResponseBody String addNewDeposit(
 
@@ -53,7 +55,7 @@ public class DepositController {
         Client client = clientRepository.findByClientName(currentName);
         Account checkingAccount = client.getCheckingAccount();
         if (checkingAccount == null) {
-            return "Checking account has not been found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Checking account has not been found");
         }
 
         Account bankAccount = accountRepository.findByAccountNumber("BANK_DEPOSIT");
@@ -67,8 +69,11 @@ public class DepositController {
         else if (depositType.equalsIgnoreCase("PROGRESSIVE")) {
             depositTypeValue = DepositType.PROGRESSIVE;
         } 
-        
-        Deposit deposit = new Deposit(10, depositDuration, checkingAccount, totalDepositAmount, depositTypeValue);
+
+        // Fetch live commision of deposit
+        int commissionRate = commissionRepository.findByCommissionOf("DEPOSIT").getCommissionRateInPercent();
+
+        Deposit deposit = new Deposit(commissionRate, depositDuration, checkingAccount, totalDepositAmount, depositTypeValue);
         
         switch (deposit.getDepositType()) {
             case FIXED:
