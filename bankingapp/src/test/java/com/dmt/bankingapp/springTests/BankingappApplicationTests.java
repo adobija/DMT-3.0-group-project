@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.CommandLineRunner;
 
+import java.time.LocalDateTime;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -57,8 +59,8 @@ public class BankingappApplicationTests {
         // Given
         Client existingClient = new Client("BankOwner", true, "dmtprojekt2024");
         when(clientRepository.findByClientName("BankOwner")).thenReturn(existingClient);
-        when(commissionRepository.findByCommissionOf("LOAN")).thenReturn(new Commission(10, "LOAN"));
-        when(commissionRepository.findByCommissionOf("DEPOSIT")).thenReturn(new Commission(10, "DEPOSIT"));
+        when(commissionRepository.findByCommissionOf("LOAN")).thenReturn(new Commission(10, "LOAN", LocalDateTime.now()));
+        when(commissionRepository.findByCommissionOf("DEPOSIT")).thenReturn(new Commission(10, "DEPOSIT", LocalDateTime.now()));
 
         // When
         CommandLineRunner runner = bankingappApplication.commandLineRunner();
