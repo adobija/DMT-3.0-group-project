@@ -54,6 +54,11 @@ public class Transaction {
             throw new IllegalStateException("You cannot transfer more than 1 billion!");
         }
 
+        // Restricting transfers between the same account
+        if (giver.getAccountNumber().equals(receiver.getAccountNumber())) {
+            throw new IllegalStateException("You cannot transfer to the same account!");
+        }
+
         // Restricting making transfers from loan accounts ...
         if (giver.getAccountType().equals(AccountType.LOAN)) {
             // ... after loan is launched - only transfers to a bank account are allowed
