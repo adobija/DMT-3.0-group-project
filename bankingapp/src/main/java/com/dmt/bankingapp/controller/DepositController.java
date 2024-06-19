@@ -1,7 +1,6 @@
 package com.dmt.bankingapp.controller;
 
 import com.dmt.bankingapp.repository.*;
-import com.dmt.bankingapp.utils.CalculateWithdrawDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -145,14 +144,14 @@ public class DepositController {
         }
 
         //deposit withdraw
-        if(requestedDeposit.getDepositDuration() == CalculateWithdrawDate.monthsOfDepositIsActive(requestedDeposit.getDateOfDeposit(), LocalDateTime.now())){
+        LocalDateTime expectedDateOfWithdraw = requestedDeposit.getDateOfDeposit().plusMonths(requestedDeposit.getDepositDuration());
+        if(expectedDateOfWithdraw.isBefore(LocalDateTime.now()) || expectedDateOfWithdraw.isEqual(LocalDateTime.now())){
             Transaction withdraw = new Transaction(bankAccount, clientCheckingAccount, requestedDeposit.getReturnOfInvestment());
             transactionRepository.save(withdraw);
             requestedDeposit.setActive(false);
             requestedDeposit.setDateOfWithdrawn(LocalDateTime.now());
             depositRepository.save(requestedDeposit);
         }else{
-            LocalDateTime expectedDateOfWithdraw = requestedDeposit.getDateOfDeposit().plusMonths(requestedDeposit.getDepositDuration());
             throw new ResponseStatusException(HttpStatus.LOCKED, "You cannot withdraw money from that deposit until " + expectedDateOfWithdraw + "!");
         }
 
