@@ -1,5 +1,6 @@
 package com.dmt.bankingapp.springTests.controllerTests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -9,14 +10,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockHttpServletRequest;
+
 import com.dmt.bankingapp.controller.DepositController;
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.entity.Commission;
 import com.dmt.bankingapp.entity.Deposit;
+import com.dmt.bankingapp.entity.Transaction;
 import com.dmt.bankingapp.repository.AccountRepository;
 import com.dmt.bankingapp.repository.ClientRepository;
 import com.dmt.bankingapp.repository.CommissionRepository;
@@ -52,26 +54,32 @@ class DepositControllerTest {
         MockitoAnnotations.openMocks(this); // Initialize mocks
         request = new MockHttpServletRequest();
         client = new Client();
-        checkingAccount = new Account();
-        bankAccount = new Account();
+        checkingAccount = new Account("CHK123", Account.AccountType.CHECKING, client);
+        bankAccount = new Account("BANK_DEPOSIT", Account.AccountType.BANK, null);
+
+        client.setCheckingAccount(checkingAccount);
     }
 
     @Test
     void testAddNewDepositSuccess() {
-        // Set up for success scenario
-        client.setCheckingAccount(checkingAccount);
-        checkingAccount.setAccountBalance(2000.0, true); // Ensure sufficient funds
-        detailsOfLoggedClient = Mockito.mock(DetailsOfLoggedClient.class);
+        // Ensure sufficient funds
+        checkingAccount.setAccountBalance(2000.0, false);
 
         when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn("ClientName");
         when(clientRepository.findByClientName("ClientName")).thenReturn(client);
         when(accountRepository.findByAccountNumber("BANK_DEPOSIT")).thenReturn(bankAccount);
         List<Deposit> existingDeposits = new ArrayList<>();
         when(depositRepository.getAllByClient(client)).thenReturn(existingDeposits);
+
         Commission commission = new Commission();
         commission.setCommissionRateInPercent(5);
         when(commissionRepository.findByCommissionOf("DEPOSIT")).thenReturn(commission);
 
-    }
+        String response = depositController.addNewDeposit(500.0, 12, "FIXED", request);
 
+        // Assertions
+        assertEquals("Deposit added successfully", response);
+        verify(depositRepository, times(1)).save(any(Deposit.class));
+        verify(transactionRepository, times(1)).save(any(Transaction.class));
+    }
 }
