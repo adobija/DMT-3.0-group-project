@@ -37,7 +37,10 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.POST, "/deposit/**").authenticated()
                 //security for CommissionController
                 .requestMatchers(HttpMethod.POST, "/commission/**").authenticated()
+                //security for error
+                .requestMatchers("/error/**").permitAll()
         );
+
         // Set http login as Basic Auth
         httpSecurity.httpBasic(Customizer.withDefaults());
 
