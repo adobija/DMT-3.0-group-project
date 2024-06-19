@@ -1,12 +1,10 @@
 package com.dmt.bankingapp.controller;
 
 import com.dmt.bankingapp.repository.*;
+import com.dmt.bankingapp.utils.CalculateWithdrawDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
@@ -18,8 +16,10 @@ import com.dmt.bankingapp.entity.Deposit;
 import com.dmt.bankingapp.entity.Deposit.DepositType;
 import com.dmt.bankingapp.entity.Transaction;
 
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/deposit")
@@ -57,7 +57,9 @@ public class DepositController {
         if (checkingAccount == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Checking account has not been found");
         }
-
+        if(checkingAccount.getAccountBalance() < totalDepositAmount){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "You don't have enough money!");
+        }
         Account bankAccount = accountRepository.findByAccountNumber("BANK_DEPOSIT");
 
         DepositType depositTypeValue = null;
@@ -69,6 +71,14 @@ public class DepositController {
         else if (depositType.equalsIgnoreCase("PROGRESSIVE")) {
             depositTypeValue = DepositType.PROGRESSIVE;
         } 
+        //Check if client have already this type of Deposit
+        List<Deposit> checkDeposits = depositRepository.getAllByClient(client);
+        for(Deposit x : checkDeposits){
+            if(x.getDepositType().equals(depositTypeValue) && x.getIsActive()){
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Client have already one deposit of type " + depositTypeValue + "!");
+            }
+        }
+
 
         // Fetch live commision of deposit
         int commissionRate = commissionRepository.findByCommissionOf("DEPOSIT").getCommissionRateInPercent();
@@ -92,5 +102,61 @@ public class DepositController {
 
         return "Deposit added successfully";
     }
+    @GetMapping("/withdrawDeposit")
+    public @ResponseBody String withdrawDeposit(HttpServletRequest request, String depositType){
+        //Get client instance
+        Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
+        //Fetch his deposit records
+        List<Deposit> depositOfClient = depositRepository.getAllByClient(client);
+        //error if client don't have any deposits
+        if(depositOfClient.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client don't have any deposits!");
+        }
+        //check what type
+        DepositType type = null;
+        if(depositType.equalsIgnoreCase("FIXED")){
+            type = DepositType.FIXED;
+        } else if (depositType.equalsIgnoreCase("PROGRESSIVE")) {
+            type = DepositType.PROGRESSIVE;
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no type of deposit as " + depositType.toUpperCase()+ "!");
+        }
+        //Get instance of this deposit
+        Deposit requestedDeposit = null;
+        for(Deposit x : depositOfClient){
+            if(x.getDepositType().equals(type)){
+                requestedDeposit = x;
+            }
+        }
+        //Test if client can withdraw deposit
+        assert requestedDeposit != null;
+        if(!requestedDeposit.getIsActive()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot transfer money from this deposit account because the deposit has already been withdrawn! Date of withdrawn: " + requestedDeposit.getDateOfWithdrawn());
+        }
+        //Fetch account of bank
+        Account bankAccount = accountRepository.findByAccountNumber("BANK_DEPOSIT");
+        //Get client checking account
+        List<Account> listOfClientAccounts = accountRepository.findByClient(client);
+        Account clientCheckingAccount = null;
+        for(Account x : listOfClientAccounts){
+            if(x.getAccountType().equals(Account.AccountType.CHECKING)){
+                clientCheckingAccount = x;
+            }
+        }
 
+        //deposit withdraw
+        if(requestedDeposit.getDepositDuration() == CalculateWithdrawDate.monthsOfDepositIsActive(requestedDeposit.getDateOfDeposit(), LocalDateTime.now())){
+            Transaction withdraw = new Transaction(bankAccount, clientCheckingAccount, requestedDeposit.getReturnOfInvestment());
+            transactionRepository.save(withdraw);
+            requestedDeposit.setActive(false);
+            requestedDeposit.setDateOfWithdrawn(LocalDateTime.now());
+            depositRepository.save(requestedDeposit);
+        }else{
+            LocalDateTime expectedDateOfWithdraw = requestedDeposit.getDateOfDeposit().plusMonths(requestedDeposit.getDepositDuration());
+            throw new ResponseStatusException(HttpStatus.LOCKED, "You cannot withdraw money from that deposit until " + expectedDateOfWithdraw + "!");
+        }
+
+        return "Successfully withdrawn " + requestedDeposit.getReturnOfInvestment() + " zł!";
+
+    }
 }
