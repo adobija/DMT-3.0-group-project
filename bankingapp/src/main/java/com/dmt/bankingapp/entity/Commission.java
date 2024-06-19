@@ -19,13 +19,13 @@ public class Commission {
     @Column(name = "commissionRateInPercent")
     private int commissionRateInPercent;
 
-    @Column(name = "createdAt")
-    private LocalDateTime createdAt;
+    @Column(name = "creationTime")
+    private LocalDateTime creationTime;
 
-    public Commission(int commissionRateInPercent, String commissionOf, LocalDateTime createdAt) {
+    public Commission(int commissionRateInPercent, String commissionOf, LocalDateTime creationTime) {
         this.commissionRateInPercent = commissionRateInPercent;
         this.commissionOf = commissionOf;
-        this.createdAt = createdAt;
+        this.creationTime = creationTime;
     }
 
     public Commission() {
@@ -51,7 +51,7 @@ public class Commission {
         this.commissionRateInPercent = commissionRateInPercent;
     }
 
-    public LocalDateTime getcreatedAt() {
-        return createdAt;
+    public LocalDateTime getcreationTime() {
+        return creationTime;
     }
 }
