@@ -192,26 +192,6 @@ public class Transaction {
         }
     }
 
-    public void processDepositPayments(Account giver, Account receiver, double amount) {
-        Deposit deposit = receiver.getDeposit();
-        if (deposit.getIsActive()) {
-
-            if (deposit.getDepositType() == DepositType.FIXED) {
-
-                manipulateTransaction(giver, receiver, deposit.getReturnOfInvestment());
-            } else if (deposit.getDepositType() == DepositType.PROGRESSIVE) {
-
-                manipulateTransaction(giver, receiver, deposit.getReturnOfInvestment());
-            }
-        } else
-
-        {
-            // Handle the case where the deposit is already paid
-            throw new IllegalStateException(
-                    "You cannot transfer money to this deposit account since the deposit has already been paid!");
-        }
-    }
-
     @Override
     public String toString() {
         return "Transaction{" +
