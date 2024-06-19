@@ -2,6 +2,8 @@ package com.dmt.bankingapp.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "Commissions")
 public class Commission {
@@ -17,9 +19,13 @@ public class Commission {
     @Column(name = "commissionRateInPercent")
     private int commissionRateInPercent;
 
-    public Commission(int commissionRateInPercent, String commissionOf) {
+    @Column(name = "createdAt")
+    private LocalDateTime createdAt;
+
+    public Commission(int commissionRateInPercent, String commissionOf, LocalDateTime createdAt) {
         this.commissionRateInPercent = commissionRateInPercent;
         this.commissionOf = commissionOf;
+        this.createdAt = createdAt;
     }
 
     public Commission() {
@@ -43,5 +49,9 @@ public class Commission {
 
     public void setCommissionRateInPercent(int commissionRateInPercent) {
         this.commissionRateInPercent = commissionRateInPercent;
+    }
+
+    public LocalDateTime getcreatedAt() {
+        return createdAt;
     }
 }
