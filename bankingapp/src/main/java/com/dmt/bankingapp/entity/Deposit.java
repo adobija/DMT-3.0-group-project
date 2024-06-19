@@ -19,6 +19,9 @@ public class Deposit {
     @JoinColumn(name = "checkingAccount", referencedColumnName = "accountId")
     private Account checkingAccount;
 
+    @Column(name = "isActive")
+    private boolean isActive;
+
     @ManyToOne
     @JoinColumn(name = "client", referencedColumnName = "clientId")
     private Client client;
@@ -54,6 +57,10 @@ public class Deposit {
         this.client = checkingAccount.getClient();
         if (client != null) {
             client.addDeposit(this);
+        }
+
+        if (this.totalDepositAmount > 0) {
+            this.isActive = true;
         }
 
         this.dateOfDeposit = LocalDateTime.now();
@@ -97,6 +104,10 @@ public class Deposit {
 
     public double getReturnOfInvestment() {
         return returnOfInvestment;
+    }
+
+    public boolean getIsActive() {
+        return this.isActive;
     }
 
     public void setClient(Client client) {
