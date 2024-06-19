@@ -46,13 +46,17 @@ public class Account {
         }
     }
 
-    public Account(String accountNumber, AccountType accountType, Client client, Loan loan, Deposit deposit) {
+    public Account(String accountNumber, AccountType accountType, Client client, Loan loan) {
         this(accountNumber, accountType, client);
         if (accountType == AccountType.LOAN) {
             this.loan = loan;
         } else {
             throw new IllegalArgumentException("Loan can only be assigned for accounts of the LOAN type!");
         }
+    }
+
+    public Account(String accountNumber, AccountType accountType, Client client, Deposit deposit) {
+        this(accountNumber, accountType, client);
         if (accountType == AccountType.DEPOSIT) {
             this.deposit = deposit;
         } else {
