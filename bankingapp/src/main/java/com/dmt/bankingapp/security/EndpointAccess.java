@@ -35,6 +35,7 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.GET, "/history/**").authenticated()
                 //security for DepositController
                 .requestMatchers(HttpMethod.POST, "/deposit/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/deposit/**").authenticated()
                 //security for CommissionController
                 .requestMatchers(HttpMethod.POST, "/commission/**").authenticated()
                 //security for error
