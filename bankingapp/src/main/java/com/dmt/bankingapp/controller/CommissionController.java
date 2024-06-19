@@ -31,15 +31,15 @@ public class CommissionController {
         this.detailsOfLoggedClient = detailsOfLoggedClient;
     }
 
-    @PostMapping(path = "/setForLoan")
-    public String setCommissionRateForLoan(@RequestParam int commissionRateAsPercent, HttpServletRequest request){
+    @PostMapping(path = "/setForLoanCommission")
+    public String setCommissionRateForLoanCommission(@RequestParam int commissionRateAsPercent, HttpServletRequest request){
         //check if accessing client is admin
         Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
         if(!client.isAdmin()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
-        //Get commission record of loan
-        Commission commissionInstance = commissionRepository.findByCommissionOf("LOAN");
+        //Get commission record of loan commission
+        Commission commissionInstance = commissionRepository.findByCommissionOf("LOAN_COMMISSION");
         //Check if new commission rate is different
         if(commissionRateAsPercent == commissionInstance.getCommissionRateInPercent()){
             throw new ResponseStatusException(HttpStatus.IM_USED, "New commission rate must be different from previous one!");
@@ -99,5 +99,40 @@ public class CommissionController {
 
         //return
         return "Successfully updated commission rate for DEPOSITS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent();
+    }
+
+    @PostMapping(path = "/setForLoanInterest")
+    public String setCommissionRateForLoanInterest(@RequestParam int interestRateAsPercent, HttpServletRequest request){
+        //check if accessing client is admin
+        Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
+        if(!client.isAdmin()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
+        }
+        //Get commission record of loan interest
+        Commission commissionInstance = commissionRepository.findByCommissionOf("LOAN_INTEREST");
+        //Check if new commission rate is different
+        if(interestRateAsPercent == commissionInstance.getCommissionRateInPercent()){
+            throw new ResponseStatusException(HttpStatus.IM_USED, "New interest rate must be different from previous one!");
+        }
+        //Check if new commission rate is valid
+        if(interestRateAsPercent < 0){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Insert valid new commission rate");
+        }
+        //Create instance of previous commission rate
+        Commission oldCommission = new Commission(commissionInstance.getCommissionRateInPercent(), commissionInstance.getCommissionOf(), LocalDateTime.now());
+        //Change name of oldCommission
+        String newName = oldCommission.getCommissionOf() + " rate till " + LocalDateTime.now().toString();
+        oldCommission.setCommissionOf(newName);
+        //Get old commission rate
+        int oldRate = commissionInstance.getCommissionRateInPercent();
+        oldCommission.setCommissionRateInPercent(oldRate);
+        //Set new commission rate
+        commissionInstance.setCommissionRateInPercent(interestRateAsPercent);
+        //Save to db
+        commissionRepository.save(commissionInstance);
+        commissionRepository.save(oldCommission);
+
+        //return
+        return "Successfully updated interest rate for LOANS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent();
     }
 }

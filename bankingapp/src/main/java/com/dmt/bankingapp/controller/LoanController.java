@@ -46,7 +46,6 @@ public class LoanController {
 
     @PostMapping("/add")
     public @ResponseBody String addNewLoan(@RequestParam double principalAmount,
-                                           @RequestParam double interestRate,
                                            @RequestParam int loanDuration,
                                            @RequestParam String bankAccountNumber,
                                            HttpServletRequest request) {
@@ -72,7 +71,10 @@ public class LoanController {
         Account loanAccount = accountService.getLatestAccount();
 
         // Fetch live commission rate
-        int commisionRate = commissionRepository.findByCommissionOf("LOAN").getCommissionRateInPercent();
+        int commisionRate = commissionRepository.findByCommissionOf("LOAN_COMMISSION").getCommissionRateInPercent();
+
+        // Fetch live interest rate
+        int interestRate = commissionRepository.findByCommissionOf("LOAN_INTEREST").getCommissionRateInPercent();
 
         Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
 

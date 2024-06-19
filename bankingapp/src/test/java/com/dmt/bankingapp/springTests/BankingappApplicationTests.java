@@ -51,7 +51,7 @@ public class BankingappApplicationTests {
         // Then
         verify(clientRepository, times(1)).save(any(Client.class));
         verify(accountRepository, times(2)).save(any(Account.class));
-        verify(commissionRepository, times(2)).save(any(Commission.class));
+        verify(commissionRepository, times(3)).save(any(Commission.class));
     }
 
     @Test
@@ -59,8 +59,9 @@ public class BankingappApplicationTests {
         // Given
         Client existingClient = new Client("BankOwner", true, "dmtprojekt2024");
         when(clientRepository.findByClientName("BankOwner")).thenReturn(existingClient);
-        when(commissionRepository.findByCommissionOf("LOAN")).thenReturn(new Commission(10, "LOAN", LocalDateTime.now()));
+        when(commissionRepository.findByCommissionOf("LOAN_COMMISSION")).thenReturn(new Commission(10, "LOAN_COMMISSION", LocalDateTime.now()));
         when(commissionRepository.findByCommissionOf("DEPOSIT")).thenReturn(new Commission(10, "DEPOSIT", LocalDateTime.now()));
+        when(commissionRepository.findByCommissionOf("LOAN_INTEREST")).thenReturn(new Commission(10, "LOAN_INTEREST", LocalDateTime.now()));
 
         // When
         CommandLineRunner runner = bankingappApplication.commandLineRunner();

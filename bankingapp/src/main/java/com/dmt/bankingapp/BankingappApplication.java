@@ -52,15 +52,19 @@ public class BankingappApplication {
 				accountRepository.save(accountForLoans);
 			}
 
-			Commission checkCommissionForLoan = commissionRepository.findByCommissionOf("LOAN");
+			Commission checkCommissionForLoan = commissionRepository.findByCommissionOf("LOAN_COMMISSION");
 			Commission checkCommissionForDeposit = commissionRepository.findByCommissionOf("DEPOSIT");
-
+			Commission checkCommissionForLoanInterest = commissionRepository.findByCommissionOf("LOAN_INTEREST");
 			if(checkCommissionForLoan == null){
-				Commission commissionForLoan = new Commission(10, "LOAN", LocalDateTime.now());
+				Commission commissionForLoan = new Commission(10, "LOAN_COMMISSION", LocalDateTime.now());
 				commissionRepository.save(commissionForLoan);
 			}
 			if(checkCommissionForDeposit == null){
 				Commission commissionForDeposit = new Commission(10, "DEPOSIT", LocalDateTime.now());
+				commissionRepository.save(commissionForDeposit);
+			}
+			if(checkCommissionForLoanInterest == null){
+				Commission commissionForDeposit = new Commission(10, "LOAN_INTEREST", LocalDateTime.now());
 				commissionRepository.save(commissionForDeposit);
 			}
 
