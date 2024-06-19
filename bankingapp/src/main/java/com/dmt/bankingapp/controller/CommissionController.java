@@ -45,13 +45,13 @@ public class CommissionController {
             throw new ResponseStatusException(HttpStatus.IM_USED, "New commission rate must be different from previous one!");
         }
         //Check if new commission rate is valid
-        if(commissionRateAsPercent >= 0){
+        if(commissionRateAsPercent < 0){
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Insert valid new commission rate");
         }
         //Create instance of previous commission rate
-        Commission oldCommission = commissionInstance;
+        Commission oldCommission = new Commission(commissionInstance.getCommissionRateInPercent(), commissionInstance.getCommissionOf(), LocalDateTime.now());
         //Change name of oldCommission
-        String newName = oldCommission.getCommissionOf() + " to " + LocalDateTime.now().toString();
+        String newName = oldCommission.getCommissionOf() + " rate till " + LocalDateTime.now().toString();
         oldCommission.setCommissionOf(newName);
         //Get old commission rate
         int oldRate = commissionInstance.getCommissionRateInPercent();
@@ -80,13 +80,13 @@ public class CommissionController {
             throw new ResponseStatusException(HttpStatus.IM_USED, "New commission rate must be different from previous one!");
         }
         //Check if new commission rate is valid
-        if(commissionRateAsPercent >= 0){
+        if(commissionRateAsPercent < 0){
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Insert valid new commission rate");
         }
         //Create instance of previous commission rate
-        Commission oldCommission = commissionInstance;
+        Commission oldCommission = new Commission(commissionInstance.getCommissionRateInPercent(), commissionInstance.getCommissionOf(), LocalDateTime.now());
         //Change name of oldCommission
-        String newName = oldCommission.getCommissionOf() + " to " + LocalDateTime.now().toString();
+        String newName = oldCommission.getCommissionOf() + " rate till " + LocalDateTime.now().toString();
         oldCommission.setCommissionOf(newName);
         //Get old commission rate
         int oldRate = commissionInstance.getCommissionRateInPercent();
