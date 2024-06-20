@@ -3,11 +3,11 @@ package com.dmt.bankingapp.springTests.controllerTests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -32,15 +32,17 @@ public class ClientControllerTests {
     @InjectMocks
     private ClientController clientController;
 
+    private MockHttpServletRequest request;
+
     @BeforeEach
     void setUp() {
         // Initialize mocks
         MockitoAnnotations.openMocks(this);
+        request = new MockHttpServletRequest();
     }
 
     @Test
     void testEditNameSuccess() {
-
         // Arrange
         String newName = "New Name";
         String currentName = "Current Name";
@@ -48,8 +50,6 @@ public class ClientControllerTests {
         client.setClientName(currentName);
 
         // Act
-        MockHttpServletRequest request = new MockHttpServletRequest();
-
         when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(currentName);
         when(clientRepository.findByClientName(currentName)).thenReturn(client);
         when(clientRepository.findByClientName(newName)).thenReturn(null);
@@ -58,23 +58,80 @@ public class ClientControllerTests {
 
         // Assert
         assertEquals("Client's name updated successfully", response);
-        ArgumentCaptor<Client> clientArgumentCaptor = ArgumentCaptor.forClass(Client.class); // Declare and initialize
+        ArgumentCaptor<Client> clientArgumentCaptor = ArgumentCaptor.forClass(Client.class);
         verify(clientRepository).save(clientArgumentCaptor.capture());
         assertEquals(newName, clientArgumentCaptor.getValue().getClientName());
     }
 
-    private MockHttpServletRequest request;
-    private String clientName = "ClientName";
-    private String newPassword = "newPassword";
-
     @Test
     void testEditPasswordClientNotFound() {
+        // Arrange
+        String clientName = "ClientName";
+        String newPassword = "newPassword";
+
+        when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(clientName);
         when(clientRepository.findByClientName(clientName)).thenReturn(null);
-    
+
+        // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
             clientController.editPassword(newPassword, request);
         });
-    
+
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+    }
+
+    @Test
+    void testEditPermissionRequesterNotAdmin() throws IOException {
+        // Arrange
+        String requesterName = "Requester";
+        Client requester = new Client(requesterName, false, "password");
+        int clientId = 1;
+        boolean isAdmin = true;
+
+        when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(requesterName);
+        when(clientRepository.findByClientName(requesterName)).thenReturn(requester);
+
+        // Act and Assert
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            clientController.editPermission(clientId, isAdmin, request);
+        });
+
+        assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
+    }
+
+
+    @Test
+    void testGetAllClientsRequesterNotAdmin() {
+        // Arrange
+        String requesterName = "Requester";
+        Client requester = new Client(requesterName, false, "password");
+
+        when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(requesterName);
+        when(clientRepository.findByClientName(requesterName)).thenReturn(requester);
+
+        // Act and Assert
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            clientController.getAllClients(request);
+        });
+
+        assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
+    }
+
+    @Test
+    void testGetByClientIDRequesterNotAdmin() {
+        // Arrange
+        String requesterName = "Requester";
+        Client requester = new Client(requesterName, false, "password");
+        int clientId = 1;
+
+        when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(requesterName);
+        when(clientRepository.findByClientName(requesterName)).thenReturn(requester);
+
+        // Act and Assert
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            clientController.getByClientID(clientId, request);
+        });
+
+        assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
     }
 }
