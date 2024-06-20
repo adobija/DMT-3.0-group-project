@@ -95,6 +95,10 @@ public class Loan {
         return this.loanAccount;
     }
 
+    public void setLoanAccount(Account loanAccount) {
+        this.loanAccount = loanAccount;
+    }
+
     public Account getCheckingAccount() {
         return this.checkingAccount;
     }
