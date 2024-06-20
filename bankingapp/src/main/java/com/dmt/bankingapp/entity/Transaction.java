@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.dmt.bankingapp.entity.Account.AccountType;
+import com.dmt.bankingapp.entity.Deposit.DepositType;
 import com.dmt.bankingapp.utils.DecimalPlacesAdjuster;
 
 @Entity
@@ -18,7 +19,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transactionId")
     private Integer transactionID;
-    
+
     @ManyToOne
     @JoinColumn(name = "accountOfSender", referencedColumnName = "accountID")
     private Account giver;
@@ -62,25 +63,27 @@ public class Transaction {
             // ... after loan is redeemed
             if (giver.getAccountBalance() == 0 && giver.getLoan() != null) {
                 throw new IllegalStateException("You cannot transfer from the loan account!");
-            }            
-        }
-
-        // Checking the account balance for checking and saving accounts to avoid the balance falling below 0
-        if (giver.getAccountType().equals(AccountType.CHECKING) || giver.getAccountType().equals(AccountType.DEPOSIT)) {
-            if (this.amount > giver.getAccountBalance()) {
-                    throw new IllegalStateException("You cannot transfer more money than you have on the account!");
             }
         }
-        
+
+        // Checking the account balance for checking and saving accounts to avoid the
+        // balance falling below 0
+        if (giver.getAccountType().equals(AccountType.CHECKING) || giver.getAccountType().equals(AccountType.DEPOSIT)) {
+            if (this.amount > giver.getAccountBalance()) {
+                throw new IllegalStateException("You cannot transfer more money than you have on the account!");
+            }
+        }
+
         // If receiver is a loan account, handle loan payments
         if (receiver.getAccountType().equals(AccountType.LOAN)) {
             processLoanPayments(giver, receiver, amount);
         } else {
-            // If the receiver account is not loan, money are transferred without any other operations
+            // If the receiver account is not loan, money are transferred without any other
+            // operations
             manipulateTransaction(giver, receiver, amount);
         }
     }
-    
+
     public Transaction() {
     }
 
@@ -112,7 +115,7 @@ public class Transaction {
         return timestamp;
     }
 
-    public void manipulateTransaction(Account giver, Account receiver, double amount){
+    public void manipulateTransaction(Account giver, Account receiver, double amount) {
         giver.setAccountBalance(DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(amount), true);
         receiver.setAccountBalance(DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(amount), false);
     }
@@ -135,53 +138,57 @@ public class Transaction {
             double amountLeft = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(amount);
             double amountUsedForPayments = 0;
             List<Installment> loanInstallments = loan.getInstallments();
-    
+
             // Filter unpaid installments of the loan
             List<Installment> unpaidInstallments = loanInstallments.stream()
-                .filter(installment -> !installment.getIsPaid())
-                .sorted(Comparator.comparing(Installment::getDueDate))
-                .collect(Collectors.toList());
-    
+                    .filter(installment -> !installment.getIsPaid())
+                    .sorted(Comparator.comparing(Installment::getDueDate))
+                    .collect(Collectors.toList());
+
             for (Installment installment : unpaidInstallments) {
                 if (amountLeft <= 0) {
                     break;
                 }
-    
+
                 double dueAmount = installment.getInstallmentAmount() - installment.getPaidAmount();
                 double payment = Math.min(amountLeft, dueAmount); // Ensure not paying more than the provided amount
                 installment.setPaidAmount(installment.getPaidAmount() + payment);
                 amountLeft -= payment;
                 amountUsedForPayments += payment;
-    
+
                 if (installment.getPaidAmount() == installment.getInstallmentAmount()) {
                     installment.setIsPaid(true);
                 }
             }
-    
-            // Transfer only the amount used for payments, remaining amount stays with the giver
+
+            // Transfer only the amount used for payments, remaining amount stays with the
+            // giver
             manipulateTransaction(giver, receiver, amountUsedForPayments);
 
-            // Update the amount in the transaction to reflect only the amount used for payments
+            // Update the amount in the transaction to reflect only the amount used for
+            // payments
             this.amount = amountUsedForPayments;
 
             // Updating the leftToPay amount in the loan
             loan.setLeftToPay(loan.getLeftToPay() - amountUsedForPayments);
-            // If leftToPay is very small, set it to zero - handling  floating-point precision errors
+            // If leftToPay is very small, set it to zero - handling floating-point
+            // precision errors
             if (loan.getLeftToPay() < 0.01) {
                 loan.setLeftToPay(0.0);
             }
-    
+
             // After processing all payments checking if all installments has been paid
             boolean allInstallmentsPaid = loanInstallments.stream()
-                .allMatch(Installment::getIsPaid);
-    
+                    .allMatch(Installment::getIsPaid);
+
             if (allInstallmentsPaid) {
                 // Setting loan as paid - inactive if fully paid
                 loan.setIsActive(false);
             }
         } else {
             // Handle the case where the loan is already paid
-            throw new IllegalStateException("You cannot transfer money to this loan account since the loan has already been paid!");
+            throw new IllegalStateException(
+                    "You cannot transfer money to this loan account since the loan has already been paid!");
         }
     }
 

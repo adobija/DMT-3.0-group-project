@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 import com.dmt.bankingapp.utils.DecimalPlacesAdjuster;
+import org.springframework.cglib.core.Local;
 
 @Entity
 @Table(name = "Deposits")
@@ -18,6 +19,9 @@ public class Deposit {
     @ManyToOne
     @JoinColumn(name = "checkingAccount", referencedColumnName = "accountId")
     private Account checkingAccount;
+
+    @Column(name = "isActive")
+    private boolean isActive;
 
     @ManyToOne
     @JoinColumn(name = "client", referencedColumnName = "clientId")
@@ -42,6 +46,9 @@ public class Deposit {
     @Column(name = "depositType", nullable = true)
     private DepositType depositType;
 
+    @Column(name = "dateOfWithdrawn")
+    private LocalDateTime dateOfWithdrawn;
+
     public Deposit(double interestRate, int depositDuration, Account checkingAccount, double totalDepositAmount,
             DepositType depositType) {
 
@@ -54,6 +61,10 @@ public class Deposit {
         this.client = checkingAccount.getClient();
         if (client != null) {
             client.addDeposit(this);
+        }
+
+        if (this.totalDepositAmount > 0) {
+            this.isActive = true;
         }
 
         this.dateOfDeposit = LocalDateTime.now();
@@ -97,6 +108,10 @@ public class Deposit {
 
     public double getReturnOfInvestment() {
         return returnOfInvestment;
+    }
+
+    public boolean getIsActive() {
+        return this.isActive;
     }
 
     public void setClient(Client client) {
@@ -158,5 +173,17 @@ public class Deposit {
         }
 
         this.returnOfInvestment = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(depositAmount);
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public void setDateOfWithdrawn(LocalDateTime dateOfWithdrawn) {
+        this.dateOfWithdrawn = dateOfWithdrawn;
+    }
+
+    public LocalDateTime getDateOfWithdrawn() {
+        return dateOfWithdrawn;
     }
 }
