@@ -87,37 +87,39 @@ class DepositControllerTest {
     }
 
     @Test
-    void testWithDrawDepositSuccess() {
+    void testWithdrawDepositSuccess() {
         // Ensure sufficient funds
         checkingAccount.setAccountBalance(2000.0, false);
-    
-        when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn("ClientName");
+
+        when(detailsOfLoggedClient.getLoggedClientInstance(request)).thenReturn(client);
         when(clientRepository.findByClientName("ClientName")).thenReturn(client);
         when(accountRepository.findByAccountNumber("CHK123")).thenReturn(checkingAccount);
         when(accountRepository.findByAccountNumber("BANK_DEPOSIT")).thenReturn(bankAccount);
-    
+
         // Create a Deposit object with necessary properties
         Deposit deposit = new Deposit();
         deposit.setDepositType(DepositType.FIXED);
         deposit.setActive(true);
         deposit.setDateOfDeposit(LocalDateTime.now().minusMonths(12)); // Example date
         deposit.setDepositDuration(12); // Example duration
-        double returnOfInvestment = 1000.0; // Example return
-    
+        deposit.setTotalDepositAmount(1000.0); // Example amount
+        deposit.setReturnOfInvestment(1100.0); // Example return of investment
+
         List<Deposit> existingDeposits = new ArrayList<>();
         existingDeposits.add(deposit); // Add the deposit to the list
-    
+
         when(depositRepository.getAllByClient(client)).thenReturn(existingDeposits);
-    
+        when(accountRepository.findByClient(client)).thenReturn(List.of(checkingAccount));
+
         Commission commission = new Commission();
         commission.setCommissionRateInPercent(5);
         when(commissionRepository.findByCommissionOf("DEPOSIT")).thenReturn(commission);
-    
-    //     String response = depositController.withdrawDeposit(request, "FIXED");
-    
+
+        String response = depositController.withdrawDeposit(request, "FIXED");
+
         // Assertions
-    //    assertEquals("Successfully withdrawn " + returnOfInvestment + " zł!", response);
-    //    verify(depositRepository, times(1)).save(any(Deposit.class));
-    //    verify(transactionRepository, times(1)).save(any(Transaction.class));
-        }
+        assertEquals("Successfully withdrawn 1100.0 zł!", response);
+        verify(depositRepository, times(1)).save(any(Deposit.class));
+        verify(transactionRepository, times(1)).save(any(Transaction.class));
+    }
     }
