@@ -147,6 +147,10 @@ public class Deposit {
         this.depositType = depositType;
     }
 
+    public void setReturnOfInvestment(double returnOfInvestment) {
+        this.returnOfInvestment = returnOfInvestment;
+    }
+
     public void calculateFixedTermDeposit() {
         double depositAmount = getTotalDepositAmount();
         int numberOfMonthsOnDeposit = getDepositDuration();
