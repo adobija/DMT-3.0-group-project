@@ -9,10 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.entity.Deposit;
 import com.dmt.bankingapp.entity.Loan;
 import com.dmt.bankingapp.repository.ClientRepository;
+import com.dmt.bankingapp.repository.LoanRepository;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -27,6 +29,9 @@ public class ClientController {
 
     @Autowired
     private DetailsOfLoggedClient detailsOfLoggedClient;
+
+    @Autowired
+    private LoanRepository loanRepository;
 
     @PostMapping("/editName")
     public @ResponseBody String editName(@RequestParam String newName, HttpServletRequest request) {
@@ -81,23 +86,78 @@ public class ClientController {
     }
 
     @GetMapping("/all")
-    public @ResponseBody List<Client> getAllClients(HttpServletRequest request) {
+    public @ResponseBody String getAllClients(HttpServletRequest request) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
-        return clientRepository.findAll();
+        List<Client> allClients = clientRepository.findAll();
+        StringBuilder output = new StringBuilder();
+        for (Client client: allClients) {
+            output.append(client.getClientID())
+                .append(" -   name: ")
+                .append(client.getClientName())
+                .append("   isAdmin: ")
+                .append(client.isAdmin())
+                .append("   checking account: ");
+                Account checking = client.getCheckingAccount();
+                if (checking != null) {
+                    output.append(checking.getAccountID());
+                }
+                output.append("\n");
+        }
+        return output.toString();
     }
 
     @GetMapping("/byClientID")
-    public @ResponseBody Client getByClientID(@RequestParam int clientID, HttpServletRequest request) {
+    public @ResponseBody String getByClientID(@RequestParam int clientID, HttpServletRequest request) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
-        return clientRepository.findByClientID(clientID);
+        Client client = clientRepository.findByClientID(clientID);
+        StringBuilder output = new StringBuilder();
+        output.append(client.getClientID())
+                .append(" - ")
+                .append(client.getClientName())
+                .append("\n")
+                .append("Accounts:")
+                .append("\n");
+        List<Account> clientAccounts = client.getAccountsList();
+        for (Account account : clientAccounts) {
+            output.append(account.getAccountID())
+                    .append(" - ")
+                    .append(account.getAccountNumber())
+                    .append("  type: ")
+                    .append(account.getAccountType())
+                    .append("  balance: ")
+                    .append(account.getAccountBalance())
+                    .append("\n");
+        }
+        output.append("Deposits:")
+                .append("\n");
+        List<Deposit> deposits = client.getDepositsList();        
+        for (Deposit deposit : deposits) {
+            output.append(deposit.getDepositID())
+                    .append(" - ")
+                    .append(deposit.getTotalDepositAmount())
+                    .append("\n");
+        }
+        output.append("Loans:")
+                .append("\n");
+        List<Loan> loans = client.getLoansList();
+        for (Loan loan : loans) {
+            output.append(loan.getLoanID())
+                    .append(" - ")
+                    .append("  total loan amount: ")
+                    .append(loan.getTotalLoanAmount())
+                    .append("  left to pay: ")
+                    .append(loan.getLeftToPay())
+                    .append("\n");
+        }
+        return output.toString();
     }
 
     @GetMapping("/checkingBalance")
@@ -146,8 +206,47 @@ public class ClientController {
                         .append("\n");
         }
         loansBalance.append("Remaining total amount of loans: " + total);
-        
+    
         return loansBalance.toString();
     }
 
+    // @GetMapping("/nextInstallment")
+    // public @ResponseBody String getNextInstallment(int loanId, HttpServletRequest request) {
+    //     String clientName = detailsOfLoggedClient.getNameFromClient(request);
+    //     Client client = clientRepository.findByClientName(clientName);
+    //     Loan found = loanRepository.findByLoanID(loanId);
+    //     if (found == null) {
+    //         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "There is no loan with provided ID");
+    //     }
+    //     if (found.getClient().equals(client)) {
+    //         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
+    //     }
+    //     WILL BE IMPLEMENTED IN NEW CONTROLLER - INSTALLMENTCONTROLLER WITH INSTALLMENTREPOSITORY
+
+
+    @GetMapping("/allAccounts")
+    public @ResponseBody String getAllAccounts(HttpServletRequest request) {
+        String clientName = detailsOfLoggedClient.getNameFromClient(request);
+        Client client = clientRepository.findByClientName(clientName);
+        List<Account> accounts = client.getAccountsList();
+        StringBuilder accountsOutput = new StringBuilder();
+        
+        for (Account account : accounts) {
+            accountsOutput.append(account.getAccountID())
+                        .append(": ")
+                        .append(account.getAccountNumber())
+                        .append("  type: ")
+                        .append(account.getAccountType())
+                        .append("  balance: ")
+                        .append(account.getAccountBalance())
+                        .append("\n");
+        }
+        
+        // Remove the last newline in the output
+        if (accountsOutput.length() > 0) {
+            accountsOutput.setLength(accountsOutput.length() - 1);
+        }
+        
+        return accountsOutput.toString();
+    }
 }
