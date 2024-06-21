@@ -86,22 +86,25 @@ public class ClientTests {
         // Arrange - create multiple accounts for the client
         Account account1 = new Account("123456789", AccountType.CHECKING, client);
         Account account2 = new Account("987654321", AccountType.DEPOSIT, client);
+        Account account3 = new Account("087654321", AccountType.LOAN, client);
 
         entityManager.persist(client);
         entityManager.persist(account1);
         entityManager.persist(account2);
+        entityManager.persist(account3);
 
         // Act - fetch the client from the database
         Client fetchedClient = entityManager.find(Client.class, client.getClientID());
 
         // Assert - check that the client has two accounts
         assertThat(fetchedClient).isNotNull();
-        assertThat(fetchedClient.getAccountsList()).hasSize(2);
+        assertThat(fetchedClient.getAccountsList()).hasSize(3);
 
         // Assert - Check that the accounts belong to the correct client
         List<Account> accounts = fetchedClient.getAccountsList();
         assertEquals(account1.getAccountNumber(), accounts.get(0).getAccountNumber());
         assertEquals(account2.getAccountNumber(), accounts.get(1).getAccountNumber());
+        assertEquals(account3.getAccountNumber(), accounts.get(2).getAccountNumber());
     }
 
     // Test to check whether it is possible to assign more than one loan to the client
@@ -158,18 +161,18 @@ public class ClientTests {
         entityManager.persist(client);
 
         // Arrange - create accounts needed for the deposits
-        Account checkingAccount1 = new Account("checkAcc1", AccountType.CHECKING, client);
-        entityManager.persist(checkingAccount1);
+        Account depositAccount1 = new Account("checkAcc1", AccountType.DEPOSIT, client);
+        entityManager.persist(depositAccount1);
 
         // Arrange - create multiple deposits for the client
-        Deposit deposit1 = new Deposit(5.0, 12, checkingAccount1, 2000.00, Deposit.DepositType.FIXED);
+        Deposit deposit1 = new Deposit(5.0, 12, depositAccount1, 2000.00, Deposit.DepositType.FIXED);
         deposit1.setClient(client);
         entityManager.persist(deposit1);
 
-        Account checkingAccount2 = new Account("checkAcc2", AccountType.CHECKING, client);
-        entityManager.persist(checkingAccount2);
+        Account depositAccount2 = new Account("checkAcc2", AccountType.DEPOSIT, client);
+        entityManager.persist(depositAccount2);
 
-        Deposit deposit2 = new Deposit(4.0, 24, checkingAccount2, 3000.00, Deposit.DepositType.PROGRESSIVE);
+        Deposit deposit2 = new Deposit(4.0, 24, depositAccount2, 3000.00, Deposit.DepositType.PROGRESSIVE);
         deposit2.setClient(client);
         entityManager.persist(deposit2);
 
@@ -185,4 +188,26 @@ public class ClientTests {
         assertEquals(deposit1.getTotalDepositAmount(), deposits.get(0).getTotalDepositAmount());
         assertEquals(deposit2.getTotalDepositAmount(), deposits.get(1).getTotalDepositAmount());
     }
+
+    // Test to check feature of getting checking account attributed to the client
+    @Test
+    @Transactional
+    public void testGettingCheckingAccount() {
+        // Arrange
+        Client client = new Client("testClient", false, "password");
+        Account checkingAccount = new Account("checkAcc", AccountType.CHECKING, client);
+        entityManager.persist(checkingAccount);
+        client.setCheckingAccount(checkingAccount);
+        entityManager.persist(client);
+
+        // Act
+        Client fetchedClient = entityManager.find(Client.class, client.getClientID());
+        Account foundAccount = fetchedClient.getCheckingAccount();
+
+        // Assert
+        assertThat(foundAccount).isNotNull();
+        assertEquals(checkingAccount.getAccountType(), foundAccount.getAccountType());
+        assertEquals(checkingAccount.getAccountNumber(), foundAccount.getAccountNumber());
+    }
+
 }

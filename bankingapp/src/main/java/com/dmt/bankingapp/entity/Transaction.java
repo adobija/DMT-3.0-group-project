@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.dmt.bankingapp.entity.Account.AccountType;
-import com.dmt.bankingapp.entity.Deposit.DepositType;
 import com.dmt.bankingapp.utils.DecimalPlacesAdjuster;
 
 @Entity
