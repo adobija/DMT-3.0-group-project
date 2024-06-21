@@ -12,7 +12,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - name: Update db username
+        run: sed -i "s/<db_username>/${{ secrets.DB_USERNAME }}/" bankingapp/src/main/resources/application.properties
+      - name: Update db password
+        run: sed -i "s/<db_password>/${{ secrets.DB_PASSWORD }}/" bankingapp/src/main/resources/application.properties
+      
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
