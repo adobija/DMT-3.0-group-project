@@ -47,7 +47,6 @@ public class LoanController {
     @PostMapping("/add")
     public @ResponseBody String addNewLoan(@RequestParam double principalAmount,
                                            @RequestParam int loanDuration,
-                                           @RequestParam String bankAccountNumber,
                                            HttpServletRequest request) {
         String currentName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(currentName);
@@ -56,7 +55,7 @@ public class LoanController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Checking account has not been found");
         }
 
-        Account bankAccount = accountRepository.findByAccountNumber(bankAccountNumber);
+        Account bankAccount = accountRepository.findByAccountNumber("BANK_LOAN");
         if (bankAccount == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bank account has not been found");
         }

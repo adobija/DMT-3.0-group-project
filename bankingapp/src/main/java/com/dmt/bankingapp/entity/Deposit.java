@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 import com.dmt.bankingapp.utils.DecimalPlacesAdjuster;
-import org.springframework.cglib.core.Local;
 
 @Entity
 @Table(name = "Deposits")

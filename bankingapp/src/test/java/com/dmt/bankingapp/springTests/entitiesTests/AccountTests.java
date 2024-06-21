@@ -6,6 +6,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
+import com.dmt.bankingapp.entity.Deposit;
 import com.dmt.bankingapp.entity.Loan;
 import com.dmt.bankingapp.entity.Account.AccountType;
 
@@ -146,5 +147,66 @@ public class AccountTests {
 
         // Assert
         assertEquals("Loan can only be assigned for accounts of the LOAN type!", exceptionThrown.getMessage());
+    }
+
+    @Test
+    public void testAssigningDepositToTheLoanAccount() {
+        // Arrange
+        Client loanTaker = new Client("loanTaker", false, "09876");
+        Client bankClient = new Client("loanBank", false, "12345");
+
+        entityManager.persist(loanTaker);
+        entityManager.persist(bankClient);
+
+        Account depositAccount = new Account("depositAccNum", AccountType.DEPOSIT, loanTaker);
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, loanTaker);
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, bankClient);
+        
+        entityManager.persist(depositAccount);
+        entityManager.persist(loanAccount);
+        entityManager.persist(bankAccount);
+
+        Deposit testDeposit = new Deposit();
+        entityManager.persist(testDeposit);
+
+        // Act
+        IllegalArgumentException exceptionThrown = assertThrows(IllegalArgumentException.class, () -> {
+            loanAccount.setDeposit(testDeposit);
+            entityManager.persist(depositAccount);
+        });
+
+        // Assert
+        assertEquals("Deposits can only be assigned for accounts of the DEPOSIT type!", exceptionThrown.getMessage());
+    }
+
+    @Test
+    public void testAssigningDepositToTheDepositAccount() {
+        // Arrange
+        Client customer = new Client("ordinatyCustomer", false, "09876");
+        Client bank = new Client("badBank", false, "12345");
+
+        entityManager.persist(customer);
+        entityManager.persist(bank);
+
+        Account depositAccount = new Account("depositAccNum", AccountType.DEPOSIT, customer);
+        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, customer);
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, bank);
+        
+        entityManager.persist(depositAccount);
+        entityManager.persist(checkingAccount);
+        entityManager.persist(bankAccount);
+
+        Deposit testDeposit = new Deposit();
+        entityManager.persist(testDeposit);
+
+        // Act
+        depositAccount.setDeposit(testDeposit);
+        entityManager.persist(depositAccount);
+        Account foundAccount = entityManager.find(Account.class, depositAccount.getAccountID());
+
+        // Assert
+        assertThat(foundAccount).isNotNull();
+        assertThat(foundAccount.getDeposit()).isNotNull();
+        assertEquals(foundAccount.getDeposit().getDepositID(), testDeposit.getDepositID());
     }
 }

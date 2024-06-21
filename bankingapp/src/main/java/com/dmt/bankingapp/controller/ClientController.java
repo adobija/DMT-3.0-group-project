@@ -13,7 +13,6 @@ import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.entity.Deposit;
 import com.dmt.bankingapp.entity.Loan;
 import com.dmt.bankingapp.repository.ClientRepository;
-import com.dmt.bankingapp.service.AccountService;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -28,9 +27,6 @@ public class ClientController {
 
     @Autowired
     private DetailsOfLoggedClient detailsOfLoggedClient;
-
-    @Autowired
-    private AccountService accountService;
 
     @PostMapping("/editName")
     public @ResponseBody String editName(@RequestParam String newName, HttpServletRequest request) {
