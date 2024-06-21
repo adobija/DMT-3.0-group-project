@@ -132,4 +132,12 @@ public class Account {
             throw new IllegalArgumentException("Loan can only be assigned for accounts of the LOAN type!");
         }
     }
+
+    public void setDeposit(Deposit deposit) {
+        if (this.accountType == AccountType.DEPOSIT) {
+            this.deposit = deposit;
+        } else {
+            throw new IllegalArgumentException("Deposits can only be assigned for accounts of the DEPOSIT type!");
+        }
+    }
 }
