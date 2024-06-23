@@ -14,6 +14,7 @@ import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.entity.Installment;
 import com.dmt.bankingapp.entity.Loan;
 import com.dmt.bankingapp.repository.ClientRepository;
+import com.dmt.bankingapp.repository.InstallmentRepository;
 import com.dmt.bankingapp.repository.LoanRepository;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 import com.dmt.bankingapp.utils.DateAdjuster;
@@ -32,6 +33,9 @@ public class InstallmentController {
 
     @Autowired
     private LoanRepository loanRepository;
+
+    @Autowired
+    private InstallmentRepository installmentRepository;
 
     @GetMapping("/my")
     public @ResponseBody String getMyInstallments(HttpServletRequest request) {
@@ -97,6 +101,68 @@ public class InstallmentController {
                         .append(DateAdjuster.getDate(installment.getDueDate()));
                 break;
             }
+        }
+        return output.toString();
+    }
+
+    @GetMapping("/given")
+    public @ResponseBody String getGivenInstallment(int installmentId, HttpServletRequest request) {
+        String requesterName = detailsOfLoggedClient.getNameFromClient(request);
+        Client requester = clientRepository.findByClientName(requesterName);
+        if (!requester.isAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
+        }
+
+        Installment installment = installmentRepository.findByInstallmentID(installmentId);
+
+        if (installment == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Installment has not been found");
+        }
+
+        StringBuilder output = new StringBuilder();
+        output.append("Installment: ")
+                .append(installment.getInstallmentID())
+                    .append("  loan: ")
+                    .append(installment.getLoan().getLoanID())
+                    .append("  client: ")
+                    .append(installment.getLoan().getClient().getClientID())
+                    .append("  is paid: ")
+                    .append(installment.getIsPaid())
+                    .append("  amount: ")
+                    .append(installment.getInstallmentAmount())
+                    .append("  already paid: ")
+                    .append(installment.getPaidAmount())
+                    .append("  to pay: ")
+                    .append(installment.getInstallmentAmount() - installment.getPaidAmount())
+                    .append("  due date: ")
+                    .append(DateAdjuster.getDate(installment.getDueDate()));
+
+        return output.toString();
+    }
+
+    @GetMapping("/all")
+    public @ResponseBody String getAllInstallments(HttpServletRequest request) {
+        String requesterName = detailsOfLoggedClient.getNameFromClient(request);
+        Client requester = clientRepository.findByClientName(requesterName);
+        if (!requester.isAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
+        }
+
+        List<Installment> allInstallments = installmentRepository.findAll();
+        StringBuilder output = new StringBuilder();
+
+        for (Installment installment: allInstallments) {
+            output.append("Installment: ")
+                    .append(installment.getInstallmentID())
+                    .append("  loan: ")
+                    .append(installment.getLoan().getLoanID())
+                    .append("  client: ")
+                    .append(installment.getLoan().getClient().getClientID())
+                    .append("  is paid: ")
+                    .append(installment.getIsPaid())
+                    .append("  amount: ")
+                    .append(installment.getInstallmentAmount())
+                    .append("\n");
         }
         return output.toString();
     }
