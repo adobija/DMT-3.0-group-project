@@ -38,6 +38,8 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.GET, "/deposit/**").authenticated()
                 //security for CommissionController
                 .requestMatchers(HttpMethod.POST, "/commission/**").authenticated()
+                //security for InstallmentController
+                .requestMatchers(HttpMethod.GET, "/installment/**").authenticated()
                 //security for error
                 .requestMatchers("/error/**").permitAll()
         );
