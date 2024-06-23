@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+    lang="eu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup Panel</title>
+    <title>Bank application</title>
     <style>
         body {
             display: flex;
@@ -98,56 +101,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>REGISTRATION PANEL</h1>
+        <h1>Welcome to the banking application!</h1>
         <div class="login-panel">
-            <div class="input-group">
-                <label for="username">USER NAME:</label>
-                <input type="text" id="username" name="username">
-            </div>
-            <div class="input-group">
-                <label for="password">PASSWORD:</label>
-                <input type="password" id="password" name="password">
-                <!-- <button type="button" class="toggle-button" onclick="togglePassword()">pokaż</button> -->
-            </div>
-            <div class="input-group">
-                <label for="password">REPEAT PASSWORD:</label>
-                <input type="password" id="repeatPassword" name="repeatPassword">
-                <!-- <button type="button" class="toggle-button" onclick="togglePassword()">pokaż</button> -->
-            </div>
-            <div class="error-message" id="error-message">HASŁA NIE SĄ ZGODNE!</div>
-            <div class="button-group">
-                <button type="button" onclick="login()">ZAREJESTRUJ</button>
-            </div>
-            <div class="register-link">
-                Posiadasz konto? <a href="#">Zalguj</a>
-            </div>
-        </div>
+        
+        <p>Click <a th:href="@{/signup}">here</a> to sign up.</p>
+        
+        <p>Click <a th:href="@{/login}">here</a> to sign in.</p>
+        
+        <p>Click <a th:href="@{/hello}">here</a> to see a greeting.</p>
     </div>
-    <script>
-        function togglePassword() {
-            var passwordField = document.getElementById("password");
-            var button = passwordField.nextElementSibling;
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-                button.textContent = "ukryj";
-            } else {
-                passwordField.type = "password";
-                button.textContent = "pokaż";
-            }
-        }
-
-        function login() {
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-            var errorMessage = document.getElementById("error-message");
-
-            if (username === "user@user.com" && password === "password") {
-                errorMessage.style.display = "none";
-                alert("Zalogowano pomyślnie!");
-            } else {
-                errorMessage.style.display = "block";
-            }
-        }
-    </script>
+</div>
 </body>
 </html>

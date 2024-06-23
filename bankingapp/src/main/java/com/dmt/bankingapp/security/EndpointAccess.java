@@ -15,10 +15,11 @@ public class EndpointAccess {
         // Config which endpoints will be accessed by lambda expression
         httpSecurity.authorizeHttpRequests(configure -> configure
                 // mask:
-                .requestMatchers("/","/home").permitAll()
+                .requestMatchers("/","/welcome").permitAll()
                 .requestMatchers("/signup").permitAll()
                 .requestMatchers("/login").permitAll()
-                .requestMatchers("/hello").permitAll()
+                .requestMatchers("/hello").authenticated()
+                .requestMatchers("/homepage").authenticated()
                 // .requestMatchers(HttpMethod.<REST API METHOD>,<URI as String>).<attribute>
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
                 //security for ClientController
