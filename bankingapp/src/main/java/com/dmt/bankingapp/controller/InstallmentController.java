@@ -13,6 +13,7 @@ import com.dmt.bankingapp.entity.Installment;
 import com.dmt.bankingapp.entity.Loan;
 import com.dmt.bankingapp.repository.ClientRepository;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
+import com.dmt.bankingapp.utils.DateAdjuster;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -46,6 +47,8 @@ public class InstallmentController {
                         .append(installment.getPaidAmount())
                         .append("  is settled: ")
                         .append(installment.getIsPaid())
+                        .append("  due date: ")
+                        .append(DateAdjuster.getDate(installment.getDueDate()))
                         .append("\n");
             }
         }
