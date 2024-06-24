@@ -11,10 +11,17 @@
             font-style: oblique;
             background-color: yellow;
         }
+        .responseDiv {
+        font-size: xx-large;
+        color: red;
+        }
     </style>
 </head>
 <body>
     <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h1>
+    <div class="responseDiv">
+    <span th:text="${response}"></span>
+    </div>
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Sign Out"/>
     </form>
@@ -23,10 +30,10 @@
     <ul>
         <li>
         <ul><p>client controller</p>
-        <li>editName</li>
-        <li>editPassword</li>
-        <li>[A] editAdmin (give or revoke admin permission)</li>
-        <li>[A] all</li>
+        <li><a href="/changeName">editName</a></li>
+        <li><a href="/changePassword">editPassword</a></li>
+        <li><a href="/changeAdminPermission">[A] editAdmin (give or revoke admin permission)</a></li>
+            <li><a href="/client/all">[A] all</a></li>
         <li>[A] byClientID</li>
         <li>checkingBalance</li>
         <li>depositBalance</li>
