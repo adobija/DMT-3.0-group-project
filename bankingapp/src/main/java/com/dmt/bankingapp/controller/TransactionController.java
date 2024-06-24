@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,7 @@ import com.dmt.bankingapp.repository.TransactionRepository;
 import com.dmt.bankingapp.repository.AccountRepository;
 import com.dmt.bankingapp.repository.ClientRepository;
 
-@RestController
+@Controller
 @RequestMapping(path = "/transaction")
 public class TransactionController {
 

@@ -3,6 +3,7 @@ package com.dmt.bankingapp.controller;
 import com.dmt.bankingapp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.dmt.bankingapp.entity.Account;
@@ -20,7 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping(path = "/deposit")
 public class DepositController {
 
