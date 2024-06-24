@@ -103,11 +103,11 @@
     <div class="container">
         <h1>Welcome to the banking application!</h1>
         <div class="login-panel">
-        
+            <div th:ref="navbar-item" sec:authorize="!isAuthenticated()">
         <p>Click <a th:href="@{/signup}">here</a> to sign up.</p>
-        
+
         <p>Click <a th:href="@{/login}">here</a> to sign in.</p>
-        
+            </div>
         <p>Click <a th:href="@{/hello}">here</a> to see a greeting.</p>
     </div>
 </div>
