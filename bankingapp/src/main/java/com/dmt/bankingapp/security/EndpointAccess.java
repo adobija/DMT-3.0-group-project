@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor;
 
 @Configuration
 public class EndpointAccess {
@@ -16,14 +17,14 @@ public class EndpointAccess {
         httpSecurity.authorizeHttpRequests(configure -> configure
                 // mask:
                 .requestMatchers("/","/welcome").permitAll()
-                .requestMatchers("/signup").not().authenticated()
-                .requestMatchers("/login").not().authenticated()
                 .requestMatchers("/hello").authenticated()
                 .requestMatchers("/homepage").authenticated()
                 // .requestMatchers(HttpMethod.<REST API METHOD>,<URI as String>).<attribute>
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
+                .requestMatchers("/success.html").permitAll()
                 //security for RegisterController
-                .requestMatchers(HttpMethod.POST, "/register/newClient").permitAll()
+                .requestMatchers(HttpMethod.POST, "/register/newClient").anonymous()
+                .requestMatchers("/signup").anonymous()
                 //security for ClientController
                 .requestMatchers(HttpMethod.POST, "/client/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/client/**").authenticated()
@@ -45,6 +46,7 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.POST, "/commission/**").authenticated()
                 //security for error
                 .requestMatchers("/error/**").permitAll()
+                .anyRequest().authenticated()
         )
                 //default login form
                 .formLogin(form ->
@@ -52,6 +54,7 @@ public class EndpointAccess {
                                 .loginPage("/login")
                                 .loginProcessingUrl("/authenticateClient")
                                 .permitAll()
+
                 );
         // Set http login as Basic Auth
         httpSecurity.httpBasic(Customizer.withDefaults());
