@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,7 +20,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-@RestController
+@Controller
 @RequestMapping(path = "/client")
 public class ClientController {
 
@@ -91,13 +93,18 @@ public class ClientController {
     }
 
     @GetMapping("/byClientID")
-    public @ResponseBody Client getByClientID(@RequestParam int clientID, HttpServletRequest request) {
+    public String getByClientID(@RequestParam int clientID, HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
-        return clientRepository.findByClientID(clientID);
+        Client client = clientRepository.findByClientID(clientID);
+
+        model.addAttribute("imieKlienta", client.getClientName());
+        model.addAttribute("admin", client.isAdmin());
+        model.addAttribute("haslo", client.getClientPassword());
+        return "testTemplates/test";
     }
 
     @GetMapping("/checkingBalance")

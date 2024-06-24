@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.ArgumentCaptor;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.dmt.bankingapp.controller.ClientController;
@@ -31,6 +32,8 @@ public class ClientControllerTests {
     @Mock
     private ClientRepository clientRepository;
 
+    @Mock
+    private Model model;
     @InjectMocks
     private ClientController clientController;
 
@@ -153,7 +156,7 @@ public class ClientControllerTests {
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            clientController.getByClientID(clientId, request);
+            clientController.getByClientID(clientId, request, model);
         });
 
         assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
