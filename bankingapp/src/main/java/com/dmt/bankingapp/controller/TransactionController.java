@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,7 @@ import com.dmt.bankingapp.repository.TransactionRepository;
 import com.dmt.bankingapp.repository.AccountRepository;
 import com.dmt.bankingapp.repository.ClientRepository;
 
-@RestController
+@Controller
 @RequestMapping(path = "/transaction")
 public class TransactionController {
 
@@ -75,7 +76,7 @@ public class TransactionController {
     }
 
     @GetMapping("/outgoingTransactions")
-    public @ResponseBody String getClientOutgoingTransactions(HttpServletRequest request) {
+    public String getClientOutgoingTransactions(HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         Account checking = client.getCheckingAccount();
@@ -99,11 +100,12 @@ public class TransactionController {
         if (output.length() > 0) {
             output.setLength(output.length() - 1);
         }
-        return output.toString();
+        model.addAttribute("outgoing", output.toString());
+        return "transactionTemplates/outgoing";
     }
 
     @GetMapping("/incomingTransactions")
-    public @ResponseBody String getClientIncomingTransactions(HttpServletRequest request) {
+    public String getClientIncomingTransactions(HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         Account checking = client.getCheckingAccount();
@@ -127,7 +129,8 @@ public class TransactionController {
         if (output.length() > 0) {
             output.setLength(output.length() - 1);
         }
-        return output.toString();
+        model.addAttribute("incoming", output.toString());
+        return "transactionTemplates/incoming";
     }
 
     @GetMapping("/getAll")

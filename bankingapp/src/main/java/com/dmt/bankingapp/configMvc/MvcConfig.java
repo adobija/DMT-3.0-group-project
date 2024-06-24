@@ -20,7 +20,9 @@ public class MvcConfig implements WebMvcConfigurer {
 		registry.addViewController("/admin").setViewName("admin");
 
 		registry.addViewController("/findClientById").setViewName("testTemplates/testForm");
-
+		//transaction
+		registry.addViewController("/outgoingTransactions").setViewName("transactionTemplates/outgoing");
+		registry.addViewController("/incomingTransactions").setViewName("transactionTemplates/incoming");
 	}
 
 }
