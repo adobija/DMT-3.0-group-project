@@ -34,6 +34,7 @@ public class ClientControllerTests {
 
     @Mock
     private Model model;
+
     @InjectMocks
     private ClientController clientController;
 
@@ -59,7 +60,7 @@ public class ClientControllerTests {
         when(clientRepository.findByClientName(currentName)).thenReturn(client);
         when(clientRepository.findByClientName(newName)).thenReturn(null);
 
-        String response = clientController.editName(newName, request);
+        String response = clientController.editName(newName, request, model);
 
         // Assert
         assertEquals("Client's name updated successfully", response);
@@ -85,7 +86,7 @@ public class ClientControllerTests {
 
         // Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            clientController.editName(newName, request);
+            clientController.editName(newName, request, model);
         });
         assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
         assertEquals("Name has already been used - failed to update client's name", exception.getReason());
@@ -96,13 +97,14 @@ public class ClientControllerTests {
         // Arrange
         String clientName = "ClientName";
         String newPassword = "newPassword";
+        String oldPassword = "oldPassword";
 
         when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(clientName);
         when(clientRepository.findByClientName(clientName)).thenReturn(null);
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            clientController.editPassword(newPassword, request);
+            clientController.editPassword(oldPassword, newPassword, request, model);
         });
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
@@ -121,7 +123,7 @@ public class ClientControllerTests {
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            clientController.editPermission(clientId, isAdmin, request);
+            clientController.editPermission(clientId, isAdmin, request, model);
         });
 
         assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
@@ -138,7 +140,7 @@ public class ClientControllerTests {
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            clientController.getAllClients(request);
+            clientController.getAllClients(request, model);
         });
 
         assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
