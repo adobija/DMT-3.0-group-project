@@ -22,7 +22,7 @@
         <tr th:each="client : ${listOfClients}">
             <td th:text="${client.getClientID()}"></td>
             <td th:text="${client.getClientName()}"></td>
-            <td th:text="${client.isAdmin() != null && client.isAdmin() ? 'Yes' : 'No'}"></td>
+            <td th:text="${client.isAdmin() ? 'Yes' : 'No'}"></td>
             <td th:text="${client.getCheckingAccount().getAccountID()}"></td>
             <td th:text="${client.getCheckingAccount().getAccountNumber()}"></td>
         </tr>
