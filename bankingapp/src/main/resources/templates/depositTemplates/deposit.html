@@ -19,5 +19,36 @@
             <button type="submit">Deposit</button>
         </div>
     </form>
+
+    <h2>Add New Deposit</h2>
+    <form action="#" th:action="@{/addNewDeposit}" th:object="${depositForm}" method="post">
+        <div>
+            <label for="accountNumber">Account Number:</label>
+            <input type="text" id="accountNumber" name="accountNumber" th:field="*{accountNumber}" required />
+        </div>
+        <div>
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" th:field="*{amount}" step="0.01" required />
+        </div>
+        <div>
+            <button type="submit">Deposit</button>
+        </div>
+    </form>
+
+    <h2>Withdraw Deposit</h2>
+    <form action="#" th:action="@{/withdrawDeposit}" th:object="${withdrawForm}" method="get">
+        <div>
+            <label for="withdrawAccountNumber">Account Number:</label>
+            <input type="text" id="withdrawAccountNumber" name="accountNumber" th:field="*{accountNumber}" required />
+        </div>
+        <div>
+            <label for="withdrawAmount">Amount:</label>
+            <input type="number" id="withdrawAmount" name="amount" th:field="*{amount}" step="0.01" required />
+        </div>
+        <div>
+            <button type="submit">Withdraw</button>
+        </div>
+    </form>
+
 </body>
 </html>
