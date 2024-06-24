@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,6 +36,9 @@ class RegisterControllerTests {
         MockitoAnnotations.openMocks(this);
     }
 
+    @Mock
+    private Model model;
+
     @Test
     void testAddNewClientSuccess() {
         // Arrange
@@ -46,7 +50,7 @@ class RegisterControllerTests {
         when(accountService.getLatestAccount()).thenReturn(account);
 
         // Act
-        String response = registerController.addNewClient(clientName, clientPassword);
+        String response = registerController.addNewClient(clientName, clientPassword, model);
 
         // Assert
         assertEquals("New client profile created successfully", response);
@@ -64,7 +68,7 @@ class RegisterControllerTests {
 
         // Act & Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            registerController.addNewClient(clientName, clientPassword);
+            registerController.addNewClient(clientName, clientPassword, model);
         });
 
         assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
