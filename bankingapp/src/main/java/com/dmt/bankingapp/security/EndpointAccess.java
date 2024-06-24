@@ -46,16 +46,19 @@ public class EndpointAccess {
                 //security for HistoryController
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/history/**").authenticated()
-        );
+
+        )
+                //default login form
+                .formLogin(form ->
+                        form
+                                .loginPage("/login")
+                                .permitAll());
         // Set http login as Basic Auth
         httpSecurity.httpBasic(Customizer.withDefaults());
 
         // Disable cross site request forgery token - more vulnerable
         httpSecurity.csrf(csrf -> csrf.disable());
 
-        httpSecurity.formLogin(form -> form
-                .loginPage("/login")
-                .permitAll());
 
         return httpSecurity.build();
     }
