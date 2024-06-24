@@ -140,6 +140,43 @@ public class InstallmentController {
         return output.toString();
     }
 
+    @GetMapping("/loan")
+    public @ResponseBody String getLoanInstallments(int loanId, HttpServletRequest request) {
+        String requesterName = detailsOfLoggedClient.getNameFromClient(request);
+        Client requester = clientRepository.findByClientName(requesterName);
+        if (!requester.isAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
+        }
+
+        Loan loan = loanRepository.findByLoanID(loanId);
+        if (loan == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Loan has not been found");
+        }
+
+        List<Installment> installments = loan.getInstallments();
+        StringBuilder output = new StringBuilder();
+        output.append("Loan ID: ");
+        output.append(loanId);
+        output.append("\n");
+
+        for (Installment installment : installments) {
+                output.append("Installment: ")
+                    .append(installment.getInstallmentID())
+                    .append("  amount: ")
+                    .append(installment.getInstallmentAmount())
+                    .append("  is paid: ")
+                    .append(installment.getIsPaid())
+                    .append("  already paid: ")
+                    .append(installment.getPaidAmount())
+                    .append("  to pay: ")
+                    .append(installment.getInstallmentAmount() - installment.getPaidAmount())
+                    .append("  due date: ")
+                    .append(DateAdjuster.getDate(installment.getDueDate()))
+                    .append("\n");
+        }
+        return output.toString();
+    }
+
     @GetMapping("/all")
     public @ResponseBody String getAllInstallments(HttpServletRequest request) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
