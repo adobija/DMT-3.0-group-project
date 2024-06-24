@@ -19,10 +19,6 @@ public class TestController {
         return "welcome";
     }
 
-    @RequestMapping("/login")
-    public String viewLoginPage() {
-        return "login";
-    }
 
     @GetMapping("/hello")
     public String viewHelloPage() {
