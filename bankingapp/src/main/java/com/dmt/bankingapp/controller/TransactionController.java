@@ -134,7 +134,7 @@ public class TransactionController {
     }
 
     @GetMapping("/getAll")
-    public @ResponseBody String getEveryTransaction(HttpServletRequest request) {
+    public String getEveryTransaction(HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if (!requester.isAdmin()) {
@@ -163,11 +163,12 @@ public class TransactionController {
         if (output.length() > 0) {
             output.setLength(output.length() - 1);
         }
-        return output.toString();
+        model.addAttribute("getAll", output.toString());
+        return "transactionTemplates/getAll";
     }
 
     @GetMapping("/byAccountNumber")
-    public @ResponseBody String getByAccountId(@RequestParam String accountNumber, HttpServletRequest request) {
+    public String getByAccountId(@RequestParam String accountNumber, HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
@@ -211,6 +212,7 @@ public class TransactionController {
         if (output.length() > 0) {
             output.setLength(output.length() - 1);
         }
-        return output.toString();
+        model.addAttribute("accNumber", output.toString());
+        return "transactionTemplates/accNumber";
     }
 }
