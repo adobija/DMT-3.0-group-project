@@ -16,8 +16,8 @@ public class EndpointAccess {
         httpSecurity.authorizeHttpRequests(configure -> configure
                 // mask:
                 .requestMatchers("/","/welcome").permitAll()
-                .requestMatchers("/signup").permitAll()
-                .requestMatchers("/login").permitAll()
+                .requestMatchers("/signup").not().authenticated()
+                .requestMatchers("/login").not().authenticated()
                 .requestMatchers("/hello").authenticated()
                 .requestMatchers("/homepage").authenticated()
                 // .requestMatchers(HttpMethod.<REST API METHOD>,<URI as String>).<attribute>
