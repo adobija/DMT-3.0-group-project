@@ -52,6 +52,7 @@ public class EndpointAccess {
                 .formLogin(form ->
                         form
                                 .loginPage("/login")
+                                .loginProcessingUrl("/authenticateClient")
                                 .permitAll());
         // Set http login as Basic Auth
         httpSecurity.httpBasic(Customizer.withDefaults());
