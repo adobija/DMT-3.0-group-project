@@ -63,7 +63,11 @@
             color: red;
             margin: 10px 0;
             font-size: 14px;
-            display: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+<!--            border: 1px red dashed;-->
+            padding: 5px;
         }
         .button-group {
             display: flex;
@@ -101,15 +105,15 @@
     <div class="container">
         <h1>LOGIN PANEL</h1>
         <div class="login-panel">
-            <!-- <div class="error-message" id="error-message"> -->
-            <div th:if="${param.error}">
-                Invalid username and password.
+            <div class="error-message" id="error-message">
+            <div th:if="${param.error}" id="badRequest">
+                Invalid username and/or password.
             </div>
-            <div th:if="${param.logout}">
+            <div th:if="${param.logout}" id="logout">
                 You have been logged out.
             </div>
-        <!-- </div> -->
-            <form th:action="@{/login}" method="post">
+        </div>
+            <form action="#" th:action="@{/authenticateClient}" method="POST">
                 <div class="input-group">
                     <label> User Name: <input type="text" id="clientName" name="username"/> </label>
                 </div>
