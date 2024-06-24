@@ -31,7 +31,7 @@ public class ClientController {
     private DetailsOfLoggedClient detailsOfLoggedClient;
 
     @PostMapping("/editName")
-    public @ResponseBody String editName(@RequestParam String newName, HttpServletRequest request) {
+    public String editName(@RequestParam String newName, HttpServletRequest request, Model model) {
         if (clientRepository.findByClientName(newName) != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Name has already been used - failed to update client's name");
         }
@@ -40,32 +40,37 @@ public class ClientController {
         if (client != null) {
             client.setClientName(newName);
             clientRepository.save(client);
-            return "Client's name updated successfully";
+            model.addAttribute("response","Client's name updated successfully - RELOGIN TO COMMIT CHANGES");
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
         }
+        return "indexTemplates/hello";
     }
 
     @PostMapping("/editPassword")
-    public @ResponseBody String editPassword(@RequestParam String newPassword, HttpServletRequest request) {
+    public String editPassword(@RequestParam String oldPassword, @RequestParam String newPassword, HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         if (client != null) {
-            String storedHashedPassword = client.getClientPassword().replace("{bcrypt}", ""); // Remove prefix for comparison
+            String storedHashedPassword = client.getClientPassword().replace("{bcrypt}", "");// Remove prefix for comparison
+            if(!BCrypt.checkpw(oldPassword, storedHashedPassword)){
+                throw new ResponseStatusException(HttpStatus.LOCKED, "Please input valid old password!");
+            }
             if (BCrypt.checkpw(newPassword, storedHashedPassword)) {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Please choose a new password that is different from the previous password");
             } else {
                 client.setClientPassword(newPassword);
                 clientRepository.save(client);
-                return "Client's password updated successfully";
+                model.addAttribute("response", "Client's password updated successfully - RELOGIN TO COMMIT CHANGES");
+                return "indexTemplates/hello";
             }
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
         }
     }
 
-    @PostMapping("/editAdmin/{clientId}")
-    public @ResponseBody String editPermission(@PathVariable int clientId, @RequestParam boolean isAdmin, HttpServletRequest request) throws IOException {
+    @PostMapping("/editAdmin")
+    public String editPermission(@RequestParam int clientId, @RequestParam boolean isAdmin, HttpServletRequest request, Model model) throws IOException {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
@@ -76,20 +81,23 @@ public class ClientController {
         if (foundClient != null) {
             foundClient.setAdmin(isAdmin);
             clientRepository.save(foundClient);
-            return "Client's permission updated successfully";
+            model.addAttribute("response","Client's permission updated successfully");
+            return "indexTemplates/hello";
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
         }
     }
 
     @GetMapping("/all")
-    public @ResponseBody List<Client> getAllClients(HttpServletRequest request) {
+    public String getAllClients(HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
-        return clientRepository.findAll();
+        List<Client> listOfClients = clientRepository.findAll();
+        model.addAttribute("listOfClients", listOfClients);
+        return "clientTemplates/allClients";
     }
 
     @GetMapping("/byClientID")
