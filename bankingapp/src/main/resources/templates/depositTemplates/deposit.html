@@ -6,6 +6,7 @@
 </head>
 <body>
     <h2>Deposit Funds</h2>
+    <span th:text="${response}"></span>
     <form action="#" th:action="@{/deposit}" th:object="${depositForm}" method="post">
         <div>
             <label for="accountNumber">Account Number:</label>
@@ -21,6 +22,7 @@
     </form>
 
     <h2>Add New Deposit</h2>
+    <span th:text="${response}"></span>
     <form action="#" th:action="@{/addNewDeposit}" th:object="${depositForm}" method="post">
         <div>
             <label for="accountNumber">Account Number:</label>
@@ -36,6 +38,7 @@
     </form>
 
     <h2>Withdraw Deposit</h2>
+    <span th:text="${response}"></span>
     <form action="#" th:action="@{/withdrawDeposit}" th:object="${withdrawForm}" method="get">
         <div>
             <label for="withdrawAccountNumber">Account Number:</label>
