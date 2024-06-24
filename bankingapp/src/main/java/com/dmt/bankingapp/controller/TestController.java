@@ -9,22 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/test")
 public class TestController {
 
-    @RequestMapping("/")
-    public String viewStartPage() {
-        return "redirect:/welcome";
-    }
-
-    @RequestMapping("/welcome")
-    public String viewWelcomePage() {
-        return "welcome";
-    }
-
-
-    @GetMapping("/hello")
-    public String viewHelloPage() {
-        return "hello";
-    }
-
     @GetMapping("/someEndpoint")
     public String someEndpoint() {
         return "Success";
