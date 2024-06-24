@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -100,6 +100,7 @@
     <div class="container">
         <h1>REGISTRATION PANEL</h1>
         <div class="login-panel">
+            <form method="POST" action="#" th:action="@{/register/newClient}">
             <div class="input-group">
                 <label for="username">USER NAME:</label>
                 <input type="text" id="username" name="username">
@@ -121,6 +122,7 @@
             <div class="register-link">
                 Posiadasz konto? <a href="/login">Zalguj</a>
             </div>
+            </form>
         </div>
     </div>
     <script>
@@ -143,7 +145,7 @@
 
             if (username === "user@user.com" && password === "password") {
                 errorMessage.style.display = "none";
-                alert("Zalogowano pomyślnie!");
+                alert("Zarejestrowano pomyślnie!");
             } else {
                 errorMessage.style.display = "block";
             }
