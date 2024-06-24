@@ -20,7 +20,7 @@ public class RegisterController {
     @Autowired
     private AccountService accountService;
 
-    @PostMapping("/newClient")  // curl.exe -d "clientName=NAME&clientPassword=PASSWORD&isAdmin=false" http://localhost:8080/register/newClient
+    @PostMapping("/newClient")
     public @ResponseBody String addNewClient(@RequestParam String clientName, @RequestParam String clientPassword, Model model) {
         Client exists = clientRepository.findByClientName(clientName);
         if (exists != null) {
