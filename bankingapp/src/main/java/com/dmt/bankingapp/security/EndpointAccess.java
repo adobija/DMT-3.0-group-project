@@ -53,6 +53,10 @@ public class EndpointAccess {
         // Disable cross site request forgery token - more vulnerable
         httpSecurity.csrf(csrf -> csrf.disable());
 
+        httpSecurity.formLogin(form -> form
+                .loginPage("/login")
+                .permitAll());
+
         return httpSecurity.build();
     }
 }
