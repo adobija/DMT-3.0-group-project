@@ -1,13 +1,7 @@
 package com.dmt.bankingapp.controller;
 
-import com.dmt.bankingapp.entity.Loan;
-import com.dmt.bankingapp.entity.Transaction;
-import com.dmt.bankingapp.entity.Account;
-import com.dmt.bankingapp.entity.Client;
-import com.dmt.bankingapp.repository.LoanRepository;
-import com.dmt.bankingapp.repository.TransactionRepository;
-import com.dmt.bankingapp.repository.AccountRepository;
-import com.dmt.bankingapp.repository.ClientRepository;
+import com.dmt.bankingapp.entity.*;
+import com.dmt.bankingapp.repository.*;
 import com.dmt.bankingapp.service.AccountService;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 
@@ -19,8 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping(path = "/loan")
@@ -44,21 +39,25 @@ public class LoanController {
     @Autowired
     private DetailsOfLoggedClient detailsOfLoggedClient;
 
+    @Autowired
+    private CommissionRepository commissionRepository;
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     @PostMapping("/add")
     public @ResponseBody String addNewLoan(@RequestParam double principalAmount,
-                                           @RequestParam double interestRate,
-                                           @RequestParam double commisionRate,
                                            @RequestParam int loanDuration,
-                                           @RequestParam String bankAccountNumber,
                                            HttpServletRequest request) {
         String currentName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(currentName);
-        
         Account checkingAccount = client.getCheckingAccount();
-        Account bankAccount = accountRepository.findByAccountNumber(bankAccountNumber);
+        if (checkingAccount == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Checking account has not been found");
+        }
 
-        if (checkingAccount == null || bankAccount == null) {
-            return "One or more accounts not found";
+        Account bankAccount = accountRepository.findByAccountNumber("BANK_LOAN");
+        if (bankAccount == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bank account has not been found");
         }
 
         // Create a new loan account using the AccountService's method
@@ -69,6 +68,12 @@ public class LoanController {
 
         // Fetch the newly created loan account
         Account loanAccount = accountService.getLatestAccount();
+
+        // Fetch live commission rate
+        double commisionRate = commissionRepository.findByCommissionOf("LOAN_COMMISSION").getCommissionRateInPercent();
+
+        // Fetch live interest rate
+        double interestRate = commissionRepository.findByCommissionOf("LOAN_INTEREST").getCommissionRateInPercent();
 
         Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
 
@@ -106,23 +111,78 @@ public class LoanController {
     }
 
     @GetMapping("/all")
-    public @ResponseBody List<Loan> getAllLoans(HttpServletRequest request) {
+    public @ResponseBody String getAllLoans(HttpServletRequest request) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
-        return loanRepository.findAll();
+
+        List<Loan> allLoans = loanRepository.findAll();
+        StringBuilder output = new StringBuilder();
+
+        for (Loan loan : allLoans) {
+            LocalDateTime dateOfLoan = loan.getDateOfLoan();
+            String formattedDate = dateOfLoan.format(formatter);
+
+            output.append(loan.getLoanID())
+                        .append(": ")
+                        .append(formattedDate)
+                        .append("  account: ")
+                        .append(loan.getLoanAccount().getAccountNumber())
+                        .append("  total: ")
+                        .append(loan.getTotalLoanAmount())
+                        .append("  left: ")
+                        .append(loan.getLeftToPay())
+                        .append("  client: ")
+                        .append(loan.getClient().getClientID())
+                        .append("\n");
+        }
+
+        // Remove the last newline in the output
+        if (output.length() > 0) {
+            output.setLength(output.length() - 1);
+        }
+        return output.toString();
     }
 
     @GetMapping("/byLoanId")
-    public @ResponseBody Loan getLoanById(@RequestParam int loanID, HttpServletRequest request) {
+    public @ResponseBody String getLoanById(@RequestParam int loanID, HttpServletRequest request) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
-        Optional<Loan> loanOptional = loanRepository.findById(loanID);
-        return loanOptional.orElse(null);
+        Loan loan = loanRepository.findByLoanID(loanID);
+        if (loan == null) {
+            throw new NoSuchElementException("Loan with this ID does not exist!");
+        }
+
+        StringBuilder output = new StringBuilder();
+        LocalDateTime dateOfLoan = loan.getDateOfLoan();
+        String formattedDate = dateOfLoan.format(formatter);
+
+        output.append("loan ID: ")
+                .append(loan.getLoanID())
+                .append("\ndate: ")
+                .append(formattedDate)
+                .append("\naccount: ")
+                .append(loan.getLoanAccount().getAccountNumber())
+                .append("\ntotal: ")
+                .append(loan.getTotalLoanAmount())
+                .append("\nleft: ")
+                .append(loan.getLeftToPay())
+                .append("\nclient: ")
+                .append(loan.getClient().getClientID())
+                .append("\nduration: ")
+                .append(loan.getLoanDuration())
+                .append("\ninterest: ")
+                .append(loan.getInterestRate())
+                .append("\ncommision: ")
+                .append(loan.getCommisionRate())
+                .append("\nactive: ")
+                .append(loan.getIsActive());
+
+        return output.toString();
     }
 }

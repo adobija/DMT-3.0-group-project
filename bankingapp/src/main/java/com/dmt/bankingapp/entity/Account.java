@@ -29,6 +29,10 @@ public class Account {
     @JoinColumn(name = "loanId", referencedColumnName = "loanId", nullable = true)
     private Loan loan;
 
+    @OneToOne
+    @JoinColumn(name = "depositId", referencedColumnName = "depositId", nullable = true)
+    private Deposit deposit;
+
     @OneToOne(mappedBy = "checkingAccount", cascade = CascadeType.ALL)
     private Client checkingAccountClient;
 
@@ -48,6 +52,15 @@ public class Account {
             this.loan = loan;
         } else {
             throw new IllegalArgumentException("Loan can only be assigned for accounts of the LOAN type!");
+        }
+    }
+
+    public Account(String accountNumber, AccountType accountType, Client client, Deposit deposit) {
+        this(accountNumber, accountType, client);
+        if (accountType == AccountType.DEPOSIT) {
+            this.deposit = deposit;
+        } else {
+            throw new IllegalArgumentException("Deposit can only be assigned for accounts of the DEPOSIT type!");
         }
     }
     
@@ -107,12 +120,24 @@ public class Account {
     public Loan getLoan() {
         return loan;
     }
+
+    public Deposit getDeposit() {
+        return deposit;
+    }
     
     public void setLoan(Loan loan) {
         if (this.accountType == AccountType.LOAN) {
             this.loan = loan;
         } else {
             throw new IllegalArgumentException("Loan can only be assigned for accounts of the LOAN type!");
+        }
+    }
+
+    public void setDeposit(Deposit deposit) {
+        if (this.accountType == AccountType.DEPOSIT) {
+            this.deposit = deposit;
+        } else {
+            throw new IllegalArgumentException("Deposits can only be assigned for accounts of the DEPOSIT type!");
         }
     }
 }

@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -96,110 +97,111 @@ public class TransactionTests {
         assertEquals(now, timestampFromTransactionRecord);
     }
 
-    // @Test
-    // public void testTransactionGreaterThanLoan() {
-    //     // Arrange
-    //     Client loanTaker = new Client("loanTaker", false, "09876");
-    //     Client bankClient = new Client("bankSTERS", false, "12345");
+    @Test
+    public void testTransactionGreaterThanLoan() {
+        // Arrange
+        Client loanTaker = new Client("loanTaker", false, "09876");
+        Client bankClient = new Client("bankSTERS", false, "12345");
 
-    //     entityManager.persist(loanTaker);
-    //     entityManager.persist(bankClient);
+        entityManager.persist(loanTaker);
+        entityManager.persist(bankClient);
 
-    //     Account loanAccount = new Account("loanAccNum", AccountType.LOAN, loanTaker);
-    //     Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, loanTaker);
-    //     Account bankAccount = new Account("bankAccNum", AccountType.BANK, bankClient);
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, loanTaker);
+        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, loanTaker);
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, bankClient);
 
-    //     double checkingAccountBalance = 999999.99;
-    //     checkingAccount.setAccountBalance(checkingAccountBalance, false);
-    //     entityManager.persist(loanAccount);
-    //     entityManager.persist(checkingAccount);
-    //     entityManager.persist(bankAccount);
+        double checkingAccountBalance = 999999.99;
+        checkingAccount.setAccountBalance(checkingAccountBalance, false);
+        entityManager.persist(loanAccount);
+        entityManager.persist(checkingAccount);
+        entityManager.persist(bankAccount);
 
-    //     double principalAmount = 20000.0;
-    //     double interestRate = 3.8;
-    //     double commisionRate = 5.0;
-    //     int loanDuration = 48;
+        double principalAmount = 20000.0;
+        double interestRate = 3.8;
+        double commisionRate = 5.0;
+        int loanDuration = 48;
 
-    //     // Act - loan creation
-    //     Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
-    //     testLoan.setDateOfLoan(LocalDateTime.now());
-    //     double totalLoanAmount = principalAmount + testLoan.intrestAmount(principalAmount, interestRate, loanDuration) + testLoan.commisionAmout(principalAmount, commisionRate);
-    //     testLoan.setTotalLoanAmout(totalLoanAmount);
-    //     testLoan.setLeftToPay(totalLoanAmount);
-    //     testLoan.generateInstallments();
-    //     entityManager.persist(testLoan);
+        // Act - loan creation
+        Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+        testLoan.setDateOfLoan(LocalDateTime.now());
+        double totalLoanAmount = principalAmount + testLoan.intrestAmount(principalAmount, interestRate, loanDuration) + testLoan.commisionAmout(principalAmount, commisionRate);
+        testLoan.setTotalLoanAmout(totalLoanAmount);
+        testLoan.setLeftToPay(totalLoanAmount);
+        testLoan.generateInstallments();
+        testLoan.setIsActive(true);
+        entityManager.persist(testLoan);
 
-    //     loanAccount.setLoan(testLoan);
-    //     entityManager.persist(loanAccount);
+        loanAccount.setLoan(testLoan);
+        entityManager.persist(loanAccount);
 
-    //     double overpay = 999.99;
-    //     double initialTransferAmount = totalLoanAmount + overpay;
+        double overpay = 999.99;
+        double initialTransferAmount = totalLoanAmount + overpay;
 
-    //     // Act - transaction
-    //     Transaction testTransaction = new Transaction(checkingAccount, loanAccount, initialTransferAmount);
-    //     entityManager.persist(testTransaction);
+        // Act - transaction
+        Transaction testTransaction = new Transaction(checkingAccount, loanAccount, initialTransferAmount);
+        entityManager.persist(testTransaction);
 
-    //     // Assert
-    //     Transaction foundTransaction = entityManager.find(Transaction.class, testTransaction.getTransactionID());
-    //     double foundTransferAmount = foundTransaction.getAmount();
+        // Assert
+        Transaction foundTransaction = entityManager.find(Transaction.class, testTransaction.getTransactionID());
+        double foundTransferAmount = foundTransaction.getAmount();
 
-    //     assertThat(foundTransaction).isNotNull();
-    //     assertNotEquals(initialTransferAmount, foundTransferAmount);
-    //     assertEquals(initialTransferAmount, foundTransferAmount + overpay, 0.01);
-    //     assertEquals(checkingAccountBalance - foundTransferAmount, checkingAccountBalance - initialTransferAmount + overpay, 0.01);
-    // }
+        assertThat(foundTransaction).isNotNull();
+        assertNotEquals(initialTransferAmount, foundTransferAmount);
+        assertEquals(initialTransferAmount, foundTransferAmount + overpay, 0.01);
+        assertEquals(checkingAccountBalance - foundTransferAmount, checkingAccountBalance - initialTransferAmount + overpay, 0.01);
+        assertFalse(testLoan.getIsActive());
+    }
 
+    @Test
+    public void testTransactionToAccountWithPaidLoan() {
+        // Arrange
+        Client loanTaker = new Client("loanTaker", false, "09876");
+        Client bankClient = new Client("bankSTERS", false, "12345");
 
-    // @Test
-    // public void testTransactionToAccountWithPaidLoan() {
-    //     // Arrange
-    //     Client loanTaker = new Client("loanTaker", false, "09876");
-    //     Client bankClient = new Client("bankSTERS", false, "12345");
+        entityManager.persist(loanTaker);
+        entityManager.persist(bankClient);
 
-    //     entityManager.persist(loanTaker);
-    //     entityManager.persist(bankClient);
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, loanTaker);
+        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, loanTaker);
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, bankClient);
 
-    //     Account loanAccount = new Account("loanAccNum", AccountType.LOAN, loanTaker);
-    //     Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, loanTaker);
-    //     Account bankAccount = new Account("bankAccNum", AccountType.BANK, bankClient);
+        double checkingAccountBalance = 999999.99;
+        checkingAccount.setAccountBalance(checkingAccountBalance, false);
+        entityManager.persist(loanAccount);
+        entityManager.persist(checkingAccount);
+        entityManager.persist(bankAccount);
 
-    //     double checkingAccountBalance = 999999.99;
-    //     checkingAccount.setAccountBalance(checkingAccountBalance, false);
-    //     entityManager.persist(loanAccount);
-    //     entityManager.persist(checkingAccount);
-    //     entityManager.persist(bankAccount);
+        double principalAmount = 20000.0;
+        double interestRate = 3.8;
+        double commisionRate = 5.0;
+        int loanDuration = 48;
 
-    //     double principalAmount = 20000.0;
-    //     double interestRate = 3.8;
-    //     double commisionRate = 5.0;
-    //     int loanDuration = 48;
+        // Act - loan creation
+        Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+        testLoan.setDateOfLoan(LocalDateTime.now());
+        double totalLoanAmount = principalAmount + testLoan.intrestAmount(principalAmount, interestRate, loanDuration) + testLoan.commisionAmout(principalAmount, commisionRate);
+        testLoan.setTotalLoanAmout(totalLoanAmount);
+        testLoan.setLeftToPay(totalLoanAmount);
+        testLoan.generateInstallments();
+        testLoan.setIsActive(true);
+        entityManager.persist(testLoan);
 
-    //     // Act - loan creation
-    //     Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
-    //     testLoan.setDateOfLoan(LocalDateTime.now());
-    //     double totalLoanAmount = principalAmount + testLoan.intrestAmount(principalAmount, interestRate, loanDuration) + testLoan.commisionAmout(principalAmount, commisionRate);
-    //     testLoan.setTotalLoanAmout(totalLoanAmount);
-    //     testLoan.setLeftToPay(totalLoanAmount);
-    //     testLoan.generateInstallments();
-    //     entityManager.persist(testLoan);
+        loanAccount.setLoan(testLoan);
+        entityManager.persist(loanAccount);
 
-    //     loanAccount.setLoan(testLoan);
-    //     entityManager.persist(loanAccount);
+        // Act - first transaction to redeem the loan
+        Transaction firstTransaction = new Transaction(checkingAccount, loanAccount, totalLoanAmount);
+        entityManager.persist(firstTransaction);
 
-    //     // Act - first transaction to redeem the loan
-    //     Transaction firstTransaction = new Transaction(checkingAccount, loanAccount, totalLoanAmount);
-    //     entityManager.persist(firstTransaction);
+        // Act - second transaction that should throw exception
+        double secondTransfer = 0.01;
+        IllegalStateException exceptionThrown = assertThrows(IllegalStateException.class, () -> {
+            new Transaction(checkingAccount, loanAccount, secondTransfer);
+        });
 
-    //     // Act - second transaction that should throw exception
-    //     double secondTransfer = 0.01;
-    //     IllegalStateException exceptionThrown = assertThrows(IllegalStateException.class, () -> {
-    //         new Transaction(checkingAccount, loanAccount, secondTransfer);
-    //     });
-
-    //     // Assert
-    //     assertEquals("You cannot transfer money to this loan account since the loan has already been paid!", exceptionThrown.getMessage());
-    // }
-
+        // Assert
+        assertEquals("You cannot transfer money to this loan account since the loan has already been paid!", exceptionThrown.getMessage());
+    }
 
     @Test
     public void testTransactionGreaterThanBalance() {
@@ -227,4 +229,213 @@ public class TransactionTests {
         // Assert
         assertEquals("You cannot transfer more money than you have on the account!", exceptionThrown.getMessage());
     }
+
+    @Test
+    public void testTransactionNegativeValue() {
+        // Arrange
+        String giverClient = "clientFirst";
+        String receiverClient = "clientSecond";
+
+        Client client1 = new Client(giverClient, false, "test123");
+        Client client2 = new Client(receiverClient, false, "321tset");
+
+        String giverAccountNumber = "222111222";
+        String receiverAccountNumber = "111333999";
+
+        Account giverAccount = new Account(giverAccountNumber, AccountType.DEPOSIT, client1);
+        Account receiverAccount = new Account(receiverAccountNumber, AccountType.DEPOSIT, client2);
+        double initialAmount = 500.0;
+        giverAccount.setAccountBalance(initialAmount, false);
+        entityManager.persist(giverAccount);
+        entityManager.persist(receiverAccount);
+
+        // Act
+        double transactionAmount = -300.0;
+        IllegalStateException exceptionThrown = assertThrows(IllegalStateException.class, () -> {
+            new Transaction(giverAccount, receiverAccount, transactionAmount);
+        });
+
+        // Assert
+        assertEquals("You cannot transfer negative amount!", exceptionThrown.getMessage());
+    }
+
+    @Test
+    public void testTransaction0Amount() {
+        // Arrange
+        String giverClient = "clientFirst";
+        String receiverClient = "clientSecond";
+
+        Client client1 = new Client(giverClient, false, "test123");
+        Client client2 = new Client(receiverClient, false, "321tset");
+
+        String giverAccountNumber = "222111222";
+        String receiverAccountNumber = "111333999";
+
+        Account giverAccount = new Account(giverAccountNumber, AccountType.DEPOSIT, client1);
+        Account receiverAccount = new Account(receiverAccountNumber, AccountType.DEPOSIT, client2);
+        double initialAmount = 500.0;
+        giverAccount.setAccountBalance(initialAmount, false);
+        entityManager.persist(giverAccount);
+        entityManager.persist(receiverAccount);
+
+        // Act
+        double transactionAmount = 0;
+        IllegalStateException exceptionThrown = assertThrows(IllegalStateException.class, () -> {
+            new Transaction(giverAccount, receiverAccount, transactionAmount);
+        });
+
+        // Assert
+        assertEquals("You cannot transfer 0!", exceptionThrown.getMessage());
+    }
+
+    @Test
+    public void testTransactionHugeAmount() {
+        // Arrange
+        String giverClient = "clientFirst";
+        String receiverClient = "clientSecond";
+
+        Client client1 = new Client(giverClient, false, "test123");
+        Client client2 = new Client(receiverClient, false, "321tset");
+
+        String giverAccountNumber = "222111222";
+        String receiverAccountNumber = "111333999";
+
+        Account giverAccount = new Account(giverAccountNumber, AccountType.DEPOSIT, client1);
+        Account receiverAccount = new Account(receiverAccountNumber, AccountType.DEPOSIT, client2);
+        double initialAmount = 1000000002;
+        giverAccount.setAccountBalance(initialAmount, false);
+        entityManager.persist(giverAccount);
+        entityManager.persist(receiverAccount);
+
+        // Act
+        double transactionAmount = 1000000001;
+        IllegalStateException exceptionThrown = assertThrows(IllegalStateException.class, () -> {
+            new Transaction(giverAccount, receiverAccount, transactionAmount);
+        });
+
+        // Assert
+        assertEquals("You cannot transfer more than 1 billion!", exceptionThrown.getMessage());
+    }
+
+    @Test
+    public void testTransactionToTheSameAccount() {
+        // Arrange
+        String giverClient = "clientFirst";
+
+        Client client1 = new Client(giverClient, false, "test123");
+
+        String giverAccountNumber = "222111222";
+
+        Account giverAccount = new Account(giverAccountNumber, AccountType.DEPOSIT, client1);
+
+        double initialAmount = 100;
+        giverAccount.setAccountBalance(initialAmount, false);
+        entityManager.persist(giverAccount);
+
+        // Act
+        double transactionAmount = 50;
+        IllegalStateException exceptionThrown = assertThrows(IllegalStateException.class, () -> {
+            new Transaction(giverAccount, giverAccount, transactionAmount);
+        });
+
+        // Assert
+        assertEquals("You cannot transfer to the same account!", exceptionThrown.getMessage());
+    }
+
+    @Test
+    public void testTransactionFromLoanAccount() {
+        // Arrange
+        Client loanTaker = new Client("loanTaker", false, "09876");
+        Client bankClient = new Client("bankSTERS", false, "12345");
+
+        entityManager.persist(loanTaker);
+        entityManager.persist(bankClient);
+
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, loanTaker);
+        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, loanTaker);
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, bankClient);
+
+        double checkingAccountBalance = 999999.99;
+        checkingAccount.setAccountBalance(checkingAccountBalance, false);
+        entityManager.persist(loanAccount);
+        entityManager.persist(checkingAccount);
+        entityManager.persist(bankAccount);
+
+        double principalAmount = 20000.0;
+        double interestRate = 3.8;
+        double commisionRate = 5.0;
+        int loanDuration = 48;
+
+        // Act - loan creation
+        Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+        testLoan.setDateOfLoan(LocalDateTime.now());
+        double totalLoanAmount = principalAmount + testLoan.intrestAmount(principalAmount, interestRate, loanDuration) + testLoan.commisionAmout(principalAmount, commisionRate);
+        testLoan.setTotalLoanAmout(totalLoanAmount);
+        testLoan.setLeftToPay(totalLoanAmount);
+        testLoan.generateInstallments();
+        testLoan.setIsActive(true);
+        entityManager.persist(testLoan);
+
+        loanAccount.setLoan(testLoan);
+        entityManager.persist(loanAccount);
+
+        // Act - transaction
+        double transactionAmount = 500;
+        IllegalStateException exceptionThrown = assertThrows(IllegalStateException.class, () -> {
+            new Transaction(loanAccount, checkingAccount, transactionAmount);
+        });
+
+        // Assert
+        assertEquals("You cannot transfer from the loan account!", exceptionThrown.getMessage());
+    }
+
+    @Test
+    public void testLeftToPay() {
+        // Arrange
+        Client loanTaker = new Client("loanTaker", false, "09876");
+        Client bankClient = new Client("bankSTERS", false, "12345");
+
+        entityManager.persist(loanTaker);
+        entityManager.persist(bankClient);
+
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, loanTaker);
+        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, loanTaker);
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, bankClient);
+
+        double checkingAccountBalance = 999999.99;
+        checkingAccount.setAccountBalance(checkingAccountBalance, false);
+        entityManager.persist(loanAccount);
+        entityManager.persist(checkingAccount);
+        entityManager.persist(bankAccount);
+
+        double principalAmount = 20000.0;
+        double interestRate = 3.8;
+        double commisionRate = 5.0;
+        int loanDuration = 48;
+
+        // Act - loan creation
+        Loan testLoan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+        testLoan.setDateOfLoan(LocalDateTime.now());
+        double totalLoanAmount = principalAmount + testLoan.intrestAmount(principalAmount, interestRate, loanDuration) + testLoan.commisionAmout(principalAmount, commisionRate);
+        testLoan.setTotalLoanAmout(totalLoanAmount);
+        testLoan.setLeftToPay(totalLoanAmount);
+        testLoan.generateInstallments();
+        testLoan.setIsActive(true);
+        entityManager.persist(testLoan);
+
+        loanAccount.setLoan(testLoan);
+        entityManager.persist(loanAccount);
+
+        double left = 999.99;
+        double initialTransferAmount = totalLoanAmount - left;
+
+        // Act - transaction
+        Transaction testTransaction = new Transaction(checkingAccount, loanAccount, initialTransferAmount);
+        entityManager.persist(testTransaction);
+
+        // Assert
+        assertEquals(testLoan.getLeftToPay(), left);
+    }
+
+    
 }

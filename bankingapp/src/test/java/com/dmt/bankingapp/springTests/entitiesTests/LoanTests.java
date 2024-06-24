@@ -79,6 +79,110 @@ public class LoanTests {
     }
 
     @Test
+    public void testInactiveLoan() {
+        // Arrange
+        Loan loan = new Loan();
+        
+        // Act
+        loan.setIsActive(false);
+
+        // Assert
+        assertEquals(false, loan.getIsActive());
+    }
+
+    @Test
+    public void testActiveLoan() {
+        // Arrange
+        Loan loan = new Loan();
+
+        // Act
+        loan.setIsActive(true);
+
+        // Assert
+        assertEquals(true, loan.getIsActive());
+    }
+
+    @Test
+    public void testDateOfLoan() {
+        // Arrange
+        Loan loan = new Loan();
+        LocalDateTime now = LocalDateTime.now();
+
+        // Act
+        loan.setDateOfLoan(now);
+
+        // Assert
+        assertEquals(now, loan.getDateOfLoan());
+    }
+
+    @Test
+    public void testLeftToPay() {
+        // Arrange
+        Loan loan = new Loan();
+        double leftToPay = 15000.0;
+
+        // Act
+        loan.setLeftToPay(leftToPay);
+
+        // Assert
+        assertEquals(leftToPay, loan.getLeftToPay());
+    }
+
+    @Test
+    public void testSetAndGetClient() {
+        // Arrange
+        Client client = new Client("Test Client", false, "client123");
+        Loan loan = new Loan();
+
+        // Act
+        loan.setClient(client);
+
+        // Assert
+        assertEquals(client, loan.getClient());
+    }
+
+    @Test
+    public void testLoanInitializationWithoutClient() {
+        // Arrange
+        Account loanAccount = new Account("loanAccNum", AccountType.LOAN, null);
+        Account checkingAccount = new Account("checkingAccNum", AccountType.CHECKING, null);
+        Account bankAccount = new Account("bankAccNum", AccountType.BANK, null);
+        double principalAmount = 50000.0;
+        double interestRate = 2.9;
+        double commisionRate = 4.0;
+        int loanDuration = 12;
+
+        // Act
+        Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+
+        // Assert
+        assertEquals(loanAccount, loan.getLoanAccount());
+        assertEquals(checkingAccount, loan.getCheckingAccount());
+        assertEquals(bankAccount, loan.getBankAccount());
+        assertEquals(principalAmount, loan.getPrincipalLoanAmount());
+        assertEquals(interestRate, loan.getInterestRate());
+        assertEquals(commisionRate, loan.getCommisionRate());
+        assertEquals(loanDuration, loan.getLoanDuration());
+        assertEquals(null, loan.getClient());
+    }
+
+    @Test
+    public void testCommisionAmount() {
+        // Arrange
+        double principalAmount = 10000.0;
+        double commisionRate = 3.5;
+
+        Loan loan = new Loan();
+        
+        // Act
+        double calculatedCommision = loan.commisionAmout(principalAmount, commisionRate);
+        double expectedCommision = 350.0;
+
+        // Assert
+        assertEquals(calculatedCommision, expectedCommision);
+    }
+
+    @Test
     public void testInterestAmount() {
         // Arrange
         double principalAmount = 10000.0;

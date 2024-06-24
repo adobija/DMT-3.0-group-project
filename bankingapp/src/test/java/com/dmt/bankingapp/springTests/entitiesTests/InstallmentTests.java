@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
+import com.dmt.bankingapp.utils.DecimalPlacesAdjuster;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -79,13 +80,21 @@ public class InstallmentTests {
         // Assert
         assertNotNull(foundInstallments);
         assertEquals(loanDuration, foundInstallments.size());
-        double expectedInstallmentAmount = loan.getTotalLoanAmount() / loanDuration;
+        double testModulo = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(foundLoan.getTotalLoanAmount() % foundLoan.getLoanDuration());
+        double expectedInstallment = DecimalPlacesAdjuster.adjustToTwoDecimalPlaces((foundLoan.getTotalLoanAmount() - testModulo) / foundLoan.getLoanDuration());
+        double expectedFirst =  expectedInstallment + testModulo;
 
-        for (int i = 0; i < loanDuration; i++) {
-            Installment installment = foundInstallments.get(i);
-            assertEquals(expectedInstallmentAmount, installment.getInstallmentAmount());
-            assertEquals(foundLoan, installment.getLoan());
-            assertEquals(loan.getDateOfLoan().plusMonths(i + 1), installment.getDueDate());
+        Installment firstInstallment = foundInstallments.get(0);
+        assertEquals(expectedFirst, firstInstallment.getInstallmentAmount());
+        assertEquals(foundLoan, firstInstallment.getLoan());
+        assertEquals(loan.getDateOfLoan().plusMonths(1), firstInstallment.getDueDate());
+
+
+        for (int i = 1; i < loanDuration; i++) {
+            Installment foundInstallment = foundInstallments.get(i);
+            assertEquals(expectedInstallment, foundInstallment.getInstallmentAmount());
+            assertEquals(foundLoan, foundInstallment.getLoan());
+            assertEquals(loan.getDateOfLoan().plusMonths(i + 1), foundInstallment.getDueDate());
         }
     }
 

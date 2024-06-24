@@ -32,8 +32,8 @@ public class TransactionRepositoryTests {
         //arrange
         Client clientOne = new Client("TestClient",false, "password");
         Client clientTwo = new Client("TestClient",false, "password");
-        Account accountOne = new Account("testNumber", Account.AccountType.CHECKING, clientOne);
-        Account accountTwo = new Account("testNumber", Account.AccountType.CHECKING, clientTwo);
+        Account accountOne = new Account("testNumber1", Account.AccountType.CHECKING, clientOne);
+        Account accountTwo = new Account("testNumber2", Account.AccountType.CHECKING, clientTwo);
         accountOne.setAccountBalance(5000.0, false);
         Transaction transaction = new Transaction(accountOne, accountTwo, 20.0);
         //act
@@ -48,8 +48,8 @@ public class TransactionRepositoryTests {
         //arrange
         Client clientOne = new Client("TestClient",false, "password");
         Client clientTwo = new Client("TestClient",false, "password");
-        Account accountOne = new Account("testNumber", Account.AccountType.CHECKING, clientOne);
-        Account accountTwo = new Account("testNumber", Account.AccountType.CHECKING, clientTwo);
+        Account accountOne = new Account("testNumber1", Account.AccountType.CHECKING, clientOne);
+        Account accountTwo = new Account("testNumber2", Account.AccountType.CHECKING, clientTwo);
         accountOne.setAccountBalance(5000.0, false);
         Transaction transaction = new Transaction(accountOne, accountTwo, 20.0);
         entityManager.persist(transaction);
@@ -68,8 +68,8 @@ public class TransactionRepositoryTests {
         //arrange
         Client clientOne = new Client("TestClient",false, "password");
         Client clientTwo = new Client("TestClient",false, "password");
-        Account accountOne = new Account("testNumber", Account.AccountType.CHECKING, clientOne);
-        Account accountTwo = new Account("testNumber", Account.AccountType.CHECKING, clientTwo);
+        Account accountOne = new Account("testNumber1", Account.AccountType.CHECKING, clientOne);
+        Account accountTwo = new Account("testNumber2", Account.AccountType.CHECKING, clientTwo);
         accountOne.setAccountBalance(5000.0, false);
         Transaction transaction = new Transaction(accountOne, accountTwo, 20.0);
         entityManager.persist(transaction);
@@ -85,8 +85,8 @@ public class TransactionRepositoryTests {
         //arrange
         Client clientOne = new Client("TestClient",false, "password");
         Client clientTwo = new Client("TestClient",false, "password");
-        Account accountOne = new Account("testNumber", Account.AccountType.CHECKING, clientOne);
-        Account accountTwo = new Account("testNumber", Account.AccountType.CHECKING, clientTwo);
+        Account accountOne = new Account("testNumber1", Account.AccountType.CHECKING, clientOne);
+        Account accountTwo = new Account("testNumber2", Account.AccountType.CHECKING, clientTwo);
         accountOne.setAccountBalance(5000.0, false);
         Transaction transaction = new Transaction(accountOne, accountTwo, 20.0);
         entityManager.persist(transaction);
@@ -110,8 +110,8 @@ public class TransactionRepositoryTests {
         entityManager.persist(clientOne);
         entityManager.persist(clientTwo);
 
-        Account accountOne = new Account("testNumber", Account.AccountType.CHECKING, clientOne);
-        Account accountTwo = new Account("testNumber", Account.AccountType.CHECKING, clientTwo);
+        Account accountOne = new Account("testNumber1", Account.AccountType.CHECKING, clientOne);
+        Account accountTwo = new Account("testNumber2", Account.AccountType.CHECKING, clientTwo);
         accountOne.setAccountBalance(5000.0, false);
         entityManager.persist(accountOne);
         entityManager.persist(accountTwo);
@@ -134,8 +134,8 @@ public class TransactionRepositoryTests {
         entityManager.persist(clientOne);
         entityManager.persist(clientTwo);
 
-        Account accountOne = new Account("testNumber", Account.AccountType.CHECKING, clientOne);
-        Account accountTwo = new Account("testNumber", Account.AccountType.CHECKING, clientTwo);
+        Account accountOne = new Account("testNumber1", Account.AccountType.CHECKING, clientOne);
+        Account accountTwo = new Account("testNumber2", Account.AccountType.CHECKING, clientTwo);
         accountOne.setAccountBalance(5000.0, false);
         entityManager.persist(accountOne);
         entityManager.persist(accountTwo);
@@ -148,6 +148,4 @@ public class TransactionRepositoryTests {
         assertThat(foundTransaction.isEmpty()).isFalse();
         assertEquals(foundTransaction.get(0).getReceiver().getClient(), clientTwo);
     }
-
-
 }
