@@ -99,21 +99,25 @@
         .register-link a:hover {
             text-decoration: underline;
         }
+        #logout {
+        color: green;
+        font-size: bold;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>LOGIN PANEL</h1>
         <div class="login-panel">
-            <div class="error-message" id="error-message">
-            <div th:if="${param.error}" id="badRequest">
-                Invalid username and/or password.
-            </div>
-            <div th:if="${param.logout}" id="logout">
-                You have been logged out.
-            </div>
-        </div>
             <form action="#" th:action="@{/authenticateClient}" method="POST">
+                <div class="error-message" id="error-message">
+                    <div th:if="${param.error}" id="badRequest">
+                        Invalid username and/or password.
+                    </div>
+                    <div th:if="${param.logout}" id="logout">
+                        You have been logged out.
+                    </div>
+                </div>
                 <div class="input-group">
                     <label> User Name: <input type="text" id="clientName" name="username"/> </label>
                 </div>
