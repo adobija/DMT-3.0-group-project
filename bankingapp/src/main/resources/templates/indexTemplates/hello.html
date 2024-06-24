@@ -5,11 +5,69 @@
     lang="eu">
 <head>
     <title>Hello World!</title>
+    <style>
+        p {
+            font-size: x-large;
+            font-style: oblique;
+            background-color: yellow;
+        }
+    </style>
 </head>
 <body>
     <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h1>
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Sign Out"/>
     </form>
+    <hr>
+    <p>[A] - for admin</p>
+    <ul>
+        <li>
+        <ul><p>client controller</p>
+        <li>editName</li>
+        <li>editPassword</li>
+        <li>[A] editAdmin (give or revoke admin permission)</li>
+        <li>[A] all</li>
+        <li>[A] byClientID</li>
+        <li>checkingBalance</li>
+        <li>depositBalance</li>
+        <li>loansBalance</li>
+        </ul>
+        </li>
+        <li>
+        <ul><p>commission controller</p>
+            <li>[A] setForLoanCommission</li>
+            <li>[A] setForDeposit</li>
+            <li>[A]setForLoanInterest</li>
+        </ul>
+        </li>
+        <li>
+            <ul><p>deposit controller</p>
+                <li>addNewDeposit</li>
+                <li>withdrawDeposit</li>
+            </ul>
+        </li>
+        <li>
+            <ul><p>history controller</p>
+                <li>checking</li>
+                <li>[A] checking by id</li>
+            </ul>
+        </li>
+        <li>
+            <ul><p>loan controller</p>
+                <li>add</li>
+                <li>[A] all</li>
+                <li>[A] byLoanId</li>
+            </ul>
+        </li>
+        <li>
+            <ul><p>transaction controller</p>
+                <li>add</li>
+                <li>outgoingTransactions</li>
+                <li>incomingTransactions</li>
+                <li>[A] getAll</li>
+                <li>[A] byAccountNumber</li>
+            </ul>
+        </li>
+    </ul>
 </body>
 </html>
