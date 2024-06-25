@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,7 +23,7 @@ import com.dmt.bankingapp.utils.DateAdjuster;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-@RestController
+@Controller
 @RequestMapping("/installment")
 public class InstallmentController {
 
@@ -37,8 +39,8 @@ public class InstallmentController {
     @Autowired
     private InstallmentRepository installmentRepository;
 
-    @GetMapping("/my")
-    public @ResponseBody String getMyInstallments(HttpServletRequest request) {
+    @GetMapping("/myAll")
+    public String getMyInstallments(HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         List<Loan> loans = client.getLoansList();
@@ -62,8 +64,8 @@ public class InstallmentController {
                         .append("\n");
             }
         }
-        
-        return output.toString();
+        model.addAttribute("myAll", output.toString());
+        return "installmentTemplates/myAll";
     }
 
     @GetMapping("/next")
