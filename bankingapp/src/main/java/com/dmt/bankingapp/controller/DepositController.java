@@ -103,12 +103,12 @@ public class DepositController {
         depositRepository.save(deposit);
 
         String output = "Deposit added successfully";
-        model.addAttribute("addDeposit", output);
-        return "depositTemplates/addDeposit";
+        model.addAttribute("response", output);
+        return "indexTemplates/hello";
     }
 
     @GetMapping("/withdraw")
-    public String withdrawDeposit(HttpServletRequest request, String depositType, Model model) {
+    public String withdrawDeposit(HttpServletRequest request, Deposit requestedDeposit, Model model) {
         // Get client instance
         Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
         // Fetch his deposit records
@@ -118,27 +118,8 @@ public class DepositController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client does not have any deposits!");
         }
 
-        // check what type
-        DepositType type = null;
-        if (depositType.equalsIgnoreCase("FIXED")) {
-            type = DepositType.FIXED;
-        } else if (depositType.equalsIgnoreCase("PROGRESSIVE")) {
-            type = DepositType.PROGRESSIVE;
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "There is no type of deposit as " + depositType.toUpperCase() + "!");
-        }
-
-        // Get instance of this deposit
-        Deposit requestedDeposit = null;
-        for (Deposit x : depositsOfClient) {
-            if (x.getDepositType().equals(type)) {
-                requestedDeposit = x;
-            }
-        }
         if (requestedDeposit == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Deposit has not been found!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Deposit has not been found!");
         }
 
         // Test if client can withdraw deposit
@@ -168,7 +149,7 @@ public class DepositController {
         }
 
         String output = "Successfully withdrawn " + requestedDeposit.getReturnOfInvestment();
-        model.addAttribute("withdraw", output);
-        return "depositTemplates/withdraw";
+        model.addAttribute("response", output);
+        return "indexTemplates/hello";
     }
 }
