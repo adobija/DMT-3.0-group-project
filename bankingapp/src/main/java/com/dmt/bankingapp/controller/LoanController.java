@@ -6,6 +6,8 @@ import com.dmt.bankingapp.service.AccountService;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@RestController
+@Controller
 @RequestMapping(path = "/loan")
 public class LoanController {
 
@@ -46,8 +48,8 @@ public class LoanController {
 
     @PostMapping("/add")
     public @ResponseBody String addNewLoan(@RequestParam double principalAmount,
-                                           @RequestParam int loanDuration,
-                                           HttpServletRequest request) {
+            @RequestParam int loanDuration,
+            HttpServletRequest request) {
         String currentName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(currentName);
         Account checkingAccount = client.getCheckingAccount();
@@ -75,7 +77,8 @@ public class LoanController {
         // Fetch live interest rate
         double interestRate = commissionRepository.findByCommissionOf("LOAN_INTEREST").getCommissionRateInPercent();
 
-        Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+        Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration,
+                bankAccount);
 
         // Calculating commision and amount of intrests
         double intrestForBank = loan.intrestAmount(principalAmount, interestRate, loanDuration);
@@ -111,10 +114,10 @@ public class LoanController {
     }
 
     @GetMapping("/all")
-    public @ResponseBody String getAllLoans(HttpServletRequest request) {
+    public String getAllLoans(HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
-        if(!requester.isAdmin()){
+        if (!requester.isAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
 
@@ -126,31 +129,32 @@ public class LoanController {
             String formattedDate = dateOfLoan.format(formatter);
 
             output.append(loan.getLoanID())
-                        .append(": ")
-                        .append(formattedDate)
-                        .append("  account: ")
-                        .append(loan.getLoanAccount().getAccountNumber())
-                        .append("  total: ")
-                        .append(loan.getTotalLoanAmount())
-                        .append("  left: ")
-                        .append(loan.getLeftToPay())
-                        .append("  client: ")
-                        .append(loan.getClient().getClientID())
-                        .append("\n");
+                    .append(": ")
+                    .append(formattedDate)
+                    .append("  account: ")
+                    .append(loan.getLoanAccount().getAccountNumber())
+                    .append("  total: ")
+                    .append(loan.getTotalLoanAmount())
+                    .append("  left: ")
+                    .append(loan.getLeftToPay())
+                    .append("  client: ")
+                    .append(loan.getClient().getClientID())
+                    .append("\n");
         }
 
         // Remove the last newline in the output
         if (output.length() > 0) {
             output.setLength(output.length() - 1);
         }
-        return output.toString();
+        model.addAttribute("all", output.toString());
+        return "loanTemplates/allLoans";
     }
 
     @GetMapping("/byLoanId")
-    public @ResponseBody String getLoanById(@RequestParam int loanID, HttpServletRequest request) {
+    public String getLoanById(@RequestParam int loanID, HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
-        if(!requester.isAdmin()){
+        if (!requester.isAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
         Loan loan = loanRepository.findByLoanID(loanID);
@@ -182,7 +186,7 @@ public class LoanController {
                 .append(loan.getCommisionRate())
                 .append("\nactive: ")
                 .append(loan.getIsActive());
-
-        return output.toString();
+        model.addAttribute("loanbyid", output.toString());
+        return "loanTemplates/loanbyid";
     }
 }
