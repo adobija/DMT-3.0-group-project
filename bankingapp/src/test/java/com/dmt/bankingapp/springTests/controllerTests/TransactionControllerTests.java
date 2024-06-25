@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.dmt.bankingapp.controller.TransactionController;
@@ -123,7 +124,7 @@ public class TransactionControllerTests {
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            transactionController.getByAccountId("checking1", request);
+            transactionController.getByAccountId("checking1", request, mock(Model.class));
         });
 
         assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
@@ -139,7 +140,7 @@ public class TransactionControllerTests {
 
         // Act and Assert
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-            transactionController.getByAccountId("checking1", request);
+            transactionController.getByAccountId("checking1", request, mock(Model.class));
         });
 
         assertEquals("Account not found with account number: checking1", exception.getMessage());
