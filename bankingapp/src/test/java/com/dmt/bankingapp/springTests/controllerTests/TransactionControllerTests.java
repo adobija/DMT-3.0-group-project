@@ -2,8 +2,14 @@ package com.dmt.bankingapp.springTests.controllerTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -144,5 +150,49 @@ public class TransactionControllerTests {
         });
 
         assertEquals("Account not found with account number: checking1", exception.getMessage());
+    }
+
+    @Test
+    void testGetClientOutgoingTransactions() {
+        // Arrange
+        when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(nonAdminClient.getClientName());
+        when(clientRepository.findByClientName(nonAdminClient.getClientName())).thenReturn(nonAdminClient);
+        when(transactionRepository.findByGiver(checkingAccount)).thenReturn(createSampleTransactions(checkingAccount, receivingAccount));
+
+        Model model = mock(Model.class);
+
+        // Act
+        String viewName = transactionController.getClientOutgoingTransactions(request, model);
+
+        // Assert
+        assertEquals("transactionTemplates/outgoing", viewName);
+        verify(model, times(1)).addAttribute(eq("outgoing"), anyString());
+    }
+
+    @Test
+    void testGetClientIncomingTransactions() {
+        // Arrange
+        when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(nonAdminClient.getClientName());
+        when(clientRepository.findByClientName(nonAdminClient.getClientName())).thenReturn(nonAdminClient);
+        Model model = mock(Model.class);
+
+        // Act
+        String viewName = transactionController.getClientIncomingTransactions(request, model);
+
+        // Assert
+        assertEquals("transactionTemplates/incoming", viewName);
+        verify(model, times(1)).addAttribute(eq("incoming"), anyString());
+    }
+
+    private List<Transaction> createSampleTransactions(Account giver, Account receiver) {
+        Transaction transaction1 = new Transaction(giver, receiver, 100.0);
+        transaction1.setTimestamp(LocalDateTime.now());
+        transaction1.setTransactionID(1);
+
+        Transaction transaction2 = new Transaction(giver, receiver, 200.0);
+        transaction2.setTimestamp(LocalDateTime.now().minusDays(1));
+        transaction2.setTransactionID(2);
+
+        return Arrays.asList(transaction1, transaction2);
     }
 }

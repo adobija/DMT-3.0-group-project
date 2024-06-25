@@ -53,7 +53,7 @@ class RegisterControllerTests {
         String response = registerController.addNewClient(clientName, clientPassword, model);
 
         // Assert
-        assertEquals("New client profile created successfully", response);
+        assertEquals("registerTemplates/success", response);
         verify(clientRepository, times(2)).save(any(Client.class));
         verify(accountService, times(1)).addNewAccount(eq(Account.AccountType.CHECKING), any(Client.class));
     }
