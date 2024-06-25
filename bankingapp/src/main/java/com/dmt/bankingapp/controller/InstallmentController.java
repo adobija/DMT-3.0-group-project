@@ -109,7 +109,7 @@ public class InstallmentController {
     }
 
     @GetMapping("/given")
-    public @ResponseBody String getGivenInstallment(int installmentId, HttpServletRequest request) {
+    public String getGivenInstallment(int installmentId, HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if (!requester.isAdmin()) {
@@ -140,7 +140,8 @@ public class InstallmentController {
                     .append("  due date: ")
                     .append(DateAdjuster.getDate(installment.getDueDate()));
 
-        return output.toString();
+        model.addAttribute("given", output.toString());
+        return "installmentTemplates/given";
     }
 
     @GetMapping("/loan")
