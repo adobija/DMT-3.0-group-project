@@ -48,11 +48,11 @@ public class TransactionController {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @PostMapping("/add") // curl.exe -d "giverAccountID=1&receiverAccountID=2&amount=100.0" http://localhost:8080/transaction/add
-    public String addNewTransaction(@RequestParam String giverAccountID, @RequestParam String receiverAccountID, @RequestParam double amount, HttpServletRequest request, Model model) {
+    public String addNewTransaction(@RequestParam String giverAccountNumber, @RequestParam String receiverAccountNumber, @RequestParam double amount, HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         
-        Account giver = accountRepository.findByAccountNumber(giverAccountID);
+        Account giver = accountRepository.findByAccountNumber(giverAccountNumber);
         if (giver == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sender's account has not been found");
         }
@@ -60,11 +60,11 @@ public class TransactionController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not permitted to transfer money from an account you do not own");
         }
 
-        Account receiver = accountRepository.findByAccountNumber(receiverAccountID);
+        Account receiver = accountRepository.findByAccountNumber(receiverAccountNumber);
         if (receiver == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Receiver's account has not been found");
         }
-        
+        model.addAttribute("clientAccount", client.getCheckingAccount().getAccountNumber());
         try {
             Transaction transaction = new Transaction(giver, receiver, amount);
             transactionRepository.save(transaction);
