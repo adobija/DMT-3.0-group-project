@@ -47,7 +47,7 @@ public class TransactionController {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    @PostMapping("/add") // curl.exe -d "giverAccountID=1&receiverAccountID=2&amount=100.0" http://localhost:8080/transaction/add
+    @PostMapping("/add")
     public String addNewTransaction(@RequestParam String giverAccountNumber, @RequestParam String receiverAccountNumber, @RequestParam double amount, HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
