@@ -8,14 +8,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MvcConfig implements WebMvcConfigurer {
 
 	public void addViewControllers(ViewControllerRegistry registry) {
-		//index site
+		// index site
 		registry.addViewController("/").setViewName("indexTemplates/welcome");
 		registry.addViewController("/homepage").setViewName("indexTemplates/homepage");
-		//register
+		// register
 		registry.addViewController("/signup").setViewName("registerTemplates/signup");
-		//login
+		// login
 		registry.addViewController("/login").setViewName("loginTemplates/login");
-		//other
+		// other
 		registry.addViewController("/hello").setViewName("indexTemplates/hello");
 		registry.addViewController("/admin").setViewName("admin");
 
@@ -25,6 +25,9 @@ public class MvcConfig implements WebMvcConfigurer {
 		registry.addViewController("/incomingTransactions").setViewName("transactionTemplates/incoming");
 		registry.addViewController("/getAll").setViewName("transactionTemplates/getAll");
 		registry.addViewController("/accNumber").setViewName("transactionTemplates/accNumber");
+		//loan
+		registry.addViewController("/loan/add").setViewName("loanTemplates/add");
+		registry.addViewController("/loan/find").setViewName("loanTemplates/findloan");
 		//installment
 		registry.addViewController("/myAll").setViewName("installmentTemplates/myAll");
 		registry.addViewController("/next").setViewName("installmentTemplates/next");
