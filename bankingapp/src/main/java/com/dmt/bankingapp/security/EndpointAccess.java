@@ -6,7 +6,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor;
 
 @Configuration
 public class EndpointAccess {
@@ -21,7 +20,7 @@ public class EndpointAccess {
                 .requestMatchers("/homepage").authenticated()
                 // .requestMatchers(HttpMethod.<REST API METHOD>,<URI as String>).<attribute>
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
-                .requestMatchers("/success.html").permitAll()
+                .requestMatchers("/logo.png").permitAll()
                 //security for RegisterController
                 .requestMatchers(HttpMethod.POST, "/register/newClient").anonymous()
                 .requestMatchers("/signup").anonymous()

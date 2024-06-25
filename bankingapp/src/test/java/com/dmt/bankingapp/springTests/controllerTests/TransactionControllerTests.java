@@ -2,10 +2,14 @@ package com.dmt.bankingapp.springTests.controllerTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.dmt.bankingapp.controller.TransactionController;
@@ -69,16 +74,22 @@ public class TransactionControllerTests {
     @Test
     void testAddNewTransactionSuccess() {
         // Arrange
+        Model mockModel = mock(Model.class);  // Mock the Model
         when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(nonAdminClient.getClientName());
         when(clientRepository.findByClientName(nonAdminClient.getClientName())).thenReturn(nonAdminClient);
-        when(accountRepository.findById(checkingAccount.getAccountID())).thenReturn(Optional.of(checkingAccount));
-        when(accountRepository.findById(receivingAccount.getAccountID())).thenReturn(Optional.of(receivingAccount));
+        when(accountRepository.findByAccountNumber(checkingAccount.getAccountNumber())).thenReturn(checkingAccount);
+        when(accountRepository.findByAccountNumber(receivingAccount.getAccountNumber())).thenReturn(receivingAccount);
+        
+        // Create a sample transaction to be returned by the save method
+        Transaction sampleTransaction = new Transaction(checkingAccount, receivingAccount, 100.0);
+        when(transactionRepository.save(any(Transaction.class))).thenReturn(sampleTransaction);
 
         // Act
-        String response = transactionController.addNewTransaction(checkingAccount.getAccountID(), receivingAccount.getAccountID(), 100.0, request);
+        String viewName = transactionController.addNewTransaction(checkingAccount.getAccountNumber(), receivingAccount.getAccountNumber(), 100.0, request, mockModel);
 
         // Assert
-        assertEquals("Transaction created successfully! Amount transfered: 100.0", response);
+        verify(mockModel, times(1)).addAttribute(eq("add"), eq("Transaction created successfully! Amount transfered: 100.0"));
+        assertEquals("transactionTemplates/add", viewName);
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
 
@@ -87,11 +98,11 @@ public class TransactionControllerTests {
         // Arrange
         when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(nonAdminClient.getClientName());
         when(clientRepository.findByClientName(nonAdminClient.getClientName())).thenReturn(nonAdminClient);
-        when(accountRepository.findById(checkingAccount.getAccountID())).thenReturn(Optional.empty());
+        when(accountRepository.findByAccountNumber(checkingAccount.getAccountNumber())).thenReturn(null);
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            transactionController.addNewTransaction(checkingAccount.getAccountID(), receivingAccount.getAccountID(), 100.0, request);
+            transactionController.addNewTransaction(checkingAccount.getAccountNumber(), receivingAccount.getAccountNumber(), 100.0, request, mock(Model.class));
         });
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
@@ -103,12 +114,12 @@ public class TransactionControllerTests {
         // Arrange
         when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(nonAdminClient.getClientName());
         when(clientRepository.findByClientName(nonAdminClient.getClientName())).thenReturn(nonAdminClient);
-        when(accountRepository.findById(checkingAccount.getAccountID())).thenReturn(Optional.of(checkingAccount));
-        when(accountRepository.findById(receivingAccount.getAccountID())).thenReturn(Optional.empty());
+        when(accountRepository.findByAccountNumber(checkingAccount.getAccountNumber())).thenReturn(checkingAccount);
+        when(accountRepository.findByAccountNumber(receivingAccount.getAccountNumber())).thenReturn(null);
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            transactionController.addNewTransaction(checkingAccount.getAccountID(), receivingAccount.getAccountID(), 100.0, request);
+            transactionController.addNewTransaction(checkingAccount.getAccountNumber(), receivingAccount.getAccountNumber(), 100.0, request, mock(Model.class));
         });
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
@@ -123,7 +134,7 @@ public class TransactionControllerTests {
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            transactionController.getByAccountId("checking1", request);
+            transactionController.getByAccountId("checking1", request, mock(Model.class));
         });
 
         assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
@@ -139,9 +150,57 @@ public class TransactionControllerTests {
 
         // Act and Assert
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-            transactionController.getByAccountId("checking1", request);
+            transactionController.getByAccountId("checking1", request, mock(Model.class));
         });
 
         assertEquals("Account not found with account number: checking1", exception.getMessage());
+    }
+
+    @Test
+    void testGetClientOutgoingTransactions() {
+        // Arrange
+        when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(nonAdminClient.getClientName());
+        when(clientRepository.findByClientName(nonAdminClient.getClientName())).thenReturn(nonAdminClient);
+        when(transactionRepository.findByGiver(checkingAccount)).thenReturn(createSampleTransactions(checkingAccount, receivingAccount));
+
+        Model model = mock(Model.class);
+
+        // Act
+        String viewName = transactionController.getClientOutgoingTransactions(request, model);
+
+        // Assert
+        assertEquals("transactionTemplates/outgoing", viewName);
+        verify(model, times(1)).addAttribute(eq("outgoing"), anyString());
+    }
+
+    @Test
+    void testGetClientIncomingTransactions() {
+        // Arrange
+        when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(nonAdminClient.getClientName());
+        when(clientRepository.findByClientName(nonAdminClient.getClientName())).thenReturn(nonAdminClient);
+        when(transactionRepository.findByReceiver(checkingAccount)).thenReturn(createSampleTransactions(receivingAccount, checkingAccount));
+        
+        Model model = mock(Model.class);
+
+        // Act
+        String viewName = transactionController.getClientIncomingTransactions(request, model);
+
+        // Assert
+        assertEquals("transactionTemplates/incoming", viewName);
+        verify(model, times(1)).addAttribute(eq("incoming"), anyString());
+    }
+
+    private List<Transaction> createSampleTransactions(Account giver, Account receiver) {
+        giver.setAccountBalance(100, false);
+        Transaction transaction1 = new Transaction(giver, receiver, 100.0);
+        transaction1.setTimestamp(LocalDateTime.now());
+        transaction1.setTransactionID(1);
+
+        giver.setAccountBalance(200, false);
+        Transaction transaction2 = new Transaction(giver, receiver, 200.0);
+        transaction2.setTimestamp(LocalDateTime.now().minusDays(1));
+        transaction2.setTransactionID(2);
+
+        return Arrays.asList(transaction1, transaction2);
     }
 }
