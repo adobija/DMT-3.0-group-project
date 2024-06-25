@@ -1,7 +1,6 @@
 p {
             font-size: x-large;
             font-style: oblique;
-            background-color: yellow;
         }
         .responseDiv {
         font-size: xx-large;
@@ -15,7 +14,6 @@ body{
         height: 100%;
         width: 25%;
         float: left;
-        background-Color: green;
         justify-content: center;
         align-items: center;
         }
@@ -23,15 +21,13 @@ body{
         height: 100%;
         width: 50%;
         float: center;
-background-Color: blue;
 justify-content: center;
         align-items: center;
         }
         .right{
         height: 100%;
-      width: 25%;
+        width: 25%;
         float: right;
-        background-Color: yellow;
         justify-content: center;
         align-items: center;
         }
@@ -42,5 +38,11 @@ justify-content: center;
         display: flex;
         width:100%;
         height: 10vh;
-        background-Color: red;
         }
+        #logoutForm{
+        padding: 10px;
+        margin: 10px;
+        }
+
+
+

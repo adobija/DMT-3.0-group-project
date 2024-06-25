@@ -10,15 +10,11 @@
 
 <div th:replace="layout/header :: header"></div>
 
-    <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h1>
     <div class="responseDiv">
     <span th:text="${response}"></span>
     </div>
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Sign Out"/>
-    </form>
+
     <hr>
-    <br><a href="/about">About us</a>
     <br>
     <p>[A] - for admin</p>
     <ul>
