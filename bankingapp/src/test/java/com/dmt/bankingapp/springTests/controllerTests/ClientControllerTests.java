@@ -47,6 +47,7 @@ public class ClientControllerTests {
         request = new MockHttpServletRequest();
     }
 
+    @SuppressWarnings("unused")
     @Test
     void testEditNameSuccess() {
         // Arrange
@@ -60,7 +61,6 @@ public class ClientControllerTests {
         when(clientRepository.findByClientName(currentName)).thenReturn(client);
         when(clientRepository.findByClientName(newName)).thenReturn(null);
         when(model.getAttribute("output")).thenReturn("Client's name updated successfully");
-
         String response = clientController.editName(newName, request, model);
 
         // Assert
@@ -180,10 +180,8 @@ public class ClientControllerTests {
         when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(clientName);
         when(clientRepository.findByClientName(clientName)).thenReturn(client);
         when(model.getAttribute("output")).thenReturn(balance);
-        // Act
-        String response = clientController.getCheckingBalance(request, model);
 
-        // Assert
+        // Act and Assert
         assertEquals(balance, model.getAttribute("output"));
     }
 }
