@@ -1,18 +1,96 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Register New Client</title>
+    <meta charset="UTF-8">
+    <title>Banking App</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for specific styling */
+        .menu-item {
+            margin-bottom: 10px;
+        }
+        .menu-section {
+            margin-bottom: 20px;
+        }
+        .menu-section p {
+            font-weight: bold;
+        }
+        body {
+            background-size: cover;
+            background-repeat: repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-color: #BAEAC8;
+        }
+        .card{
+            border-radius: 2.25rem !important;
+        }
+    </style>
 </head>
 <body>
-<h1>Register New Client</h1>
-<form action="#" th:action="@{/register/newClient}" method="post">
-    <label for="clientName">Client Name:</label>
-    <input type="text" id="clientName" name="clientName" required>
-    <br><br>
-    <label for="clientPassword">Client Password:</label>
-    <input type="password" id="clientPassword" name="clientPassword" required>
-    <br><br>
-    <button type="submit">Register</button>
-</form>
+<header th:fragment="header" class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            <!-- Left Block: Main Logo -->
+            <div class="col-md-3 d-flex align-items-center">
+                <a th:href="@{/hello}">
+                    <img src="/logo.png" class="img-fluid" style="max-width: 100px; height: auto;">
+                </a>
+            </div>
+            <!-- Middle Block: Title and Greeting -->
+            <div class="col-md-6 text-center d-flex flex-column justify-content-center">
+                <h1 class="mb-0">Banking App</h1>
+                <h2 th:inline="text" class="h5">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h2>
+            </div>
+            <!-- Right Block: Auth Links and About -->
+            <div class="col-md-3 text-right d-flex flex-column justify-content-center">
+                <div th:if="${!#authorization.expression('isAuthenticated()')}" class="mb-2">
+                    <p>Click <a class="btn btn-primary btn-sm" th:href="@{/signup}">here</a> to sign up.</p>
+                    <p>Click <a class="btn btn-secondary btn-sm" th:href="@{/login}">here</a> to sign in.</p>
+                </div>
+                <div th:if="${#authorization.expression('isAuthenticated()')}" id="logoutForm" class="mb-2">
+                    <form th:action="@{/logout}" method="post">
+                        <input type="submit" class="btn btn-danger btn-sm" value="Logout"/>
+                    </form>
+                </div>
+                <a class="btn btn-info btn-sm" th:href="@{/about}">About us</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title">Create account in our bank!</h1>
+                    <form th:action="@{/register/newClient}" method="post" class="needs-validation" novalidate>
+                        <div class="form-group">
+                            <label for="clientName">Client Name:</label>
+                            <input type="text" class="form-control" id="clientName" name="clientName" required>
+                            <div class="invalid-feedback">
+                                Please enter client name.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientPassword">Client Password:</label>
+                            <input type="password" class="form-control" id="clientPassword" name="clientPassword" required>
+                            <div class="invalid-feedback">
+                                Please enter client password.
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

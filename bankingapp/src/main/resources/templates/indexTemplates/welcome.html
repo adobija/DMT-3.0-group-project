@@ -101,14 +101,29 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to the banking application!</h1>
+        <h1>Welcome to the banking application!<br><img src="/logo.png" style="max-width: 100px; height: auto;"></h1>
         <div class="login-panel">
-            <div th:ref="navbar-item" sec:authorize="!isAuthenticated()">
-        <p>Click <a th:href="@{/signup}">here</a> to sign up.</p>
-
-        <p>Click <a th:href="@{/login}">here</a> to sign in.</p>
+            <div th:if="${message != null}" style="width: 100%;
+    height: fit-content;
+    background-color: #ffc9febd;
+    color: red;
+    font-size: x-large;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 20px;">
+                <p th:text="${message}"></p>
             </div>
-        <p>Click <a th:href="@{/hello}">here</a> to see a greeting.</p>
+            <div th:ref="navbar-item" sec:authorize="!isAuthenticated()">
+                <div th:if="${message == null}">
+        <p>Click <a th:href="@{/signup}">here</a> to sign up.</p>
+                </div>
+        <p>Click <a th:href="@{/login}">here</a> to sign in.</p>
+
+            </div>
+        <p>Click <a th:href="@{/hello}">here</a> to see customer panel.</p>
     </div>
 </div>
 </body>

@@ -99,12 +99,23 @@
                     <ul class="menu">
                         <li><a href="/changeName">editName</a></li>
                         <li><a href="/changePassword">editPassword</a></li>
+                        <li><a href="/changeAdminPermission">[A] editAdmin (give or revoke admin permission)</a></li>
+                        <li><a href="/client/all">[A] all</a></li>
+                        <li><a href="/byClientIdForm">[A] byClientID</a></li>
                         <li><a href="/client/checkingBalance">checkingBalance</a></li>
                         <li><a href="/client/depositsBalance">depositBalance</a></li>
                         <li><a href="/client/loansBalance">loansBalance</a></li>
                     </ul>
                 </div>
 
+                <div class="controller">
+                    <h3>Commission Controller</h3>
+                    <ul class="menu">
+                        <li>[A] setForLoanCommission</li>
+                        <li>[A] setForDeposit</li>
+                        <li>[A] setForLoanInterest</li>
+                    </ul>
+                </div>
 
                 <div class="controller">
                     <h3>Deposit Controller</h3>
@@ -118,6 +129,8 @@
                     <h3>Loan Controller</h3>
                     <ul class="menu">
                         <li>add</li>
+                        <li>[A] all</li>
+                        <li>[A] byLoanId</li>
                     </ul>
                 </div>
 
@@ -127,13 +140,15 @@
                         <li>add</li>
                         <li>outgoingTransactions</li>
                         <li>incomingTransactions</li>
+                        <li>[A] getAll</li>
+                        <li>[A] byAccountNumber</li>
                     </ul>
                 </div>
             </div>
         </div>
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
-<!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
+            <!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
             <div th:if="${response != null}" style="width: 100%;
     height: fit-content;
     background-color: #ffc9febd;

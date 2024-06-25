@@ -26,7 +26,7 @@ public class RegisterController {
         String[] charactersOfName = clientName.split("");
         boolean flag = true;
         for (String x: charactersOfName){
-            if(!(x.matches("[a-zA-Z]+"))){
+            if(!(x.matches("[a-zA-Z0-9]+"))){
                 flag = false;
             }
         }
@@ -42,7 +42,7 @@ public class RegisterController {
                 client.setCheckingAccount(accountService.getLatestAccount());
                 clientRepository.save(client);
                 model.addAttribute("message", "New client profile created successfully");
-                return "registerTemplates/success";
+                return "indexTemplates/welcome";
             }
         }else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username can contain only letters from A-Z!, please try again");
