@@ -17,7 +17,6 @@ import com.dmt.bankingapp.entity.Deposit.DepositType;
 import com.dmt.bankingapp.entity.Transaction;
 
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,12 +44,13 @@ public class DepositController {
     private CommissionRepository commissionRepository;
 
     @PostMapping("/addNewDeposit")
-    public @ResponseBody String addNewDeposit(
+    public String addNewDeposit(
 
             @RequestParam double totalDepositAmount,
             @RequestParam int depositDuration,
             @RequestParam String depositType,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            Model model) {
 
         String currentName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(currentName);
@@ -102,7 +102,9 @@ public class DepositController {
 
         depositRepository.save(deposit);
 
-        return "Deposit added successfully";
+        String output = "Deposit added successfully";
+        model.addAttribute("addDeposit", output);
+        return "depositTemplates/addDeposit";
     }
 
     @GetMapping("/withdraw")
