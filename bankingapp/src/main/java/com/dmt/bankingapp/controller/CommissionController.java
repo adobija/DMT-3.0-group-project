@@ -63,9 +63,9 @@ public class CommissionController {
         commissionRepository.save(commissionInstance);
         commissionRepository.save(oldCommission);
 
-        model.addAttribute("message", "Successfully updated commission rate for LOANS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent());
+        model.addAttribute("response", "Successfully updated commission rate for LOANS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent());
         //return
-        return "commissionTemplates/loanCommission";
+        return "adminTemplates/adminPanel";
     }
 
     @PostMapping(path = "/setForDeposit")
@@ -99,10 +99,10 @@ public class CommissionController {
         commissionRepository.save(commissionInstance);
         commissionRepository.save(oldCommission);
 
-        model.addAttribute("message", "Successfully updated commission rate for DEPOSITS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent());
+        model.addAttribute("response", "Successfully updated commission rate for DEPOSITS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent());
 
         //return
-        return "commissionTemplates/depositCommission";
+        return "adminTemplates/adminPanel";
     }
 
     @PostMapping(path = "/setForLoanInterest")
@@ -136,9 +136,9 @@ public class CommissionController {
         commissionRepository.save(commissionInstance);
         commissionRepository.save(oldCommission);
 
-        model.addAttribute("message", "Successfully updated interest rate for LOANS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent());
+        model.addAttribute("response", "Successfully updated interest rate for LOANS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent());
 
         //return
-        return "commissionTemplates/loanInterestCommission";
+        return "adminTemplates/adminPanel";
     }
 }
