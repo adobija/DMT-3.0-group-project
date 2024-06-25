@@ -111,8 +111,8 @@ public class LoanController {
         loanAccount.setLoan(loan);
         accountRepository.save(loanAccount);
 
-        // String output = "Loan and loan account created successfully";
-        // model.addAttribute("add", output);
+        String output = "Loan and loan account created successfully";
+        model.addAttribute("add", output);
         return "loanTemplates/add";
     }
 
