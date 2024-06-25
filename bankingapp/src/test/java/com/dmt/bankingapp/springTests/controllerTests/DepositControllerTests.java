@@ -1,6 +1,6 @@
 package com.dmt.bankingapp.springTests.controllerTests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -14,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.ui.Model;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.dmt.bankingapp.controller.DepositController;
 import com.dmt.bankingapp.entity.Account;
@@ -65,7 +67,7 @@ class DepositControllerTests {
 
     @Test
     void testAddNewDepositSuccess() {
-        // Ensure sufficient funds
+        // Arrange
         checkingAccount.setAccountBalance(2000.0, false);
 
         when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn("ClientName");
@@ -74,29 +76,29 @@ class DepositControllerTests {
         List<Deposit> existingDeposits = new ArrayList<>();
         when(depositRepository.getAllByClient(client)).thenReturn(existingDeposits);
 
+        // Act
         Commission commission = new Commission();
         commission.setCommissionRateInPercent(5);
         when(commissionRepository.findByCommissionOf("DEPOSIT")).thenReturn(commission);
 
-        String response = depositController.addNewDeposit(500.0, 12, "FIXED", request);
+        String response = depositController.addNewDeposit(500.0, 12, "FIXED", request, mock(Model.class));
 
-        // Assertions
-        assertEquals("Deposit added successfully", response);
+        // Assert
+        assertEquals("depositTemplates/addDeposit", response);
         verify(depositRepository, times(1)).save(any(Deposit.class));
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
 
     @Test
     void testWithdrawDepositSuccess() {
-        // Ensure sufficient funds
+        // Arrange
         checkingAccount.setAccountBalance(2000.0, false);
 
         when(detailsOfLoggedClient.getLoggedClientInstance(request)).thenReturn(client);
-        when(clientRepository.findByClientName("ClientName")).thenReturn(client);
         when(accountRepository.findByAccountNumber("CHK123")).thenReturn(checkingAccount);
         when(accountRepository.findByAccountNumber("BANK_DEPOSIT")).thenReturn(bankAccount);
 
-        // Create a Deposit object with necessary properties
+        // Act
         Deposit deposit = new Deposit();
         deposit.setDepositType(DepositType.FIXED);
         deposit.setActive(true);
@@ -111,15 +113,43 @@ class DepositControllerTests {
         when(depositRepository.getAllByClient(client)).thenReturn(existingDeposits);
         when(accountRepository.findByClient(client)).thenReturn(List.of(checkingAccount));
 
-        Commission commission = new Commission();
-        commission.setCommissionRateInPercent(5);
-        when(commissionRepository.findByCommissionOf("DEPOSIT")).thenReturn(commission);
+        String response = depositController.withdrawDeposit(request, "FIXED", mock(Model.class));
 
-        String response = depositController.withdrawDeposit(request, "FIXED");
-
-        // Assertions
-        assertEquals("Successfully withdrawn 1100.0 zł!", response);
+        // Assert
+        assertEquals("depositTemplates/withdraw", response);
         verify(depositRepository, times(1)).save(any(Deposit.class));
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
+
+    @Test
+    void testWithdrawDepositLocked() {
+        // Arrange
+        checkingAccount.setAccountBalance(2000.0, false);
+
+        when(detailsOfLoggedClient.getLoggedClientInstance(request)).thenReturn(client);
+        when(accountRepository.findByAccountNumber("CHK123")).thenReturn(checkingAccount);
+        when(accountRepository.findByAccountNumber("BANK_DEPOSIT")).thenReturn(bankAccount);
+
+        // Act
+        Deposit deposit = new Deposit();
+        deposit.setDepositType(DepositType.FIXED);
+        deposit.setActive(true);
+        deposit.setDateOfDeposit(LocalDateTime.now().minusMonths(6)); // Example date, less than 12 months ago
+        deposit.setDepositDuration(12); // Example duration
+        deposit.setTotalDepositAmount(1000.0); // Example amount
+        deposit.setReturnOfInvestment(1100.0); // Example return of investment
+
+        List<Deposit> existingDeposits = new ArrayList<>();
+        existingDeposits.add(deposit); // Add the deposit to the list
+
+        when(depositRepository.getAllByClient(client)).thenReturn(existingDeposits);
+        when(accountRepository.findByClient(client)).thenReturn(List.of(checkingAccount));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+            depositController.withdrawDeposit(request, "FIXED", mock(Model.class))
+        );
+
+        // Assert
+        assertEquals("You cannot withdraw money from that deposit until " + deposit.getDateOfDeposit().plusMonths(deposit.getDepositDuration()) + "!", exception.getReason());
     }
+}
