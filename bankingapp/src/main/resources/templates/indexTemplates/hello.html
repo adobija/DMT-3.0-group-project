@@ -4,20 +4,12 @@
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
     lang="eu">
 <head>
-    <title>Hello World!</title>
-    <style>
-        p {
-            font-size: x-large;
-            font-style: oblique;
-            background-color: yellow;
-        }
-        .responseDiv {
-        font-size: xx-large;
-        color: red;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/css.css}">
 </head>
 <body>
+
+<div th:replace="layout/header :: header"></div>
+
     <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h1>
     <div class="responseDiv">
     <span th:text="${response}"></span>
