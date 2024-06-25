@@ -145,7 +145,7 @@ public class InstallmentController {
     }
 
     @GetMapping("/loan")
-    public @ResponseBody String getLoanInstallments(int loanId, HttpServletRequest request) {
+    public String getLoanInstallments(int loanId, HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if (!requester.isAdmin()) {
@@ -178,7 +178,8 @@ public class InstallmentController {
                     .append(DateAdjuster.getDate(installment.getDueDate()))
                     .append("\n");
         }
-        return output.toString();
+        model.addAttribute("loan", output.toString());
+        return "installmentTemplates/loan";
     }
 
     @GetMapping("/all")
