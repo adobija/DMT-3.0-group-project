@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,7 +33,7 @@ public class CommissionController {
     }
 
     @PostMapping(path = "/setForLoanCommission")
-    public String setCommissionRateForLoanCommission(@RequestParam int commissionRateAsPercent, HttpServletRequest request){
+    public String setCommissionRateForLoanCommission(@RequestParam int commissionRateAsPercent, HttpServletRequest request, Model model){
         //check if accessing client is admin
         Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
         if(!client.isAdmin()){
@@ -62,12 +63,13 @@ public class CommissionController {
         commissionRepository.save(commissionInstance);
         commissionRepository.save(oldCommission);
 
+        model.addAttribute("message", "Successfully updated commission rate for LOANS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent());
         //return
-        return "Successfully updated commission rate for LOANS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent();
+        return "commissionTemplates/loanCommission";
     }
 
     @PostMapping(path = "/setForDeposit")
-    public String setCommissionRateForDeposit(@RequestParam int commissionRateAsPercent, HttpServletRequest request){
+    public String setCommissionRateForDeposit(@RequestParam int commissionRateAsPercent, HttpServletRequest request, Model model){
         //check if accessing client is admin
         Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
         if(!client.isAdmin()){
@@ -97,12 +99,14 @@ public class CommissionController {
         commissionRepository.save(commissionInstance);
         commissionRepository.save(oldCommission);
 
+        model.addAttribute("message", "Successfully updated commission rate for DEPOSITS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent());
+
         //return
-        return "Successfully updated commission rate for DEPOSITS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent();
+        return "commissionTemplates/depositCommission";
     }
 
     @PostMapping(path = "/setForLoanInterest")
-    public String setCommissionRateForLoanInterest(@RequestParam int interestRateAsPercent, HttpServletRequest request){
+    public String setCommissionRateForLoanInterest(@RequestParam int interestRateAsPercent, HttpServletRequest request, Model model){
         //check if accessing client is admin
         Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
         if(!client.isAdmin()){
@@ -132,7 +136,9 @@ public class CommissionController {
         commissionRepository.save(commissionInstance);
         commissionRepository.save(oldCommission);
 
+        model.addAttribute("message", "Successfully updated interest rate for LOANS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent());
+
         //return
-        return "Successfully updated interest rate for LOANS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent();
+        return "commissionTemplates/loanInterest";
     }
 }
