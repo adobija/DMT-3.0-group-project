@@ -113,15 +113,15 @@
                 <div class="controller">
                     <h3>Deposit Controller</h3>
                     <ul class="menu">
-                        <li>addNewDeposit</li>
-                        <li>withdrawDeposit</li>
+                        <li><a href="/addDeposit">addNewDeposit</a></li>
+                        <li><form action="#" th:action="@{/withdrawDeposit}" method="get"><button type="submit">Withdraw deposit</button></form></li>
                     </ul>
                 </div>
 
                 <div class="controller">
                     <h3>Loan Controller</h3>
                     <ul class="menu">
-                        <li><a href="/loan/add">add</a></li>
+                        <li><a href="/takeLoan">add</a></li>
                         <li><a href="/loan/all">[A] all</a></li>
                         <li><a href="/loan/find">[A] byLoanId</a></li>
                     </ul>
@@ -130,7 +130,7 @@
                 <div class="controller">
                     <h3>Transaction Controller</h3>
                     <ul class="menu">
-                        <li><a href="/transaction/add">add</a></li>
+                        <li><form action="#" th:action="@{/makeTransaction}" method="get"><button type="submit">add</button></form></li>
                         <li><a href="/outgoingTransactions">outgoingTransactions</a></li>
                         <li><a href="/incomingTransactions">incomingTransactions</a></li>
                         <li><a href="/transaction/getAll">[A] getAll</a></li>
@@ -144,9 +144,9 @@
                     <ul class="menu">
                         <li><a href="/installment/myAll">getMyInstallments</a></li>
                         <li><a href="/next">getNextInstallment</a></li>
-                        <li><a href="/given">getGivenInstallment</a></li>
-                        <li><a href="/loan">getLoanInstallments</a></li>
-                        <li><a href="/all">getAllInstallments</a></li>
+                        <li><a href="/given">[A]getGivenInstallment</a></li>
+                        <li><a href="/loan">[A]getLoanInstallments</a></li>
+                        <li><a href="/all">[A]getAllInstallments</a></li>
                     </ul>
                 </div>
             </div>

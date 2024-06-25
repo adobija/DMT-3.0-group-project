@@ -4,52 +4,79 @@
     <meta charset="UTF-8">
     <title>Banking App</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Custom CSS for specific styling */
-        .menu-item {
-            margin-bottom: 10px;
+    <head>
+        <meta charset="UTF-8">
+        <title>Banking App</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <style>
+            /* Custom CSS for specific styling */
+            .menu-item {
+                margin-bottom: 10px;
+            }
+            .menu-section {
+                margin-bottom: 20px;
+            }
+            .menu-section p {
+                font-weight: bold;
+            }
+        </style>
+        <style>
+            .table {
+                border: 2px solid black;
+                border-collapse: collapse;
+            }
+            .table th, .table td {
+                border: 1px solid black;
+                padding: 8px;
+                text-align: center;
+            }
+            .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #000000;
+    }
+        </style>
+        <style>
+            .controller {
+                border: 1px solid #ccc;
+                margin-bottom: 10px;
+            }
+            .controller h3 {
+                background-color: #f0f0f0;
+                padding: 8px;
+                margin: 0;
+                cursor: pointer;
+            }
+            .controller ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                display: none;
+            }
+            .controller ul.show {
+                display: block;
+            }
+            .controller li {
+                padding: 8px;
+                border-bottom: 1px solid #eee;
+            }
+            .controller li:last-child {
+                border-bottom: none;
+            }
+            li{
+            background-color: #f8f9fa;
+            }
+        </style>
+        <style>
+            body {
+          background-size: cover;
+          background-repeat: repeat;
+          background-position: center center;
+          background-attachment: fixed;
+          background-color: #BAEAC8;
         }
-        .menu-section {
-            margin-bottom: 20px;
-        }
-        .menu-section p {
-            font-weight: bold;
-        }
-        .controller {
-            border: 1px solid #ccc;
-            margin-bottom: 10px;
-        }
-        .controller h3 {
-            background-color: #f0f0f0;
-            padding: 8px;
-            margin: 0;
-            cursor: pointer;
-        }
-        .controller ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            display: none;
-        }
-        .controller ul.show {
-            display: block;
-        }
-        .controller li {
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-        }
-        .controller li:last-child {
-            border-bottom: none;
-        }
-        body {
-            background-size: cover;
-            background-repeat: repeat;
-            background-position: center center;
-            background-attachment: fixed;
-            background-color: #BAEAC8;
-        }
-    </style>
-</head>
+        </style>
+    </head>
 <body>
 <header th:fragment="header" class="bg-light py-3">
     <div class="container">
@@ -113,15 +140,15 @@
                 <div class="controller">
                     <h3>Deposit Controller</h3>
                     <ul class="menu">
-                        <li>addNewDeposit</li>
-                        <li>withdrawDeposit</li>
+                        <li><a href="/addDeposit">addNewDeposit</a></li>
+                        <li><form action="#" th:action="@{/withdrawDeposit}" method="get"><button type="submit">Withdraw deposit</button></form></li>
                     </ul>
                 </div>
 
                 <div class="controller">
                     <h3>Loan Controller</h3>
                     <ul class="menu">
-                        <li><a href="/loan/add">add</a></li>
+                        <li><a href="/takeLoan">add</a></li>
                         <li><a href="/loan/all">[A] all</a></li>
                         <li><a href="/loan/find">[A] byLoanId</a></li>
                     </ul>
@@ -144,9 +171,9 @@
                     <ul class="menu">
                         <li><a href="/installment/myAll">getMyInstallments</a></li>
                         <li><a href="/next">getNextInstallment</a></li>
-                        <li><a href="/given">getGivenInstallment</a></li>
-                        <li><a href="/loan">getLoanInstallments</a></li>
-                        <li><a href="/all">getAllInstallments</a></li>
+                        <li><a href="/given">[A]getGivenInstallment</a></li>
+                        <li><a href="/loan">[A]getLoanInstallments</a></li>
+                        <li><a href="/all">[A]getAllInstallments</a></li>
                     </ul>
                 </div>
             </div>

@@ -92,9 +92,6 @@
                     <ul class="menu">
                         <li><a href="/changeName">editName</a></li>
                         <li><a href="/changePassword">editPassword</a></li>
-                        <li><a href="/changeAdminPermission">[A] editAdmin (give or revoke admin permission)</a></li>
-                        <li><a href="/client/all">[A] all</a></li>
-                        <li><a href="/byClientIdForm">[A] byClientID</a></li>
                         <li><a href="/client/checkingBalance">checkingBalance</a></li>
                         <li><a href="/client/depositsBalance">depositBalance</a></li>
                         <li><a href="/client/loansBalance">loansBalance</a></li>
@@ -102,28 +99,17 @@
                 </div>
 
                 <div class="controller">
-                    <h3>Commission Controller</h3>
-                    <ul class="menu">
-                        <li><a href="/setForLoanCommission">[A] setForLoanCommission</a></li>
-                        <li><a href="/setForDeposit">[A] setForDeposit</a></li>
-                        <li><a href="/setForLoanInterest">[A] setForLoanInterest</a></li>
-                    </ul>
-                </div>
-
-                <div class="controller">
                     <h3>Deposit Controller</h3>
                     <ul class="menu">
-                        <li>addNewDeposit</li>
-                        <li>withdrawDeposit</li>
+                        <li><a href="/addDeposit">addNewDeposit</a></li>
+                        <li><form action="#" th:action="@{/withdrawDeposit}" method="get"><button type="submit">Withdraw deposit</button></form></li>
                     </ul>
                 </div>
 
                 <div class="controller">
                     <h3>Loan Controller</h3>
                     <ul class="menu">
-                        <li><a href="/loan/add">add</a></li>
-                        <li><a href="/loan/all">[A] all</a></li>
-                        <li><a href="/loan/find">[A] byLoanId</a></li>
+                        <li><a href="/takeLoan">add</a></li>
                     </ul>
                 </div>
 
@@ -133,8 +119,6 @@
                         <li><form action="#" th:action="@{/makeTransaction}" method="get"><button type="submit">add</button></form></li>
                         <li><a href="/outgoingTransactions">outgoingTransactions</a></li>
                         <li><a href="/incomingTransactions">incomingTransactions</a></li>
-                        <li><a href="/transaction/getAll">[A] getAll</a></li>
-                        <li><a href="/transaction/accNumber">[A] byAccountNumber</a></li>
                     </ul>
                 </div>
 
@@ -144,9 +128,6 @@
                     <ul class="menu">
                         <li><a href="/installment/myAll">getMyInstallments</a></li>
                         <li><a href="/next">getNextInstallment</a></li>
-                        <li><a href="/given">getGivenInstallment</a></li>
-                        <li><a href="/loan">getLoanInstallments</a></li>
-                        <li><a href="/all">getAllInstallments</a></li>
                     </ul>
                 </div>
             </div>

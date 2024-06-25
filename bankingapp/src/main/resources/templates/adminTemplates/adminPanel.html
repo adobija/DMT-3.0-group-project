@@ -113,8 +113,8 @@
                 <div class="controller">
                     <h3>Deposit Controller</h3>
                     <ul class="menu">
-                        <li>addNewDeposit</li>
-                        <li>withdrawDeposit</li>
+                        <li><a href="/addDeposit">addNewDeposit</a></li>
+                        <li><form action="#" th:action="@{/withdrawDeposit}" method="get"><button type="submit">Withdraw deposit</button></form></li>
                     </ul>
                 </div>
 
@@ -144,9 +144,9 @@
                     <ul class="menu">
                         <li><a href="/installment/myAll">getMyInstallments</a></li>
                         <li><a href="/next">getNextInstallment</a></li>
-                        <li><a href="/given">getGivenInstallment</a></li>
-                        <li><a href="/loan">getLoanInstallments</a></li>
-                        <li><a href="/all">getAllInstallments</a></li>
+                        <li><a href="/given">[A]getGivenInstallment</a></li>
+                        <li><a href="/loan">[A]getLoanInstallments</a></li>
+                        <li><a href="/all">[A]getAllInstallments</a></li>
                     </ul>
                 </div>
             </div>
@@ -154,7 +154,7 @@
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
             <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
-            <div th:if="${response != null}" class="alert alert-danger" role="alert">
+            <div th:if="${response != null}" class="alert alert-info" role="alert">
                 <p th:text="${response}"></p>
             </div>
         </div>
@@ -172,6 +172,12 @@
         });
     });
 </script>
-
+<script defer>
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'F9') {
+            window.location.href = '/admin';
+        }
+    });
+</script>
 </body>
 </html>
