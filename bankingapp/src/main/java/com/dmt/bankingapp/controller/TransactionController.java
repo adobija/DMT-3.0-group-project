@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 
@@ -76,7 +75,7 @@ public class TransactionController {
     }
 
     @GetMapping("/outgoingTransactions")
-    public @ResponseBody String getClientOutgoingTransactions(HttpServletRequest request) {
+    public String getClientOutgoingTransactions(HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         Account checking = client.getCheckingAccount();
@@ -100,11 +99,12 @@ public class TransactionController {
         if (output.length() > 0) {
             output.setLength(output.length() - 1);
         }
-        return output.toString();
+        model.addAttribute("outgoing", output.toString());
+        return "transactionTemplates/outgoing";
     }
 
     @GetMapping("/incomingTransactions")
-    public @ResponseBody String getClientIncomingTransactions(HttpServletRequest request) {
+    public String getClientIncomingTransactions(HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         Account checking = client.getCheckingAccount();
@@ -128,11 +128,12 @@ public class TransactionController {
         if (output.length() > 0) {
             output.setLength(output.length() - 1);
         }
-        return output.toString();
+        model.addAttribute("incoming", output.toString());
+        return "transactionTemplates/incoming";
     }
 
     @GetMapping("/getAll")
-    public @ResponseBody String getEveryTransaction(HttpServletRequest request) {
+    public String getEveryTransaction(HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if (!requester.isAdmin()) {
@@ -161,11 +162,12 @@ public class TransactionController {
         if (output.length() > 0) {
             output.setLength(output.length() - 1);
         }
-        return output.toString();
+        model.addAttribute("getAll", output.toString());
+        return "transactionTemplates/getAll";
     }
 
     @GetMapping("/byAccountNumber")
-    public @ResponseBody String getByAccountId(@RequestParam String accountNumber, HttpServletRequest request) {
+    public String getByAccountId(@RequestParam String accountNumber, HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
@@ -209,6 +211,7 @@ public class TransactionController {
         if (output.length() > 0) {
             output.setLength(output.length() - 1);
         }
-        return output.toString();
+        model.addAttribute("accNumber", output.toString());
+        return "transactionTemplates/accNumber";
     }
 }

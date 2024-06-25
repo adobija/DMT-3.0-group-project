@@ -43,6 +43,7 @@ public class BankingappApplication {
 
 			if(checkIfExist == null){
 				Client bank = new Client("BankOwner", true, "dmtprojekt2024");
+				bank.setCheckingAccount(new Account("BANK_CHECKING", Account.AccountType.BANK, bank));
 				Account accountForLoans = new Account("BANK_LOAN", Account.AccountType.BANK, bank);
 				Account accountForDeposits = new Account("BANK_DEPOSIT", Account.AccountType.BANK, bank);
 				accountForLoans.setAccountBalance(30000000, false);

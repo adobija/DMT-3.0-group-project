@@ -19,7 +19,7 @@ public class Client {
     @Column(name = "clientName")
     private String clientName;
 
-    @Column(name = "isAdmin")
+    @Column(name = "isAdmin", columnDefinition = "boolean default false")
     private boolean isAdmin;
 
     @Column(name = "bcryptClientPassword", length = 68)

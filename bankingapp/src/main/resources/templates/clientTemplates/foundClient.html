@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Banking App</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         /* Custom CSS for specific styling */
         .menu-item {
@@ -149,11 +150,29 @@
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
             <!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
-            <div>
-                <h1>This is the HOME PAGE of the DMT 3.0 banking application.</h1>
-
+            <div class="container mt-4">
+            <h2>List of all clients</h2>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Have admin permissions</th>
+                    <th>ID of checking account</th>
+                    <th>Account Number</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${client.getClientID()}"></td>
+                    <td th:text="${client.getClientName()}"></td>
+                    <td th:text="${client.isAdmin() ? 'Yes' : 'No'}"></td>
+                    <td th:text="${client.getCheckingAccount().getAccountID()}"></td>
+                    <td th:text="${client.getCheckingAccount().getAccountNumber()}"></td>
+                </tr>
+                </tbody>
+            </table>
             </div>
-
 
 
 

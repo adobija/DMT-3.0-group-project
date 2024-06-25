@@ -48,12 +48,14 @@ class RegisterControllerTests {
         Account account = new Account("CHK12345", Account.AccountType.CHECKING, new Client());
         when(accountService.addNewAccount(eq(Account.AccountType.CHECKING), any(Client.class))).thenReturn("Account created successfully");
         when(accountService.getLatestAccount()).thenReturn(account);
+        when(model.getAttribute("output")).thenReturn("New client profile created successfully");
 
         // Act
         String response = registerController.addNewClient(clientName, clientPassword, model);
 
         // Assert
-        assertEquals("New client profile created successfully", response);
+        assertEquals(model.getAttribute("output"), "New client profile created successfully");
+        assertEquals("registerTemplates/success", response);
         verify(clientRepository, times(2)).save(any(Client.class));
         verify(accountService, times(1)).addNewAccount(eq(Account.AccountType.CHECKING), any(Client.class));
     }

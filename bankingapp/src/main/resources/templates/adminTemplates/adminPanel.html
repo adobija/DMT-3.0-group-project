@@ -15,8 +15,6 @@
         .menu-section p {
             font-weight: bold;
         }
-    </style>
-    <style>
         .controller {
             border: 1px solid #ccc;
             margin-bottom: 10px;
@@ -43,18 +41,13 @@
         .controller li:last-child {
             border-bottom: none;
         }
-        li{
-        background-color: #f8f9fa;
-        }
-    </style>
-    <style>
         body {
-      background-size: cover;
-      background-repeat: repeat;
-      background-position: center center;
-      background-attachment: fixed;
-      background-color: #BAEAC8;
-    }
+            background-size: cover;
+            background-repeat: repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-color: #BAEAC8;
+        }
     </style>
 </head>
 <body>
@@ -148,15 +141,10 @@
         </div>
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
-            <!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
-            <div>
-                <h1>This is the HOME PAGE of the DMT 3.0 banking application.</h1>
-
+            <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
+            <div th:if="${response != null}" class="alert alert-danger" role="alert">
+                <p th:text="${response}"></p>
             </div>
-
-
-
-
         </div>
     </div>
 </div>

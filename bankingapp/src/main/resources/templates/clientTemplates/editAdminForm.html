@@ -149,14 +149,19 @@
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
             <!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
-            <div>
-                <h1>This is the HOME PAGE of the DMT 3.0 banking application.</h1>
-
-            </div>
-
-
-
-
+            <h1>Give or revoke admin permission</h1>
+            <form action="#" th:action="@{/client/editAdmin}" method="post">
+                <label for="clientId">ID of client:</label>
+                <input type="number" id="clientId" name="clientId" required>
+                <br><br>
+                <label for="isAdmin">Should be admin:</label>
+                <select id="isAdmin" name="isAdmin" required>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+                <br><br>
+                <button type="submit">Save</button>
+            </form>
         </div>
     </div>
 </div>
@@ -175,3 +180,4 @@
 
 </body>
 </html>
+
