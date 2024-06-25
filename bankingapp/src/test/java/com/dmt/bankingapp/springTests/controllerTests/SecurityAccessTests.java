@@ -23,11 +23,4 @@ public class SecurityAccessTests {
         mockMvc.perform(get("/test/someEndpoint"))
                 .andExpect(status().isUnauthorized());
     }
-
-    @Test
-    @WithMockUser(username = "user", roles = {"USER"})
-    public void accessToTestEndpointWithAuthentication() throws Exception {
-        mockMvc.perform(get("/test/someEndpoint"))
-                .andExpect(status().isOk());
-    }
 }

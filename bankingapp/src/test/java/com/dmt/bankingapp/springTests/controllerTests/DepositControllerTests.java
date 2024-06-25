@@ -29,7 +29,7 @@ import com.dmt.bankingapp.repository.DepositRepository;
 import com.dmt.bankingapp.repository.TransactionRepository;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 
-class DepositControllerTest {
+class DepositControllerTests {
 
     @Mock
     private ClientRepository clientRepository;

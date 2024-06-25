@@ -6,7 +6,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor;
 
 @Configuration
 public class EndpointAccess {
