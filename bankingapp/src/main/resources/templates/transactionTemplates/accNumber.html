@@ -1,10 +1,175 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Banking App</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for specific styling */
+        .menu-item {
+            margin-bottom: 10px;
+        }
+        .menu-section {
+            margin-bottom: 20px;
+        }
+        .menu-section p {
+            font-weight: bold;
+        }
+        .controller {
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        .controller h3 {
+            background-color: #f0f0f0;
+            padding: 8px;
+            margin: 0;
+            cursor: pointer;
+        }
+        .controller ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: none;
+        }
+        .controller ul.show {
+            display: block;
+        }
+        .controller li {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .controller li:last-child {
+            border-bottom: none;
+        }
+        body {
+            background-size: cover;
+            background-repeat: repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-color: #BAEAC8;
+        }
+    </style>
 </head>
 <body>
-<pre th:text="${accNumber}"></pre>
+<header th:fragment="header" class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            <!-- Left Block: Main Logo -->
+            <div class="col-md-3 d-flex align-items-center">
+                <a th:href="@{/hello}">
+                    <img src="/logo.png" class="img-fluid" style="max-width: 100px; height: auto;">
+                </a>
+            </div>
+            <!-- Middle Block: Title and Greeting -->
+            <div class="col-md-6 text-center d-flex flex-column justify-content-center">
+                <h1 class="mb-0">Banking App</h1>
+                <h2 th:inline="text" class="h5">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h2>
+            </div>
+            <!-- Right Block: Auth Links and About -->
+            <div class="col-md-3 text-right d-flex flex-column justify-content-center">
+                <div th:if="${!#authorization.expression('isAuthenticated()')}" class="mb-2">
+                    <p>Click <a class="btn btn-primary btn-sm" th:href="@{/signup}">here</a> to sign up.</p>
+                    <p>Click <a class="btn btn-secondary btn-sm" th:href="@{/login}">here</a> to sign in.</p>
+                </div>
+                <div th:if="${#authorization.expression('isAuthenticated()')}" id="logoutForm" class="mb-2">
+                    <form th:action="@{/logout}" method="post">
+                        <input type="submit" class="btn btn-danger btn-sm" value="logout"/>
+                    </form>
+                </div>
+                <a class="btn btn-info btn-sm" th:href="@{/about}">About us</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Left Menu -->
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="menu-section">
+                <div class="controller">
+                    <h3>Client Controller</h3>
+                    <ul class="menu">
+                        <li><a href="/changeName">editName</a></li>
+                        <li><a href="/changePassword">editPassword</a></li>
+                        <li><a href="/changeAdminPermission">[A] editAdmin (give or revoke admin permission)</a></li>
+                        <li><a href="/client/all">[A] all</a></li>
+                        <li><a href="/byClientIdForm">[A] byClientID</a></li>
+                        <li><a href="/client/checkingBalance">checkingBalance</a></li>
+                        <li><a href="/client/depositsBalance">depositBalance</a></li>
+                        <li><a href="/client/loansBalance">loansBalance</a></li>
+                    </ul>
+                </div>
+
+                <div class="controller">
+                    <h3>Commission Controller</h3>
+                    <ul class="menu">
+                        <li><a href="/setForLoanCommission">[A] setForLoanCommission</a></li>
+                        <li><a href="/setForDeposit">[A] setForDeposit</a></li>
+                        <li><a href="/setForLoanInterest">[A] setForLoanInterest</a></li>
+                    </ul>
+                </div>
+
+                <div class="controller">
+                    <h3>Deposit Controller</h3>
+                    <ul class="menu">
+                        <li>addNewDeposit</li>
+                        <li>withdrawDeposit</li>
+                    </ul>
+                </div>
+
+                <div class="controller">
+                    <h3>Loan Controller</h3>
+                    <ul class="menu">
+                        <li><a href="/loan/add">add</a></li>
+                        <li><a href="/loan/all">[A] all</a></li>
+                        <li><a href="/loan/find">[A] byLoanId</a></li>
+                    </ul>
+                </div>
+
+                <div class="controller">
+                    <h3>Transaction Controller</h3>
+                    <ul class="menu">
+                        <li><form action="#" th:action="@{/makeTransaction}" method="get"><button type="submit">add</button></form></li>
+                        <li><a href="/outgoingTransactions">outgoingTransactions</a></li>
+                        <li><a href="/incomingTransactions">incomingTransactions</a></li>
+                        <li><a href="/transaction/getAll">[A] getAll</a></li>
+                        <li><a href="/transaction/accNumber">[A] byAccountNumber</a></li>
+                    </ul>
+                </div>
+
+
+                <div class="controller">
+                    <h3>Installment Controller</h3>
+                    <ul class="menu">
+                        <li><a href="/installment/myAll">getMyInstallments</a></li>
+                        <li><a href="/next">getNextInstallment</a></li>
+                        <li><a href="/given">getGivenInstallment</a></li>
+                        <li><a href="/loan">getLoanInstallments</a></li>
+                        <li><a href="/all">getAllInstallments</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Text Area for HTML Code -->
+        <div class="col-md-9">
+            <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
+            <pre th:text="${accNumber}"></pre>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // JavaScript to toggle visibility of lists
+    document.querySelectorAll('.controller h3').forEach(item => {
+        item.addEventListener('click', function() {
+            this.nextElementSibling.classList.toggle('show');
+        });
+    });
+</script>
+
 </body>
 </html>

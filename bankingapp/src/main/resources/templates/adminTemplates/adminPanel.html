@@ -130,7 +130,7 @@
                 <div class="controller">
                     <h3>Transaction Controller</h3>
                     <ul class="menu">
-                        <li><a href="/transaction/add">add</a></li>
+                        <li><form action="#" th:action="@{/makeTransaction}" method="get"><button type="submit">add</button></form></li>
                         <li><a href="/outgoingTransactions">outgoingTransactions</a></li>
                         <li><a href="/incomingTransactions">incomingTransactions</a></li>
                         <li><a href="/transaction/getAll">[A] getAll</a></li>

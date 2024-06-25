@@ -130,7 +130,7 @@
                 <div class="controller">
                     <h3>Transaction Controller</h3>
                     <ul class="menu">
-                        <li><form action="#" th:action="@{/makeTransaction}" method="get"><button type="submit">add</button></form></li>
+                        <li><a href="/transaction/add">add</a></li>
                         <li><a href="/outgoingTransactions">outgoingTransactions</a></li>
                         <li><a href="/incomingTransactions">incomingTransactions</a></li>
                         <li><a href="/transaction/getAll">[A] getAll</a></li>
@@ -154,7 +154,13 @@
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
             <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
-            <pre th:text="${getAll}"></pre>
+            <h1>Find transaction of</h1>
+            <form action="#" th:action="@{/transaction/byAccountNumber}" method="get">
+                <label for="accountNumber">Account number:</label>
+                <input type="text" id="accountNumber" name="accountNumber"  required>
+                <br><br>
+                <button type="submit">Find</button>
+            </form>
         </div>
     </div>
 </div>
