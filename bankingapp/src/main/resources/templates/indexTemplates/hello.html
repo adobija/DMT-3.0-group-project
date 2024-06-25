@@ -1,64 +1,115 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" 
-    xmlns:th="https://www.thymeleaf.org"
-    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
-    lang="eu">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/css.css}">
+    <meta charset="UTF-8">
+    <title>Banking App</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for specific styling */
+        .menu-item {
+            margin-bottom: 10px;
+        }
+        .menu-section {
+            margin-bottom: 20px;
+        }
+        .menu-section p {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-
-<div th:replace="layout/header :: header"></div>
-
-    <div class="responseDiv">
-    <span th:text="${response}"></span>
+<header th:fragment="header" class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            <!-- Left Block: Main Logo -->
+            <div class="col-md-3 d-flex align-items-center">
+                <a href="/hello">
+                    <img src="/logo.png" class="img-fluid" style="max-width: 100px; height: auto;">
+                </a>
+            </div>
+            <!-- Middle Block: Title and Greeting -->
+            <div class="col-md-6 text-center d-flex flex-column justify-content-center">
+                <h1 class="mb-0">Banking App</h1>
+                <h2 th:inline="text" class="h5">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h2>
+            </div>
+            <!-- Right Block: Auth Links and About -->
+            <div class="col-md-3 text-right d-flex flex-column justify-content-center">
+                <div th:if="${!#authorization.expression('isAuthenticated()')}" class="mb-2">
+                    <p>Click <a class="btn btn-primary btn-sm" th:href="@{/signup}">here</a> to sign up.</p>
+                    <p>Click <a class="btn btn-secondary btn-sm" th:href="@{/login}">here</a> to sign in.</p>
+                </div>
+                <div th:if="${#authorization.expression('isAuthenticated()')}" id="logoutForm" class="mb-2">
+                    <form th:action="@{/logout}" method="post">
+                        <input type="submit" class="btn btn-danger btn-sm" value="logout"/>
+                    </form>
+                </div>
+                <a class="btn btn-info btn-sm" th:href="@{/about}">About us</a>
+            </div>
+        </div>
     </div>
+</header>
 
-    <hr>
-    <br>
-    <p>[A] - for admin</p>
-    <ul>
-        <li>
-        <ul><p>client controller</p>
-        <li><a href="/changeName">editName</a></li>
-        <li><a href="/changePassword">editPassword</a></li>
-        <li><a href="/changeAdminPermission">[A] editAdmin (give or revoke admin permission)</a></li>
-            <li><a href="/client/all">[A] all</a></li>
-        <li><a href="/byClientIdForm">[A] byClientID</a></li>
-        <li><a href="/client/checkingBalance">checkingBalance</a></li>
-        <li><a href="/client/depositsBalance">depositBalance</a></li>
-            <li><a href="/client/loansBalance">loansBalance</a></li>
-        </ul>
-        </li>
-        <li>
-        <ul><p>commission controller</p>
-            <li>[A] setForLoanCommission</li>
-            <li>[A] setForDeposit</li>
-            <li>[A]setForLoanInterest</li>
-        </ul>
-        </li>
-        <li>
-            <ul><p>deposit controller</p>
-                <li>addNewDeposit</li>
-                <li>withdrawDeposit</li>
-            </ul>
-        </li>
-        <li>
-            <ul><p>loan controller</p>
-                <li>add</li>
-                <li>[A] all</li>
-                <li>[A] byLoanId</li>
-            </ul>
-        </li>
-        <li>
-            <ul><p>transaction controller</p>
-                <li>add</li>
-                <li>outgoingTransactions</li>
-                <li>incomingTransactions</li>
-                <li>[A] getAll</li>
-                <li>[A] byAccountNumber</li>
-            </ul>
-        </li>
-    </ul>
+<!-- Left Menu -->
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="menu-section">
+                <p>[A] - for admin</p>
+                <ul>
+                    <li class="menu-item">
+                        <ul>
+                            <p>client controller</p>
+                            <li><a href="/changeName">editName</a></li>
+                            <li><a href="/changePassword">editPassword</a></li>
+                            <li><a href="/changeAdminPermission">[A] editAdmin (give or revoke admin permission)</a></li>
+                            <li><a href="/client/all">[A] all</a></li>
+                            <li><a href="/byClientIdForm">[A] byClientID</a></li>
+                            <li><a href="/client/checkingBalance">checkingBalance</a></li>
+                            <li><a href="/client/depositsBalance">depositBalance</a></li>
+                            <li><a href="/client/loansBalance">loansBalance</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <ul>
+                            <p>commission controller</p>
+                            <li>[A] setForLoanCommission</li>
+                            <li>[A] setForDeposit</li>
+                            <li>[A] setForLoanInterest</li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <ul>
+                            <p>deposit controller</p>
+                            <li>addNewDeposit</li>
+                            <li>withdrawDeposit</li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <ul>
+                            <p>loan controller</p>
+                            <li>add</li>
+                            <li>[A] all</li>
+                            <li>[A] byLoanId</li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <ul>
+                            <p>transaction controller</p>
+                            <li>add</li>
+                            <li>outgoingTransactions</li>
+                            <li>incomingTransactions</li>
+                            <li>[A] getAll</li>
+                            <li>[A] byAccountNumber</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
