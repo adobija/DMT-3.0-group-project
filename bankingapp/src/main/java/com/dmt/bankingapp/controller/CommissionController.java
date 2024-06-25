@@ -33,7 +33,7 @@ public class CommissionController {
     }
 
     @PostMapping(path = "/setForLoanCommission")
-    public String setCommissionRateForLoanCommission(@RequestParam int commissionRateAsPercent, HttpServletRequest request, Model model){
+    public String setCommissionRateForLoanCommission(@RequestParam double commissionRateAsPercent, HttpServletRequest request, Model model){
         //check if accessing client is admin
         Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
         if(!client.isAdmin()){
@@ -69,7 +69,7 @@ public class CommissionController {
     }
 
     @PostMapping(path = "/setForDeposit")
-    public String setCommissionRateForDeposit(@RequestParam int depositRateAsPercent, HttpServletRequest request, Model model){
+    public String setCommissionRateForDeposit(@RequestParam double depositRateAsPercent, HttpServletRequest request, Model model){
         //check if accessing client is admin
         Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
         if(!client.isAdmin()){
@@ -106,7 +106,7 @@ public class CommissionController {
     }
 
     @PostMapping(path = "/setForLoanInterest")
-    public String setCommissionRateForLoanInterest(@RequestParam int interestRateAsPercent, HttpServletRequest request, Model model){
+    public String setCommissionRateForLoanInterest(@RequestParam double interestRateAsPercent, HttpServletRequest request, Model model){
         //check if accessing client is admin
         Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
         if(!client.isAdmin()){
