@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Find Loans</title>
+</head>
+<body>
+    <form action="/loan/byLoanId" method="GET">
+        <label for="loanId">Loan ID:</label>
+        <input type="text" id="loanId" name="loanId">
+        <button type="submit">Find Loan</button>
+    </form>
+    <p>OR</p>
+    <button type="button" onclick="window.location.href='/loan/all'">Display All Loans</button>
+</body>
+</html>
