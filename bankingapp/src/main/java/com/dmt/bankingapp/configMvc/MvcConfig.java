@@ -21,6 +21,10 @@ public class MvcConfig implements WebMvcConfigurer {
 
 		registry.addViewController("/findClientById").setViewName("testTemplates/testForm");
 
+		registry.addViewController("/withdraw").setViewName("depositTemplates/withdraw");
+
+
+
 	}
 
 }

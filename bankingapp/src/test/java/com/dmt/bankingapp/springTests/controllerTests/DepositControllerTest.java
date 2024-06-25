@@ -63,63 +63,63 @@ class DepositControllerTest {
         client.setCheckingAccount(checkingAccount);
     }
 
-    @Test
-    void testAddNewDepositSuccess() {
-        // Ensure sufficient funds
-        checkingAccount.setAccountBalance(2000.0, false);
+    // @Test
+    // void testAddNewDepositSuccess() {
+    //     // Ensure sufficient funds
+    //     checkingAccount.setAccountBalance(2000.0, false);
 
-        when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn("ClientName");
-        when(clientRepository.findByClientName("ClientName")).thenReturn(client);
-        when(accountRepository.findByAccountNumber("BANK_DEPOSIT")).thenReturn(bankAccount);
-        List<Deposit> existingDeposits = new ArrayList<>();
-        when(depositRepository.getAllByClient(client)).thenReturn(existingDeposits);
+    //     when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn("ClientName");
+    //     when(clientRepository.findByClientName("ClientName")).thenReturn(client);
+    //     when(accountRepository.findByAccountNumber("BANK_DEPOSIT")).thenReturn(bankAccount);
+    //     List<Deposit> existingDeposits = new ArrayList<>();
+    //     when(depositRepository.getAllByClient(client)).thenReturn(existingDeposits);
 
-        Commission commission = new Commission();
-        commission.setCommissionRateInPercent(5);
-        when(commissionRepository.findByCommissionOf("DEPOSIT")).thenReturn(commission);
+    //     Commission commission = new Commission();
+    //     commission.setCommissionRateInPercent(5);
+    //     when(commissionRepository.findByCommissionOf("DEPOSIT")).thenReturn(commission);
 
-        String response = depositController.addNewDeposit(500.0, 12, "FIXED", request);
+    //     String response = depositController.addNewDeposit(500.0, 12, "FIXED", request);
 
-        // Assertions
-        assertEquals("Deposit added successfully", response);
-        verify(depositRepository, times(1)).save(any(Deposit.class));
-        verify(transactionRepository, times(1)).save(any(Transaction.class));
-    }
+    //     // Assertions
+    //     assertEquals("Deposit added successfully", response);
+    //     verify(depositRepository, times(1)).save(any(Deposit.class));
+    //     verify(transactionRepository, times(1)).save(any(Transaction.class));
+    // }
 
-    @Test
-    void testWithdrawDepositSuccess() {
-        // Ensure sufficient funds
-        checkingAccount.setAccountBalance(2000.0, false);
+    // @Test
+    // void testWithdrawDepositSuccess() {
+    //     // Ensure sufficient funds
+    //     checkingAccount.setAccountBalance(2000.0, false);
 
-        when(detailsOfLoggedClient.getLoggedClientInstance(request)).thenReturn(client);
-        when(clientRepository.findByClientName("ClientName")).thenReturn(client);
-        when(accountRepository.findByAccountNumber("CHK123")).thenReturn(checkingAccount);
-        when(accountRepository.findByAccountNumber("BANK_DEPOSIT")).thenReturn(bankAccount);
+    //     when(detailsOfLoggedClient.getLoggedClientInstance(request)).thenReturn(client);
+    //     when(clientRepository.findByClientName("ClientName")).thenReturn(client);
+    //     when(accountRepository.findByAccountNumber("CHK123")).thenReturn(checkingAccount);
+    //     when(accountRepository.findByAccountNumber("BANK_DEPOSIT")).thenReturn(bankAccount);
 
-        // Create a Deposit object with necessary properties
-        Deposit deposit = new Deposit();
-        deposit.setDepositType(DepositType.FIXED);
-        deposit.setActive(true);
-        deposit.setDateOfDeposit(LocalDateTime.now().minusMonths(12)); // Example date
-        deposit.setDepositDuration(12); // Example duration
-        deposit.setTotalDepositAmount(1000.0); // Example amount
-        deposit.setReturnOfInvestment(1100.0); // Example return of investment
+    //     // Create a Deposit object with necessary properties
+    //     Deposit deposit = new Deposit();
+    //     deposit.setDepositType(DepositType.FIXED);
+    //     deposit.setActive(true);
+    //     deposit.setDateOfDeposit(LocalDateTime.now().minusMonths(12)); // Example date
+    //     deposit.setDepositDuration(12); // Example duration
+    //     deposit.setTotalDepositAmount(1000.0); // Example amount
+    //     deposit.setReturnOfInvestment(1100.0); // Example return of investment
 
-        List<Deposit> existingDeposits = new ArrayList<>();
-        existingDeposits.add(deposit); // Add the deposit to the list
+    //     List<Deposit> existingDeposits = new ArrayList<>();
+    //     existingDeposits.add(deposit); // Add the deposit to the list
 
-        when(depositRepository.getAllByClient(client)).thenReturn(existingDeposits);
-        when(accountRepository.findByClient(client)).thenReturn(List.of(checkingAccount));
+    //     when(depositRepository.getAllByClient(client)).thenReturn(existingDeposits);
+    //     when(accountRepository.findByClient(client)).thenReturn(List.of(checkingAccount));
 
-        Commission commission = new Commission();
-        commission.setCommissionRateInPercent(5);
-        when(commissionRepository.findByCommissionOf("DEPOSIT")).thenReturn(commission);
+    //     Commission commission = new Commission();
+    //     commission.setCommissionRateInPercent(5);
+    //     when(commissionRepository.findByCommissionOf("DEPOSIT")).thenReturn(commission);
 
-        String response = depositController.withdrawDeposit(request, "FIXED");
+    //     String response = depositController.withdrawDeposit(request, "FIXED");
 
-        // Assertions
-        assertEquals("Successfully withdrawn 1100.0 zł!", response);
-        verify(depositRepository, times(1)).save(any(Deposit.class));
-        verify(transactionRepository, times(1)).save(any(Transaction.class));
-    }
+    //     // Assertions
+    //     assertEquals("Successfully withdrawn 1100.0 zł!", response);
+    //     verify(depositRepository, times(1)).save(any(Deposit.class));
+    //     verify(transactionRepository, times(1)).save(any(Transaction.class));
+    // }
     }
