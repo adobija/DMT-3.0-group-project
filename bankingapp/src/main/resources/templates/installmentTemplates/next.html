@@ -154,7 +154,29 @@
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
             <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
-            <pre th:text="${next}"></pre>
+            <div class="container mt-4">
+                <h2>Data of next installment</h2>
+                <table class="table table-striped">
+                    <thead style="background-color: #DEE2E6;">
+                    <tr>
+                        <th>Installment ID</th>
+                        <th>Installemnt Amount</th>
+                        <th>Already Paid</th>
+                        <th>To pay</th>
+                        <th>Due date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="installment : ${next}">
+                        <td th:text="${installment.loanID()}"></td>
+                        <td th:text="${installment.installmentAmount()}"></td>
+                        <td th:text="${installment.paidAmount()}"></td>
+                        <td th:text="${installment.toPay()}"></td>
+                        <td th:text="${installment.dueDate()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

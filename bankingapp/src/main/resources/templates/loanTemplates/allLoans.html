@@ -154,7 +154,31 @@
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
             <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
-            <pre th:text="${all}"></pre>
+            <div class="container mt-4">
+                <h2>List of all loans</h2>
+                <table class="table table-striped">
+                    <thead style="background-color: #DEE2E6;">
+                    <tr>
+                        <th>Loan ID</th>
+                        <th>Taken Date</th>
+                        <th>Account number</th>
+                        <th>Total taken</th>
+                        <th>Left to pay</th>
+                        <th>Client ID</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="loan : ${all}">
+                        <td th:text="${loan.loanID()}"></td>
+                        <td th:text="${loan.date()}"></td>
+                        <td th:text="${loan.loanAccountNumber()}"></td>
+                        <td th:text="${loan.totalAmount()}"></td>
+                        <td th:text="${loan.leftToPay()}"></td>
+                        <td th:text="${loan.clientID()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

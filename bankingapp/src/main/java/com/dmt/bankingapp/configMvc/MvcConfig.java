@@ -35,7 +35,7 @@ public class MvcConfig implements WebMvcConfigurer {
 		registry.addViewController("/outgoingTransactions").setViewName("transactionTemplates/outgoing");
 		registry.addViewController("/incomingTransactions").setViewName("transactionTemplates/incoming");
 		registry.addViewController("/transaction/getAll").setViewName("transactionTemplates/getAll");
-		registry.addViewController("/transaction/accNumber").setViewName("transactionTemplates/accNumber");
+		registry.addViewController("/transaction/accNumber").setViewName("transactionTemplates/accNumberForm");
 		//loan
 		registry.addViewController("/takeLoan").setViewName("loanTemplates/addForm");
 		registry.addViewController("/loan/find").setViewName("loanTemplates/findloan");

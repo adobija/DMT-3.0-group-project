@@ -18,6 +18,21 @@
         }
     </style>
     <style>
+        .table {
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        .table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #000000;
+}
+    </style>
+    <style>
         .controller {
             border: 1px solid #ccc;
             margin-bottom: 10px;
@@ -153,7 +168,7 @@
             <div class="container mt-4">
                 <h2>List of all clients</h2>
                 <table class="table table-striped">
-                    <thead>
+                    <thead style="background-color: #DEE2E6;">
                     <tr>
                         <th>ID</th>
                         <th>Name</th>

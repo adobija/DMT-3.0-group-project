@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import com.dmt.bankingapp.record.transactions.TransactionRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -82,26 +83,15 @@ public class TransactionController {
         Client client = clientRepository.findByClientName(clientName);
         Account checking = client.getCheckingAccount();
         List<Transaction> outgoing = transactionRepository.findByGiver(checking);
-        StringBuilder output = new StringBuilder();
-        
+
+        ArrayList<TransactionRecord> transactionRecords = new ArrayList<>();
         for (Transaction transaction : outgoing) {
             LocalDateTime timestamp = transaction.getTimestamp();
             String formattedTimestamp = timestamp.format(formatter);
+            transactionRecords.add(new TransactionRecord(transaction.getTransactionID(), formattedTimestamp, transaction.getAmount(), checking.getAccountNumber(), transaction.getReceiver().getAccountNumber()));
+        }
 
-            output.append(transaction.getTransactionID())
-                        .append(": ")
-                        .append(formattedTimestamp)
-                        .append("  amount: ")
-                        .append(transaction.getAmount())
-                        .append("  recipient: ")
-                        .append(transaction.getReceiver().getAccountNumber())
-                        .append("\n");
-        }
-        // Remove the last newline in the output
-        if (output.length() > 0) {
-            output.setLength(output.length() - 1);
-        }
-        model.addAttribute("outgoing", output.toString());
+        model.addAttribute("outgoing", transactionRecords);
         return "transactionTemplates/outgoing";
     }
 
@@ -111,26 +101,16 @@ public class TransactionController {
         Client client = clientRepository.findByClientName(clientName);
         Account checking = client.getCheckingAccount();
         List<Transaction> incoming = transactionRepository.findByReceiver(checking);
-        StringBuilder output = new StringBuilder();
-        
+
+
+        ArrayList<TransactionRecord> transactionRecords = new ArrayList<>();
         for (Transaction transaction : incoming) {
             LocalDateTime timestamp = transaction.getTimestamp();
             String formattedTimestamp = timestamp.format(formatter);
+            transactionRecords.add(new TransactionRecord(transaction.getTransactionID(), formattedTimestamp, transaction.getAmount(), transaction.getGiver().getAccountNumber(), checking.getAccountNumber()));
 
-            output.append(transaction.getTransactionID())
-                        .append(": ")
-                        .append(formattedTimestamp)
-                        .append("  amount: ")
-                        .append(transaction.getAmount())
-                        .append("  sender: ")
-                        .append(transaction.getGiver().getAccountNumber())
-                        .append("\n");
         }
-        // Remove the last newline in the output
-        if (output.length() > 0) {
-            output.setLength(output.length() - 1);
-        }
-        model.addAttribute("incoming", output.toString());
+        model.addAttribute("incoming",transactionRecords);
         return "transactionTemplates/incoming";
     }
 
@@ -142,29 +122,16 @@ public class TransactionController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
         List<Transaction> all = transactionRepository.findAll();
-        StringBuilder output = new StringBuilder();
 
+        ArrayList<TransactionRecord> transactionRecords = new ArrayList<>();
         for (Transaction transaction : all) {
             LocalDateTime timestamp = transaction.getTimestamp();
             String formattedTimestamp = timestamp.format(formatter);
-
-            output.append(transaction.getTransactionID())
-                        .append(": ")
-                        .append(formattedTimestamp)
-                        .append("  amount: ")
-                        .append(transaction.getAmount())
-                        .append("  sender: ")
-                        .append(transaction.getGiver().getAccountNumber())
-                        .append("  recipient: ")
-                        .append(transaction.getReceiver().getAccountNumber())
-                        .append("\n");
+            transactionRecords.add(new TransactionRecord(transaction.getTransactionID(), formattedTimestamp, transaction.getAmount(), transaction.getGiver().getAccountNumber(), transaction.getReceiver().getAccountNumber()));
         }
 
         // Remove the last newline in the output
-        if (output.length() > 0) {
-            output.setLength(output.length() - 1);
-        }
-        model.addAttribute("getAll", output.toString());
+        model.addAttribute("getAll", transactionRecords);
         return "transactionTemplates/getAll";
     }
 
@@ -191,29 +158,14 @@ public class TransactionController {
                 .collect(Collectors.toList());
         
         // Format output data to a string
-        StringBuilder output = new StringBuilder();
-
+        ArrayList<TransactionRecord> transactionRecords = new ArrayList<>();
         for (Transaction transaction : transactions) {
             LocalDateTime timestamp = transaction.getTimestamp();
             String formattedTimestamp = timestamp.format(formatter);
-
-            output.append(transaction.getTransactionID())
-                        .append(": ")
-                        .append(formattedTimestamp)
-                        .append("  amount: ")
-                        .append(transaction.getAmount())
-                        .append("  sender: ")
-                        .append(transaction.getGiver().getAccountNumber())
-                        .append("  recipient: ")
-                        .append(transaction.getReceiver().getAccountNumber())
-                        .append("\n");
+            transactionRecords.add(new TransactionRecord(transaction.getTransactionID(), formattedTimestamp, transaction.getAmount(), transaction.getGiver().getAccountNumber(), transaction.getReceiver().getAccountNumber()));
         }
 
-        // Remove the last newline in the output
-        if (output.length() > 0) {
-            output.setLength(output.length() - 1);
-        }
-        model.addAttribute("accNumber", output.toString());
+        model.addAttribute("accNumber", transactionRecords);
         return "transactionTemplates/accNumber";
     }
 }

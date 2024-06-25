@@ -154,7 +154,40 @@
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
             <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
-            <pre th:text="${loanbyid}"></pre>
+            <div class="container mt-4">
+                <h2>Data of loans</h2>
+                <table class="table table-striped">
+                    <thead style="background-color: #DEE2E6;">
+                    <tr>
+                        <th>Loan ID</th>
+                        <th>Taken Date</th>
+                        <th>Account number</th>
+                        <th>Total taken</th>
+                        <th>Left to pay</th>
+                        <th>Client ID</th>
+                        <th>Duration</th>
+                        <th>Interest Rate</th>
+                        <th>Commission Rate</th>
+                        <th>Is Active</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="loan : ${loanbyid}">
+                        <td th:text="${loan.loanID()}"></td>
+                        <td th:text="${loan.formattedDate()}"></td>
+                        <td th:text="${loan.accountNumber()}"></td>
+                        <td th:text="${loan.totalLoanAmount()}"></td>
+                        <td th:text="${loan.leftToPay()}"></td>
+                        <td th:text="${loan.clientID()}"></td>
+                        <td th:text="${loan.loanDuration()}"></td>
+                        <td th:text="${loan.interestRate()}"></td>
+                        <td th:text="${loan.commissionRate()}"></td>
+                        <td th:text="${loan.isActive() ? 'Yes' : 'No'}"></td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

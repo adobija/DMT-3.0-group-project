@@ -154,7 +154,27 @@
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
             <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
-            <pre th:text="${outgoing}"></pre>
+            <div class="container mt-4">
+                <h2>List of outgoing transactions</h2>
+                <table class="table table-striped">
+                    <thead style="background-color: #DEE2E6;">
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Recipient</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="transaction : ${outgoing}">
+                        <td th:text="${transaction.transactionID()}"></td>
+                        <td th:text="${transaction.timestamp()}"></td>
+                        <td th:text="${transaction.amount()}"></td>
+                        <td th:text="${transaction.receiverAccountNumber()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

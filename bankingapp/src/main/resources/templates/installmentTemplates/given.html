@@ -154,7 +154,35 @@
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
             <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
-            <pre th:text="${given}"></pre>
+            <div class="container mt-4">
+                <h2>Data of given installment</h2>
+                <table class="table table-striped">
+                    <thead style="background-color: #DEE2E6;">
+                    <tr>
+                        <th>Installment ID</th>
+                        <th>Loan ID</th>
+                        <th>Client ID</th>
+                        <th>Is Paid</th>
+                        <th>Installment amount</th>
+                        <th>Already paid</th>
+                        <th>To pay</th>
+                        <th>due date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="installment : ${given}">
+                        <td th:text="${installment.installmentID()}"></td>
+                        <td th:text="${installment.loanID()}"></td>
+                        <td th:text="${installment.clientID()}"></td>
+                        <td th:text="${installment.isPaid() ? 'Yes' : 'No'}"></td>
+                        <td th:text="${installment.installmentAmount()}"></td>
+                        <td th:text="${installment.paidAmount()}"></td>
+                        <td th:text="${installment.toPay()}"></td>
+                        <td th:text="${installment.dueDate()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
