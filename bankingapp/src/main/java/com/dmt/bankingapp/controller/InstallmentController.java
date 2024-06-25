@@ -69,7 +69,7 @@ public class InstallmentController {
     }
 
     @GetMapping("/next")
-    public @ResponseBody String getNextInstallment(int loanId, HttpServletRequest request) {
+    public String getNextInstallment(int loanId, HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         Loan loan = loanRepository.findByLoanID(loanId);
@@ -104,7 +104,8 @@ public class InstallmentController {
                 break;
             }
         }
-        return output.toString();
+        model.addAttribute("next", output.toString());
+        return "installmentTemplates/next";
     }
 
     @GetMapping("/given")
