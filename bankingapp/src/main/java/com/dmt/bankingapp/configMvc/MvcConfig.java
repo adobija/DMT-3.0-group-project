@@ -18,7 +18,7 @@ public class MvcConfig implements WebMvcConfigurer {
 		// other
 		registry.addViewController("/hello").setViewName("indexTemplates/hello");
 		registry.addViewController("/admin").setViewName("admin");
-    registry.addViewController("/about").setViewName("other/about");
+    	registry.addViewController("/about").setViewName("other/about");
 		//commission
 		registry.addViewController("/setForLoanCommission").setViewName("commissionTemplates/loanCommission");
 		registry.addViewController("/setForDeposit").setViewName("commissionTemplates/depositCommission");
@@ -31,11 +31,11 @@ public class MvcConfig implements WebMvcConfigurer {
 		//admin
 		registry.addViewController("/admin").setViewName("adminTemplates/adminPanel");
 		//transaction
-		registry.addViewController("/add").setViewName("transactionTemplates/add");
+		registry.addViewController("/transaction/add").setViewName("transactionTemplates/add");
 		registry.addViewController("/outgoingTransactions").setViewName("transactionTemplates/outgoing");
 		registry.addViewController("/incomingTransactions").setViewName("transactionTemplates/incoming");
-		registry.addViewController("/getAll").setViewName("transactionTemplates/getAll");
-		registry.addViewController("/accNumber").setViewName("transactionTemplates/accNumber");
+		registry.addViewController("/transaction/getAll").setViewName("transactionTemplates/getAll");
+		registry.addViewController("/transaction/accNumber").setViewName("transactionTemplates/accNumber");
 		//loan
 		registry.addViewController("/loan/add").setViewName("loanTemplates/add");
 		registry.addViewController("/loan/find").setViewName("loanTemplates/findloan");
