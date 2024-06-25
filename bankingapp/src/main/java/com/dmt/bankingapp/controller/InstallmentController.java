@@ -183,7 +183,7 @@ public class InstallmentController {
     }
 
     @GetMapping("/all")
-    public @ResponseBody String getAllInstallments(HttpServletRequest request) {
+    public String getAllInstallments(HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if (!requester.isAdmin()) {
@@ -206,6 +206,7 @@ public class InstallmentController {
                     .append(installment.getInstallmentAmount())
                     .append("\n");
         }
-        return output.toString();
+        model.addAttribute("all", output.toString());
+        return "installmentTemplates/all";
     }
 }
