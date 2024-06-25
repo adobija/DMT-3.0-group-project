@@ -10,7 +10,7 @@ public class MvcConfig implements WebMvcConfigurer {
 	public void addViewControllers(ViewControllerRegistry registry) {
 		//index site
 		registry.addViewController("/").setViewName("indexTemplates/welcome");
-		registry.addViewController("/homepage").setViewName("indexTemplates/homepage");
+		registry.addViewController("/homepage").setViewName("indexTemplates/hello");
 		//register
 		registry.addViewController("/signup").setViewName("registerTemplates/signup");
 		//login
@@ -24,6 +24,8 @@ public class MvcConfig implements WebMvcConfigurer {
 		registry.addViewController("/changePassword").setViewName("clientTemplates/editPasswordForm");
 		registry.addViewController("/changeAdminPermission").setViewName("clientTemplates/editAdminForm");
 		registry.addViewController("/byClientIdForm").setViewName("clientTemplates/byClientIdForm");
+		//admin
+		registry.addViewController("/admin").setViewName("adminTemplates/adminPanel");
 		//transaction
 		registry.addViewController("/outgoingTransactions").setViewName("transactionTemplates/outgoing");
 		registry.addViewController("/incomingTransactions").setViewName("transactionTemplates/incoming");

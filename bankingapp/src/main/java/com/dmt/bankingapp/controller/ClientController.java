@@ -117,7 +117,7 @@ public class ClientController {
     public String getCheckingBalance(HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
-        model.addAttribute("response", "Balance: "+client.getCheckingAccount().getAccountBalance());
+        model.addAttribute("response", "Balance: "+client.getCheckingAccount().getAccountBalance() + " zł");
         return "indexTemplates/hello";
     }
 
