@@ -104,9 +104,9 @@
                 <div class="controller">
                     <h3>Commission Controller</h3>
                     <ul class="menu">
-                        <li>[A] setForLoanCommission</li>
-                        <li>[A] setForDeposit</li>
-                        <li>[A] setForLoanInterest</li>
+                        <li><a href="/setForLoanCommission">[A] setForLoanCommission</a></li>
+                        <li><a href="/setForDeposit">[A] setForDeposit</a></li>
+                        <li><a href="/setForLoanInterest">[A] setForLoanInterest</a></li>
                     </ul>
                 </div>
 
@@ -121,20 +121,32 @@
                 <div class="controller">
                     <h3>Loan Controller</h3>
                     <ul class="menu">
-                        <li>add</li>
-                        <li>[A] all</li>
-                        <li>[A] byLoanId</li>
+                        <li><a href="/loan/add">add</a></li>
+                        <li><a href="/loan/all">[A] all</a></li>
+                        <li><a href="/loan/find">[A] byLoanId</a></li>
                     </ul>
                 </div>
 
                 <div class="controller">
                     <h3>Transaction Controller</h3>
                     <ul class="menu">
-                        <li>add</li>
-                        <li>outgoingTransactions</li>
-                        <li>incomingTransactions</li>
-                        <li>[A] getAll</li>
-                        <li>[A] byAccountNumber</li>
+                        <li><a href="/transaction/add">add</a></li>
+                        <li><a href="/outgoingTransactions">outgoingTransactions</a></li>
+                        <li><a href="/incomingTransactions">incomingTransactions</a></li>
+                        <li><a href="/transaction/getAll">[A] getAll</a></li>
+                        <li><a href="/transaction/accNumber">[A] byAccountNumber</a></li>
+                    </ul>
+                </div>
+
+
+                <div class="controller">
+                    <h3>Installment Controller</h3>
+                    <ul class="menu">
+                        <li><a href="/installment/myAll">getMyInstallments</a></li>
+                        <li><a href="/next">getNextInstallment</a></li>
+                        <li><a href="/given">getGivenInstallment</a></li>
+                        <li><a href="/loan">getLoanInstallments</a></li>
+                        <li><a href="/all">getAllInstallments</a></li>
                     </ul>
                 </div>
             </div>
