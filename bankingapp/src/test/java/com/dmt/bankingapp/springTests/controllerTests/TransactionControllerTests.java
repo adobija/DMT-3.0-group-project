@@ -76,16 +76,22 @@ public class TransactionControllerTests {
     @Test
     void testAddNewTransactionSuccess() {
         // Arrange
+        Model mockModel = mock(Model.class);  // Mock the Model
         when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(nonAdminClient.getClientName());
         when(clientRepository.findByClientName(nonAdminClient.getClientName())).thenReturn(nonAdminClient);
         when(accountRepository.findById(checkingAccount.getAccountID())).thenReturn(Optional.of(checkingAccount));
         when(accountRepository.findById(receivingAccount.getAccountID())).thenReturn(Optional.of(receivingAccount));
+        
+        // Create a sample transaction to be returned by the save method
+        Transaction sampleTransaction = new Transaction(checkingAccount, receivingAccount, 100.0);
+        when(transactionRepository.save(any(Transaction.class))).thenReturn(sampleTransaction);
 
         // Act
-        String response = transactionController.addNewTransaction(checkingAccount.getAccountID(), receivingAccount.getAccountID(), 100.0, request);
+        String viewName = transactionController.addNewTransaction(checkingAccount.getAccountID(), receivingAccount.getAccountID(), 100.0, request, mockModel);
 
         // Assert
-        assertEquals("Transaction created successfully! Amount transfered: 100.0", response);
+        verify(mockModel, times(1)).addAttribute(eq("add"), eq("Transaction created successfully! Amount transfered: 100.0"));
+        assertEquals("transactionTemplates/add", viewName);
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
 
@@ -98,7 +104,7 @@ public class TransactionControllerTests {
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            transactionController.addNewTransaction(checkingAccount.getAccountID(), receivingAccount.getAccountID(), 100.0, request);
+            transactionController.addNewTransaction(checkingAccount.getAccountID(), receivingAccount.getAccountID(), 100.0, request, mock(Model.class));
         });
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
@@ -115,7 +121,7 @@ public class TransactionControllerTests {
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            transactionController.addNewTransaction(checkingAccount.getAccountID(), receivingAccount.getAccountID(), 100.0, request);
+            transactionController.addNewTransaction(checkingAccount.getAccountID(), receivingAccount.getAccountID(), 100.0, request, mock(Model.class));
         });
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());

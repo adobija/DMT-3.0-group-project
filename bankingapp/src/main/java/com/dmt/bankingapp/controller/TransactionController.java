@@ -48,7 +48,7 @@ public class TransactionController {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @PostMapping("/add") // curl.exe -d "giverAccountID=1&receiverAccountID=2&amount=100.0" http://localhost:8080/transaction/add
-    public @ResponseBody String addNewTransaction(@RequestParam int giverAccountID, @RequestParam int receiverAccountID, @RequestParam double amount, HttpServletRequest request) {
+    public String addNewTransaction(@RequestParam int giverAccountID, @RequestParam int receiverAccountID, @RequestParam double amount, HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         
@@ -68,7 +68,9 @@ public class TransactionController {
         try {
             Transaction transaction = new Transaction(giver, receiver, amount);
             transactionRepository.save(transaction);
-            return "Transaction created successfully! Amount transfered: " + transaction.getAmount();
+            String output = "Transaction created successfully! Amount transfered: " + transaction.getAmount();
+            model.addAttribute("add", output);
+            return "transactionTemplates/add";
         } catch (IllegalStateException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(500), e.getMessage());
         }
