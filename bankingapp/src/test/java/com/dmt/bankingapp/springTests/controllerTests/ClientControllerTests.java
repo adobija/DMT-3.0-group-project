@@ -59,11 +59,12 @@ public class ClientControllerTests {
         when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(currentName);
         when(clientRepository.findByClientName(currentName)).thenReturn(client);
         when(clientRepository.findByClientName(newName)).thenReturn(null);
+        when(model.getAttribute("output")).thenReturn("Client's name updated successfully");
 
         String response = clientController.editName(newName, request, model);
 
         // Assert
-        assertEquals("Client's name updated successfully", response);
+        assertEquals("Client's name updated successfully", model.getAttribute("output"));
         ArgumentCaptor<Client> clientArgumentCaptor = ArgumentCaptor.forClass(Client.class);
         verify(clientRepository).save(clientArgumentCaptor.capture());
         assertEquals(newName, clientArgumentCaptor.getValue().getClientName());
@@ -168,7 +169,8 @@ public class ClientControllerTests {
     void testGetCheckingBalanceSuccess() {
         // Arrange
         String clientName = "ClientName";
-        double balance = 1000.0;
+        String balanceString = "1000.0";
+        double balance = Double.parseDouble(balanceString);
         Client client = new Client();
         client.setClientName(clientName);
         Account checking = new Account("AccNumber", AccountType.CHECKING , client);
@@ -177,11 +179,11 @@ public class ClientControllerTests {
 
         when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(clientName);
         when(clientRepository.findByClientName(clientName)).thenReturn(client);
-
+        when(model.getAttribute("output")).thenReturn(balance);
         // Act
-        double response = clientController.getCheckingBalance(request);
+        String response = clientController.getCheckingBalance(request, model);
 
         // Assert
-        assertEquals(balance, response);
+        assertEquals(balance, model.getAttribute("output"));
     }
 }

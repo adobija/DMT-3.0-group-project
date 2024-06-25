@@ -109,46 +109,60 @@ public class ClientController {
         }
         Client client = clientRepository.findByClientID(clientID);
 
-        model.addAttribute("imieKlienta", client.getClientName());
-        model.addAttribute("admin", client.isAdmin());
-        model.addAttribute("haslo", client.getClientPassword());
-        return "testTemplates/test";
+        model.addAttribute("client", client);
+        return "clientTemplates/foundClient";
     }
 
     @GetMapping("/checkingBalance")
-    public @ResponseBody double getCheckingBalance(HttpServletRequest request) {
+    public String getCheckingBalance(HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
-        return client.getCheckingAccount().getAccountBalance();
+        model.addAttribute("response", "Balance: "+client.getCheckingAccount().getAccountBalance());
+        return "indexTemplates/hello";
     }
 
     @GetMapping("/depositsBalance")
-    public @ResponseBody String getDepositsBalance(HttpServletRequest request) {
+    public String getDepositsBalance(HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         List<Deposit> deposits = client.getDepositsList();
+        if(deposits.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "You don't have any deposits");
+        }
         StringBuilder depositsBalance = new StringBuilder();
         
         for (Deposit deposit : deposits) {
+            String withdrawInfo = "";
+            if(deposit.getIsActive()){
+                withdrawInfo = "has not been withdrawed yet!";
+            }else{
+                withdrawInfo = "has been withdrawed " + deposit.getDateOfWithdrawn();
+            }
             depositsBalance.append(deposit.getDepositID())
-                        .append(": ")
-                        .append(deposit.getTotalDepositAmount())
-                        .append("\n");
+                    .append(": ")
+                    .append(deposit.getTotalDepositAmount())
+                    .append(", type of deposit: ")
+                    .append(deposit.getDepositType())
+                    .append(" " + withdrawInfo)
+                    .append("\n");
         }
         
         // Remove the last newline in the output
         if (depositsBalance.length() > 0) {
             depositsBalance.setLength(depositsBalance.length() - 1);
         }
-        
-        return depositsBalance.toString();
+        model.addAttribute("deposits", depositsBalance);
+        return "clientTemplates/depositBalance";
     }
 
     @GetMapping("/loansBalance")
-    public @ResponseBody String getLoansBalance(HttpServletRequest request) {
+    public String getLoansBalance(HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         List<Loan> loans = client.getLoansList();
+        if(loans.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "You don't have any loans");
+        }
         StringBuilder loansBalance = new StringBuilder();
 
         double total = 0;
@@ -161,8 +175,8 @@ public class ClientController {
                         .append("\n");
         }
         loansBalance.append("Remaining total amount of loans: " + total);
-        
-        return loansBalance.toString();
+        model.addAttribute("loanBalance", loansBalance.toString());
+        return "clientTemplates/loanBalance";
     }
 
 }
