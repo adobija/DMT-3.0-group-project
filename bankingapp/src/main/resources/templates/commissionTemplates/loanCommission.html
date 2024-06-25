@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
 <body>
     <h1>Set LOAN commission:</h1>
     <form action="#" th:action="@{/commission/setForLoanCommission}" method="post">
-        <label for="loanCommission">Loan Commission:</label>
+        <label for="commissionRateAsPercent">Loan Commission:</label>
         <input type="number" step="0.1" id="commissionRateAsPercent" min="0" name="commissionRateAsPercent" required>
         <br><br>
         <button type="submit">Set</button>

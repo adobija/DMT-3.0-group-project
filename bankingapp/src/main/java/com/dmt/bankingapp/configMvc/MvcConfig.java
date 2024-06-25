@@ -24,7 +24,7 @@ public class MvcConfig implements WebMvcConfigurer {
 		//commission
 		registry.addViewController("/setForLoanCommission").setViewName("commissionTemplates/loanCommission");
 		registry.addViewController("/setForDeposit").setViewName("commissionTemplates/depositCommission");
-		registry.addViewController("/setForLoanInterest").setViewName("commissionTemplates/setForLoanInterest");
+		registry.addViewController("/setForLoanInterest").setViewName("commissionTemplates/loanInterestCommission");
 
 
 

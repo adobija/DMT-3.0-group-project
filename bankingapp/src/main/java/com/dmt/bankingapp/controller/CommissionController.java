@@ -69,7 +69,7 @@ public class CommissionController {
     }
 
     @PostMapping(path = "/setForDeposit")
-    public String setCommissionRateForDeposit(@RequestParam int commissionRateAsPercent, HttpServletRequest request, Model model){
+    public String setCommissionRateForDeposit(@RequestParam int depositRateAsPercent, HttpServletRequest request, Model model){
         //check if accessing client is admin
         Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
         if(!client.isAdmin()){
@@ -78,11 +78,11 @@ public class CommissionController {
         //Get commission record of deposit
         Commission commissionInstance = commissionRepository.findByCommissionOf("DEPOSIT");
         //Check if new commission rate is different
-        if(commissionRateAsPercent == commissionInstance.getCommissionRateInPercent()){
+        if(depositRateAsPercent == commissionInstance.getCommissionRateInPercent()){
             throw new ResponseStatusException(HttpStatus.IM_USED, "New commission rate must be different from previous one!");
         }
         //Check if new commission rate is valid
-        if(commissionRateAsPercent < 0){
+        if(depositRateAsPercent < 0){
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Insert valid new commission rate");
         }
         //Create instance of previous commission rate
@@ -94,7 +94,7 @@ public class CommissionController {
         double oldRate = commissionInstance.getCommissionRateInPercent();
         oldCommission.setCommissionRateInPercent(oldRate);
         //Set new commission rate
-        commissionInstance.setCommissionRateInPercent(commissionRateAsPercent);
+        commissionInstance.setCommissionRateInPercent(depositRateAsPercent);
         //Save to db
         commissionRepository.save(commissionInstance);
         commissionRepository.save(oldCommission);
@@ -139,6 +139,6 @@ public class CommissionController {
         model.addAttribute("message", "Successfully updated interest rate for LOANS from " + oldCommission.getCommissionRateInPercent() + " to " + commissionInstance.getCommissionRateInPercent());
 
         //return
-        return "commissionTemplates/loanInterest";
+        return "commissionTemplates/loanInterestCommission";
     }
 }
