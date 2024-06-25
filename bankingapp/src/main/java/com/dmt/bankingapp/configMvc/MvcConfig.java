@@ -10,16 +10,22 @@ public class MvcConfig implements WebMvcConfigurer {
 	public void addViewControllers(ViewControllerRegistry registry) {
 		// index site
 		registry.addViewController("/").setViewName("indexTemplates/welcome");
-		registry.addViewController("/homepage").setViewName("indexTemplates/homepage");
-		// register
+		registry.addViewController("/homepage").setViewName("indexTemplates/hello");
+		//register
 		registry.addViewController("/signup").setViewName("registerTemplates/signup");
 		// login
 		registry.addViewController("/login").setViewName("loginTemplates/login");
 		// other
 		registry.addViewController("/hello").setViewName("indexTemplates/hello");
 		registry.addViewController("/admin").setViewName("admin");
-
-		registry.addViewController("/findClientById").setViewName("testTemplates/testForm");
+		registry.addViewController("/about").setViewName("other/about");
+		//client
+		registry.addViewController("/changeName").setViewName("clientTemplates/editNameForm");
+		registry.addViewController("/changePassword").setViewName("clientTemplates/editPasswordForm");
+		registry.addViewController("/changeAdminPermission").setViewName("clientTemplates/editAdminForm");
+		registry.addViewController("/byClientIdForm").setViewName("clientTemplates/byClientIdForm");
+		//admin
+		registry.addViewController("/admin").setViewName("adminTemplates/adminPanel");
 		//transaction
 		registry.addViewController("/outgoingTransactions").setViewName("transactionTemplates/outgoing");
 		registry.addViewController("/incomingTransactions").setViewName("transactionTemplates/incoming");

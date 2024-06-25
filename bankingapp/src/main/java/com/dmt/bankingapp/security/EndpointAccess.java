@@ -21,7 +21,7 @@ public class EndpointAccess {
                 .requestMatchers("/homepage").authenticated()
                 // .requestMatchers(HttpMethod.<REST API METHOD>,<URI as String>).<attribute>
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
-                .requestMatchers("/success.html").permitAll()
+                .requestMatchers("/logo.png").permitAll()
                 //security for RegisterController
                 .requestMatchers(HttpMethod.POST, "/register/newClient").anonymous()
                 .requestMatchers("/signup").anonymous()

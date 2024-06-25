@@ -133,24 +133,41 @@
         </div>
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
-<!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
-            <div th:if="${response != null}" style="width: 100%;
-    height: fit-content;
-    background-color: #ffc9febd;
-    color: red;
-    font-size: x-large;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 5px;
-    margin: 5px;
-    border-radius: 20px;">
-                <p th:text="${response}"></p>
-            </div>
-
-
-
-
+            <!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
+            <h1>App made by:</h1>
+            <th>Artur Joniak</th><br>
+            <th>Michał Kasiński</th><br>
+            <th>Piotr Kozik</th><br>
+            <th>Tomasz Kraj</th><br>
+            <th>Aleksander Dobija</th><br><br>
+            <th>Styling web to be more user friendly (css, bootstrap) - chatGPT</th><br><br><hr>
+            <p>
+            <h2>Projekt grupowy</h2><br>
+            Celem projektu, jest stworzenie prostej aplikacji bankowej, demonstrując przy tym dobre zasady tworzenia oprogramowania przedstawione w trakcie trwania kursu.
+            <br><br>
+            <ul>
+                Wymagania
+                <li>Aplikacja powinna dostarczać następujące funkcjonalności:</li>
+                <li>Możliwość rejestracji klienta wraz z tworzeniem unikalnego numeru rachunku,</li>
+                <li>Możliwość "logowania" do swojego konta przy użyciu nazwy użytkownika i hasła,</li>
+                <li>Możliwość odróżnienia roli administratora systemu od klienta,</li>
+                <li>Możliwość wykonywania przelewów między rachunkami,</li>
+                <li>Możliwość korzystania z lokat i kredytów o oprocentowaniu określanym przez administratora systemu,</li>
+                <li>Możliwość odtworzenia historii własnych operacji przez każdego z klientów,</li>
+                <li>Możliwość odtworzenia historii wszystkich operacji przez administratora.</li>
+            </ul><br>
+            <hr>
+            Szczegóły implementacyjne
+            Backend aplikacji powinien zostać zaimplementowany przy użyciu frameworka Spring.
+            Aplikacja powinna korzystać z udostępnionej bazy danych (pojemność max: 1GB). Dostęp zostanie przekazany przedstawicielowi grupy.
+            Kod powinien być pokryty testami jednostkowymi w przynajmniej 60% (line-coverage).<br>
+            <hr>
+            Inne<br>
+            W ramach zadania, istnieje pelna dowolnosc pod kątem projektu bazy danych, układu tabel
+            i relacji. Nie ma odgórnego ograniczenia pod kątem formatu numeru konta, poziomu skomplikowania hasła, czy interfejsu. Wszelkie wątpliwości/pytania powinny być poruszane
+            w module “strumień” na platformie Google Classroom.<br>
+            <a href="https://github.com/dmt-kasinski/banking-app">Github repository</a>
+            </p>
         </div>
     </div>
 </div>
@@ -169,3 +186,4 @@
 
 </body>
 </html>
+

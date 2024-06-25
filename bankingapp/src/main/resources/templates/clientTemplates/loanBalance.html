@@ -133,20 +133,9 @@
         </div>
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
-<!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
-            <div th:if="${response != null}" style="width: 100%;
-    height: fit-content;
-    background-color: #ffc9febd;
-    color: red;
-    font-size: x-large;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 5px;
-    margin: 5px;
-    border-radius: 20px;">
-                <p th:text="${response}"></p>
-            </div>
+            <!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
+            <h2>Data of your loans</h2>
+            <pre th:text="${loanBalance}"></pre>
 
 
 

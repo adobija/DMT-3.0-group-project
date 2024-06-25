@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Banking App</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         /* Custom CSS for specific styling */
         .menu-item {
@@ -99,12 +100,23 @@
                     <ul class="menu">
                         <li><a href="/changeName">editName</a></li>
                         <li><a href="/changePassword">editPassword</a></li>
+                        <li><a href="/changeAdminPermission">[A] editAdmin (give or revoke admin permission)</a></li>
+                        <li><a href="/client/all">[A] all</a></li>
+                        <li><a href="/byClientIdForm">[A] byClientID</a></li>
                         <li><a href="/client/checkingBalance">checkingBalance</a></li>
                         <li><a href="/client/depositsBalance">depositBalance</a></li>
                         <li><a href="/client/loansBalance">loansBalance</a></li>
                     </ul>
                 </div>
 
+                <div class="controller">
+                    <h3>Commission Controller</h3>
+                    <ul class="menu">
+                        <li>[A] setForLoanCommission</li>
+                        <li>[A] setForDeposit</li>
+                        <li>[A] setForLoanInterest</li>
+                    </ul>
+                </div>
 
                 <div class="controller">
                     <h3>Deposit Controller</h3>
@@ -118,6 +130,8 @@
                     <h3>Loan Controller</h3>
                     <ul class="menu">
                         <li>add</li>
+                        <li>[A] all</li>
+                        <li>[A] byLoanId</li>
                     </ul>
                 </div>
 
@@ -127,27 +141,38 @@
                         <li>add</li>
                         <li>outgoingTransactions</li>
                         <li>incomingTransactions</li>
+                        <li>[A] getAll</li>
+                        <li>[A] byAccountNumber</li>
                     </ul>
                 </div>
             </div>
         </div>
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
-<!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
-            <div th:if="${response != null}" style="width: 100%;
-    height: fit-content;
-    background-color: #ffc9febd;
-    color: red;
-    font-size: x-large;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 5px;
-    margin: 5px;
-    border-radius: 20px;">
-                <p th:text="${response}"></p>
+            <!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
+            <div class="container mt-4">
+            <h2>List of all clients</h2>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Have admin permissions</th>
+                    <th>ID of checking account</th>
+                    <th>Account Number</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${client.getClientID()}"></td>
+                    <td th:text="${client.getClientName()}"></td>
+                    <td th:text="${client.isAdmin() ? 'Yes' : 'No'}"></td>
+                    <td th:text="${client.getCheckingAccount().getAccountID()}"></td>
+                    <td th:text="${client.getCheckingAccount().getAccountNumber()}"></td>
+                </tr>
+                </tbody>
+            </table>
             </div>
-
 
 
 
