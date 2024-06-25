@@ -47,9 +47,10 @@ public class LoanController {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @PostMapping("/add")
-    public @ResponseBody String addNewLoan(@RequestParam double principalAmount,
+    public String addNewLoan(@RequestParam double principalAmount,
             @RequestParam int loanDuration,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            Model model) {
         String currentName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(currentName);
         Account checkingAccount = client.getCheckingAccount();
@@ -110,7 +111,9 @@ public class LoanController {
         loanAccount.setLoan(loan);
         accountRepository.save(loanAccount);
 
-        return "Loan and loan account created successfully";
+        String output = "Loan and loan account created successfully";
+        model.addAttribute("add", output);
+        return "loanTemplates/add";
     }
 
     @GetMapping("/all")

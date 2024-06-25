@@ -20,21 +20,19 @@ public class MvcConfig implements WebMvcConfigurer {
 		registry.addViewController("/admin").setViewName("admin");
 
 		registry.addViewController("/findClientById").setViewName("testTemplates/testForm");
-<<<<<<< 87_loan_templates
-		registry.addViewController("/loan/find").setViewName("loanTemplates/findloan");
-
-=======
 		//transaction
 		registry.addViewController("/outgoingTransactions").setViewName("transactionTemplates/outgoing");
 		registry.addViewController("/incomingTransactions").setViewName("transactionTemplates/incoming");
 		registry.addViewController("/getAll").setViewName("transactionTemplates/getAll");
 		registry.addViewController("/accNumber").setViewName("transactionTemplates/accNumber");
+		//loan
+		registry.addViewController("/loan/add").setViewName("loanTemplates/add");
+		registry.addViewController("/loan/find").setViewName("loanTemplates/findloan");
 		//installment
 		registry.addViewController("/myAll").setViewName("installmentTemplates/myAll");
 		registry.addViewController("/next").setViewName("installmentTemplates/next");
 		registry.addViewController("/given").setViewName("installmentTemplates/given");
 		registry.addViewController("/loan").setViewName("installmentTemplates/loan");
 		registry.addViewController("/all").setViewName("installmentTemplates/all");
->>>>>>> 54_html_template_mvc_config
 	}
 }
