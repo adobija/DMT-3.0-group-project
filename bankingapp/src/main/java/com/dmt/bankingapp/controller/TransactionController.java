@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.dmt.bankingapp.entity.Deposit;
 import com.dmt.bankingapp.record.transactions.TransactionRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -137,6 +138,13 @@ public class TransactionController {
             transactionRecords.add(new TransactionRecord(transaction.getTransactionID(), formattedTimestamp, transaction.getAmount(), transaction.getGiver().getAccountNumber(), transaction.getReceiver().getAccountNumber()));
         }
 
+        Collections.sort(transactionRecords, new Comparator<TransactionRecord>() {
+            @Override
+            public int compare(TransactionRecord t1, TransactionRecord t2) {
+                return Integer.compare(t2.transactionID(), t1.transactionID());
+            }
+        });
+
         // Remove the last newline in the output
         model.addAttribute("getAll", transactionRecords);
         return "transactionTemplates/getAll";
@@ -172,6 +180,12 @@ public class TransactionController {
             transactionRecords.add(new TransactionRecord(transaction.getTransactionID(), formattedTimestamp, transaction.getAmount(), transaction.getGiver().getAccountNumber(), transaction.getReceiver().getAccountNumber()));
         }
 
+        Collections.sort(transactionRecords, new Comparator<TransactionRecord>() {
+            @Override
+            public int compare(TransactionRecord t1, TransactionRecord t2) {
+                return Integer.compare(t2.transactionID(), t1.transactionID());
+            }
+        });
         model.addAttribute("accNumber", transactionRecords);
         return "transactionTemplates/accNumber";
     }
