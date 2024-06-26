@@ -9,12 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping(path = "/commission")
@@ -139,5 +142,80 @@ public class CommissionController {
 
         //return
         return "adminTemplates/adminPanel";
+    }
+
+    @GetMapping(path = "/historyLoanCommission")
+    public String historyOfLoanCommission(HttpServletRequest request, Model model){
+        Client requester = detailsOfLoggedClient.getLoggedClientInstance(request);
+        if(!requester.isAdmin()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
+        }
+        List<Commission> listOfAllCommissions = commissionRepository.findAll();
+        List<Commission> outputList = new ArrayList<>();
+        for (Commission x : listOfAllCommissions){
+            if(x.getCommissionOf().equalsIgnoreCase("LOAN_COMMISSION")){
+                outputList.add(x);
+                continue;
+            }else if(x.getCommissionOf().equalsIgnoreCase("LOAN_INTEREST") || x.getCommissionOf().equalsIgnoreCase("DEPOSIT")){
+             continue;
+            }else {
+                System.out.println(x.getCommissionOf());
+                System.out.println("ucinam dla niego");
+                System.out.println(".".repeat(100));
+                String substr = x.getCommissionOf().substring(0, 15);
+                if (substr.equalsIgnoreCase("LOAN_COMMISSION")) {
+                    outputList.add(x);
+                }
+            }
+        }
+        model.addAttribute("history", outputList);
+        return "commissionTemplates/historyOfCommission";
+    }
+    @GetMapping(path = "/historyLoanInterest")
+    public String historyOfLoanInterest(HttpServletRequest request, Model model){
+        Client requester = detailsOfLoggedClient.getLoggedClientInstance(request);
+        if(!requester.isAdmin()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
+        }
+        List<Commission> listOfAllCommissions = commissionRepository.findAll();
+        List<Commission> outputList = new ArrayList<>();
+        for (Commission x : listOfAllCommissions){
+            if(x.getCommissionOf().equalsIgnoreCase("LOAN_INTEREST")){
+                outputList.add(x);
+            }else if(x.getCommissionOf().equalsIgnoreCase("LOAN_INTEREST") || x.getCommissionOf().equalsIgnoreCase("DEPOSIT")){
+                continue;
+            }else {
+                String substr = x.getCommissionOf().substring(0, 13);
+                if (substr.equalsIgnoreCase("LOAN_INTEREST")) {
+                    outputList.add(x);
+                }
+            }
+        }
+        model.addAttribute("history", outputList);
+        return "commissionTemplates/historyOfCommission";
+    }
+
+    @GetMapping(path = "/historyDepositCommission")
+    public String historyOfDepositCommission(HttpServletRequest request, Model model){
+        Client requester = detailsOfLoggedClient.getLoggedClientInstance(request);
+        if(!requester.isAdmin()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
+        }
+        List<Commission> listOfAllCommissions = commissionRepository.findAll();
+        List<Commission> outputList = new ArrayList<>();
+        for (Commission x : listOfAllCommissions){
+            if(x.getCommissionOf().equalsIgnoreCase("DEPOSIT")){
+                outputList.add(x);
+            }else if(x.getCommissionOf().equalsIgnoreCase("LOAN_INTEREST") || x.getCommissionOf().equalsIgnoreCase("DEPOSIT")){
+                continue;
+            }else {
+                String substr = x.getCommissionOf().substring(0, 7);
+                if (substr.equalsIgnoreCase("DEPOSIT")) {
+                    outputList.add(x);
+                }
+            }
+        }
+        model.addAttribute("history", outputList);
+        return "commissionTemplates/historyOfCommission";
     }
 }

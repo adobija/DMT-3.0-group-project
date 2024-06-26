@@ -137,10 +137,10 @@
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
             <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
-            <h1>Create new depoist:</h1>
+            <h1>Create new deposit:</h1>
             <form action="#" th:action="@{/deposit/addNewDeposit}" method="post">
                 <label for="totalDepositAmount">Deposit amount:</label>
-                <input type="number" step="0.1" id="totalDepositAmount" min="0" name="totalDepositAmount" required>
+                <input type="number" step="0.01" id="totalDepositAmount" min="0" name="totalDepositAmount" required>
                 <br><br>
                 <label for="depositDuration">Deposit duration:</label>
                 <input type="number" id="depositDuration" min="6" name="depositDuration" required>

@@ -139,7 +139,7 @@
             <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
             <h1>Check next installment:</h1>
             <form action="#" th:action="@{/installment/next}" method="get">
-                <label for="loanId">Select deposit:</label>
+                <label for="loanId">Select loan ID:</label>
                 <select id="loanId" name="loanId" required>
                     <option th:each="loan : ${ClientLoans}"
                             th:value="${loan.getLoanID()}"
