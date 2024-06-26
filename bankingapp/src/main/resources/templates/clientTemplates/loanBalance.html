@@ -172,6 +172,7 @@
                         <th>ID</th>
                         <th>Loan account number</th>
                         <th>Taken on</th>
+                        <th>Total loan amount [PLN]</th>
                         <th>Duration [Months]</th>
                         <th>Left to pay [PLN]</th>
                     </tr>
@@ -181,6 +182,7 @@
                         <td th:text="${loan.LoanID()}"></td>
                         <td th:text="${loan.loanAccountNumber()}"></td>
                         <td th:text="${loan.creationTime()}"></td>
+                        <td th:text="${loan.totalLoanAmount()}"></td>
                         <td th:text="${loan.duration()}"></td>
                         <td th:text="${loan.leftToPay()}"></td>
                     </tr>

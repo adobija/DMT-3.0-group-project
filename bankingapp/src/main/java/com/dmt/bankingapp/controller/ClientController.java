@@ -167,7 +167,7 @@ public class ClientController {
         ArrayList<ClientLoan> clientLoans = new ArrayList<>();
         for (Loan loan : loans) {
             total += loan.getLeftToPay();
-            clientLoans.add(new ClientLoan(loan.getLoanAccount().getAccountNumber(), loan.getLoanID(), DateAdjuster.getDate(loan.getDateOfLoan()), loan.getLoanDuration(), loan.getLeftToPay()));
+            clientLoans.add(new ClientLoan(loan.getTotalLoanAmount(), loan.getLoanAccount().getAccountNumber(), loan.getLoanID(), DateAdjuster.getDate(loan.getDateOfLoan()), loan.getLoanDuration(), loan.getLeftToPay()));
         }
         model.addAttribute("totalRemain", "Remaining amount to repay all loans: " + total + "zł");
         model.addAttribute("loans", clientLoans);
