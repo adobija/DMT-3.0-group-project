@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Banking App</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         /* Custom CSS for specific styling */
         .menu-item {
@@ -16,23 +15,6 @@
         .menu-section p {
             font-weight: bold;
         }
-    </style>
-    <style>
-        .table {
-            border: 2px solid black;
-            border-collapse: collapse;
-        }
-        .table th, .table td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: center;
-        }
-        .table thead th {
-    vertical-align: bottom;
-    border-bottom: 2px solid #000000;
-}
-    </style>
-    <style>
         .controller {
             border: 1px solid #ccc;
             margin-bottom: 10px;
@@ -60,18 +42,13 @@
         .controller li:last-child {
             border-bottom: none;
         }
-        li{
-        background-color: #f8f9fa;
-        }
-    </style>
-    <style>
         body {
-      background-size: cover;
-      background-repeat: repeat;
-      background-position: center center;
-      background-attachment: fixed;
-      background-color: #BAEAC8;
-    }
+            background-size: cover;
+            background-repeat: repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-color: #BAEAC8;
+        }
     </style>
 </head>
 <body>
@@ -116,21 +93,9 @@
                     <ul class="menu">
                         <li><a href="/changeName">Change your username</a></li>
                         <li><a href="/changePassword">Change your password</a></li>
-                        <li><a href="/changeAdminPermission">[A] Give or revoke admin permissions</a></li>
-                        <li><a href="/client/all">[A] List all clients</a></li>
-                        <li><a href="/byClientIdForm">[A] Find client by ID</a></li>
                         <li><a href="/client/checkingBalance">Check your balance</a></li>
                         <li><a href="/client/depositsBalance">Check your deposits</a></li>
                         <li><a href="/client/loansBalance">Check your loans</a></li>
-                    </ul>
-                </div>
-
-                <div class="controller">
-                    <h3>Commission Controller</h3>
-                    <ul class="menu">
-                        <li><a href="/setForLoanCommission">[A] Change loan commission</a></li>
-                        <li><a href="/setForDeposit">[A] Change deposit rate</a></li>
-                        <li><a href="/setForLoanInterest">[A] Change loan interest</a></li>
                     </ul>
                 </div>
 
@@ -146,8 +111,6 @@
                     <h3>Loans</h3>
                     <ul class="menu">
                         <li><a href="/takeLoan">Take loan</a></li>
-                        <li><a href="/loan/all">[A] List all loans</a></li>
-                        <li><a href="/loan/find">[A] Find loan by ID</a></li>
                     </ul>
                 </div>
 
@@ -157,8 +120,6 @@
                         <li><a href="/makeTransaction">Make transaction</a></li>
                         <li><a href="/outgoingTransactions">Check outgoing transactions</a></li>
                         <li><a href="/incomingTransactions">Check incoming transactions</a></li>
-                        <li><a href="/transaction/getAll">[A] List all transactions</a></li>
-                        <li><a href="/transaction/accNumber">[A] Find transactions by account number</a></li>
                     </ul>
                 </div>
 
@@ -168,9 +129,6 @@
                     <ul class="menu">
                         <li><a href="/installment/myAll">Check my installments</a></li>
                         <li><a href="/nextInstallment">Check next installment</a></li>
-                        <li><a href="/given">[A]Get given installment</a></li>
-                        <li><a href="/loan">[A]Get loan installments</a></li>
-                        <li><a href="/all">[A]Get all installments</a></li>
                     </ul>
                 </div>
             </div>
@@ -178,31 +136,18 @@
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
             <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
-            <div class="container mt-4">
-                <h2>List of all <span th:text="${forLoan}"></span></h2>
-                <table class="table table-striped">
-                    <thead style="background-color: #DEE2E6;">
-                    <tr>
-                        <th>Installment ID</th>
-                        <th>Installment Amount [PLN]</th>
-                        <th>Is Paid</th>
-                        <th>Already paid [PLN]</th>
-                        <th>To pay [PLN]</th>
-                        <th>due date</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="installment : ${loan}">
-                        <td th:text="${installment.installmentID()}"></td>
-                        <td th:text="${installment.installmentAmount()}"></td>
-                        <td th:text="${installment.isPaid() ? 'Yes' : 'No'}"></td>
-                        <td th:text="${installment.paid()}"></td>
-                        <td th:text="${installment.toPay()}"></td>
-                        <td th:text="${installment.dueDate()}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            <h1>Check next installment:</h1>
+            <form action="#" th:action="@{/installment/next}" method="get">
+                <label for="loanId">Select deposit:</label>
+                <select id="loanId" name="loanId" required>
+                    <option th:each="loan : ${ClientLoans}"
+                            th:value="${loan.getLoanID()}"
+                            th:text="${loan.getLoanID()}"></option>
+                </select>
+                <button type="submit">Check</button>
+            </form>
+
+
         </div>
     </div>
 </div>

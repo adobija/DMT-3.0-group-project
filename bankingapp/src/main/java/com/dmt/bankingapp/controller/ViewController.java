@@ -2,7 +2,9 @@ package com.dmt.bankingapp.controller;
 
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.entity.Deposit;
+import com.dmt.bankingapp.entity.Loan;
 import com.dmt.bankingapp.repository.DepositRepository;
+import com.dmt.bankingapp.repository.LoanRepository;
 import com.dmt.bankingapp.service.implementation.DetailsOfLoggedClientImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class ViewController {
 
     @Autowired
     private DepositRepository depositRepository;
+
+    @Autowired
+    private LoanRepository loanRepository;
 
     @RequestMapping("/")
     public String viewStartPage() {
@@ -88,6 +93,23 @@ public class ViewController {
         }
         model.addAttribute("availableDeposits", activeDeposits);
         return "depositTemplates/withdrawForm";
+    }
+
+    @GetMapping("/nextInstallment")
+    public String showNextInstallmentForm(HttpServletRequest request, Model model){
+        Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
+        List<Loan> listOfLoans = loanRepository.findAll();
+        ArrayList<Loan> loansOfClient = new ArrayList<>();
+        for(Loan x : listOfLoans){
+            if(x.getClient() == client){
+                loansOfClient.add(x);
+            }
+        }
+        if(loansOfClient.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "You don't have any loans!");
+        }
+        model.addAttribute("ClientLoans", loansOfClient);
+        return "installmentTemplates/nextForm";
     }
 
 }
