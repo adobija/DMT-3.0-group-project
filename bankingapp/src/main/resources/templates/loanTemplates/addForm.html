@@ -37,6 +37,7 @@
         .controller li {
             padding: 8px;
             border-bottom: 1px solid #eee;
+            background-color: #ffffff;
         }
         .controller li:last-child {
             border-bottom: none;
@@ -88,46 +89,46 @@
         <div class="col-md-3">
             <div class="menu-section">
                 <div class="controller">
-                    <h3>Client Controller</h3>
+                    <h3>Your profile and account</h3>
                     <ul class="menu">
-                        <li><a href="/changeName">editName</a></li>
-                        <li><a href="/changePassword">editPassword</a></li>
-                        <li><a href="/client/checkingBalance">checkingBalance</a></li>
-                        <li><a href="/client/depositsBalance">depositBalance</a></li>
-                        <li><a href="/client/loansBalance">loansBalance</a></li>
+                        <li><a href="/changeName">Change your username</a></li>
+                        <li><a href="/changePassword">Change your password</a></li>
+                        <li><a href="/client/checkingBalance">Check your balance</a></li>
+                        <li><a href="/client/depositsBalance">Check your deposits</a></li>
+                        <li><a href="/client/loansBalance">Check your loans</a></li>
                     </ul>
                 </div>
 
                 <div class="controller">
-                    <h3>Deposit Controller</h3>
+                    <h3>Deposits</h3>
                     <ul class="menu">
-                        <li><a href="/addDeposit">addNewDeposit</a></li>
-                        <li><form action="#" th:action="@{/withdrawDeposit}" method="get"><button type="submit">Withdraw deposit</button></form></li>
+                        <li><a href="/addDeposit">Create new deposit</a></li>
+                        <li><a href="/withdrawDeposit">Withdraw deposit</a></li>
                     </ul>
                 </div>
 
                 <div class="controller">
-                    <h3>Loan Controller</h3>
+                    <h3>Loans</h3>
                     <ul class="menu">
-                        <li><a href="/takeLoan">add</a></li>
+                        <li><a href="/takeLoan">Take loan</a></li>
                     </ul>
                 </div>
 
                 <div class="controller">
-                    <h3>Transaction Controller</h3>
+                    <h3>Transactions</h3>
                     <ul class="menu">
-                        <li><form action="#" th:action="@{/makeTransaction}" method="get"><button type="submit">add</button></form></li>
-                        <li><a href="/outgoingTransactions">outgoingTransactions</a></li>
-                        <li><a href="/incomingTransactions">incomingTransactions</a></li>
+                        <li><a href="/makeTransaction">Make transaction</a></li>
+                        <li><a href="/outgoingTransactions">Check outgoing transactions</a></li>
+                        <li><a href="/incomingTransactions">Check incoming transactions</a></li>
                     </ul>
                 </div>
 
 
                 <div class="controller">
-                    <h3>Installment Controller</h3>
+                    <h3>Installments</h3>
                     <ul class="menu">
-                        <li><a href="/installment/myAll">getMyInstallments</a></li>
-                        <li><a href="/next">getNextInstallment</a></li>
+                        <li><a href="/installment/myAll">Check my installments</a></li>
+                        <li><a href="/next">Check next installment</a></li>
                     </ul>
                 </div>
             </div>

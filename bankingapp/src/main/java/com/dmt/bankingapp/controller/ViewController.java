@@ -6,6 +6,7 @@ import com.dmt.bankingapp.repository.DepositRepository;
 import com.dmt.bankingapp.service.implementation.DetailsOfLoggedClientImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,13 +39,23 @@ public class ViewController {
     }
 
     @GetMapping("/hello")
-    public String viewHelloPage() {
+    public String viewHelloPage(HttpServletRequest request, Model model) {
+        Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
+        model.addAttribute("accNumber", client.getCheckingAccount().getAccountNumber());
+        model.addAttribute("balance", client.getCheckingAccount().getAccountBalance());
+        String date = LocalDateTime.now().getDayOfMonth() + " " + LocalDateTime.now().getMonth() + " " + LocalDateTime.now().getYear();
+        model.addAttribute("date", date);
         return "indexTemplates/hello";
     }
 
     @GetMapping("/admin")
-    public String viewAdminPanel(HttpServletRequest request){
+    public String viewAdminPanel(HttpServletRequest request, Model model){
         Client requester = detailsOfLoggedClient.getLoggedClientInstance(request);
+        model.addAttribute("accNumber", requester.getCheckingAccount().getAccountNumber());
+        model.addAttribute("balance", requester.getCheckingAccount().getAccountBalance());
+        String date = LocalDateTime.now().getDayOfMonth() + " " + LocalDateTime.now().getMonth() + " " + LocalDateTime.now().getYear();
+        model.addAttribute("date", date);
+        model.addAttribute("adminInfo", "Welcome to admin panel!");
         if(requester.isAdmin()){
             return "adminTemplates/adminPanel";
         }else{

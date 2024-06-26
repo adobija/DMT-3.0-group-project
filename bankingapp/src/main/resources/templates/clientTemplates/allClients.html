@@ -55,6 +55,7 @@
         .controller li {
             padding: 8px;
             border-bottom: 1px solid #eee;
+           background-color: #ffffff;
         }
         .controller li:last-child {
             border-bottom: none;
@@ -111,65 +112,65 @@
         <div class="col-md-3">
             <div class="menu-section">
                 <div class="controller">
-                    <h3>Client Controller</h3>
+                    <h3>Your profile and account</h3>
                     <ul class="menu">
-                        <li><a href="/changeName">editName</a></li>
-                        <li><a href="/changePassword">editPassword</a></li>
-                        <li><a href="/changeAdminPermission">[A] editAdmin (give or revoke admin permission)</a></li>
-                        <li><a href="/client/all">[A] all</a></li>
-                        <li><a href="/byClientIdForm">[A] byClientID</a></li>
-                        <li><a href="/client/checkingBalance">checkingBalance</a></li>
-                        <li><a href="/client/depositsBalance">depositBalance</a></li>
-                        <li><a href="/client/loansBalance">loansBalance</a></li>
+                        <li><a href="/changeName">Change your username</a></li>
+                        <li><a href="/changePassword">Change your password</a></li>
+                        <li><a href="/changeAdminPermission">[A] Give or revoke admin permissions</a></li>
+                        <li><a href="/client/all">[A] List all clients</a></li>
+                        <li><a href="/byClientIdForm">[A] Find client by ID</a></li>
+                        <li><a href="/client/checkingBalance">Check your balance</a></li>
+                        <li><a href="/client/depositsBalance">Check your deposits</a></li>
+                        <li><a href="/client/loansBalance">Check your loans</a></li>
                     </ul>
                 </div>
 
                 <div class="controller">
                     <h3>Commission Controller</h3>
                     <ul class="menu">
-                        <li><a href="/setForLoanCommission">[A] setForLoanCommission</a></li>
-                        <li><a href="/setForDeposit">[A] setForDeposit</a></li>
-                        <li><a href="/setForLoanInterest">[A] setForLoanInterest</a></li>
+                        <li><a href="/setForLoanCommission">[A] Change loan commission</a></li>
+                        <li><a href="/setForDeposit">[A] Change deposit rate</a></li>
+                        <li><a href="/setForLoanInterest">[A] Change loan interest</a></li>
                     </ul>
                 </div>
 
                 <div class="controller">
-                    <h3>Deposit Controller</h3>
+                    <h3>Deposits</h3>
                     <ul class="menu">
-                        <li><a href="/addDeposit">addNewDeposit</a></li>
-                        <li><form action="#" th:action="@{/withdrawDeposit}" method="get"><button type="submit">Withdraw deposit</button></form></li>
+                        <li><a href="/addDeposit">Create new deposit</a></li>
+                        <li><a href="/withdrawDeposit">Withdraw deposit</a></li>
                     </ul>
                 </div>
 
                 <div class="controller">
-                    <h3>Loan Controller</h3>
+                    <h3>Loans</h3>
                     <ul class="menu">
-                        <li><a href="/takeLoan">add</a></li>
-                        <li><a href="/loan/all">[A] all</a></li>
-                        <li><a href="/loan/find">[A] byLoanId</a></li>
+                        <li><a href="/takeLoan">Take loan</a></li>
+                        <li><a href="/loan/all">[A] List all loans</a></li>
+                        <li><a href="/loan/find">[A] Find loan by ID</a></li>
                     </ul>
                 </div>
 
                 <div class="controller">
-                    <h3>Transaction Controller</h3>
+                    <h3>Transactions</h3>
                     <ul class="menu">
-                        <li><form action="#" th:action="@{/makeTransaction}" method="get"><button type="submit">add</button></form></li>
-                        <li><a href="/outgoingTransactions">outgoingTransactions</a></li>
-                        <li><a href="/incomingTransactions">incomingTransactions</a></li>
-                        <li><a href="/transaction/getAll">[A] getAll</a></li>
-                        <li><a href="/transaction/accNumber">[A] byAccountNumber</a></li>
+                        <li><a href="/makeTransaction">Make transaction</a></li>
+                        <li><a href="/outgoingTransactions">Check outgoing transactions</a></li>
+                        <li><a href="/incomingTransactions">Check incoming transactions</a></li>
+                        <li><a href="/transaction/getAll">[A] List all transactions</a></li>
+                        <li><a href="/transaction/accNumber">[A] Find transactions by account number</a></li>
                     </ul>
                 </div>
 
 
                 <div class="controller">
-                    <h3>Installment Controller</h3>
+                    <h3>Installments</h3>
                     <ul class="menu">
-                        <li><a href="/installment/myAll">getMyInstallments</a></li>
-                        <li><a href="/next">getNextInstallment</a></li>
-                        <li><a href="/given">[A]getGivenInstallment</a></li>
-                        <li><a href="/loan">[A]getLoanInstallments</a></li>
-                        <li><a href="/all">[A]getAllInstallments</a></li>
+                        <li><a href="/installment/myAll">Check my installments</a></li>
+                        <li><a href="/next">Check next installment</a></li>
+                        <li><a href="/given">[A]Get given installment</a></li>
+                        <li><a href="/loan">[A]Get loan installments</a></li>
+                        <li><a href="/all">[A]Get all installments</a></li>
                     </ul>
                 </div>
             </div>
