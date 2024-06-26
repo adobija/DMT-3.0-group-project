@@ -169,6 +169,7 @@
                     <thead style="background-color: #DEE2E6;">
                     <tr>
                         <th>ID</th>
+                        <th>Loan account number</th>
                         <th>Taken on</th>
                         <th>Duration [Months]</th>
                         <th>Left to pay [PLN]</th>
@@ -177,6 +178,7 @@
                     <tbody>
                     <tr th:each="loan : ${loans}">
                         <td th:text="${loan.LoanID()}"></td>
+                        <td th:text="${loan.loanAccountNumber()}"></td>
                         <td th:text="${loan.creationTime()}"></td>
                         <td th:text="${loan.duration()}"></td>
                         <td th:text="${loan.leftToPay()}"></td>

@@ -4,14 +4,15 @@ import com.dmt.bankingapp.entity.Deposit;
 
 import java.time.LocalDateTime;
 
-public record DepositRecord(int depositID, LocalDateTime creationTime, int duration, double depositAmount, Deposit.DepositType depositType, String info) {
+public record DepositRecord(int depositID, String creationTime, int duration, double depositAmount, Deposit.DepositType depositType, String info) {
+
     @Override
     public int depositID() {
         return depositID;
     }
 
     @Override
-    public LocalDateTime creationTime() {
+    public String creationTime() {
         return creationTime;
     }
 

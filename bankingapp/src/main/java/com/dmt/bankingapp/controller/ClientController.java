@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.dmt.bankingapp.record.deposit.DepositRecord;
 import com.dmt.bankingapp.record.loans.ClientLoan;
+import com.dmt.bankingapp.utils.DateAdjuster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -141,7 +142,7 @@ public class ClientController {
             }else{
                 withdrawInfo = "Has been withdrawed " + deposit.getDateOfWithdrawn();
             }
-            depositRecords.add(new DepositRecord(deposit.getDepositID(), deposit.getDateOfDeposit(), deposit.getDepositDuration(), deposit.getTotalDepositAmount(), deposit.getDepositType(), withdrawInfo));
+            depositRecords.add(new DepositRecord(deposit.getDepositID(), DateAdjuster.getDate(deposit.getDateOfDeposit()), deposit.getDepositDuration(), deposit.getTotalDepositAmount(), deposit.getDepositType(), withdrawInfo));
         }
 
         model.addAttribute("deposits", depositRecords);
@@ -161,9 +162,9 @@ public class ClientController {
         ArrayList<ClientLoan> clientLoans = new ArrayList<>();
         for (Loan loan : loans) {
             total += loan.getLeftToPay();
-            clientLoans.add(new ClientLoan(loan.getLoanID(), loan.getDateOfLoan(), loan.getLoanDuration(), loan.getLeftToPay()));
+            clientLoans.add(new ClientLoan(loan.getLoanAccount().getAccountNumber(), loan.getLoanID(), DateAdjuster.getDate(loan.getDateOfLoan()), loan.getLoanDuration(), loan.getLeftToPay()));
         }
-        model.addAttribute("totalRemain", "Remaining total amount of loans: " + total);
+        model.addAttribute("totalRemain", "Remaining amount to repay all loans: " + total + "zł");
         model.addAttribute("loans", clientLoans);
         return "clientTemplates/loanBalance";
     }
