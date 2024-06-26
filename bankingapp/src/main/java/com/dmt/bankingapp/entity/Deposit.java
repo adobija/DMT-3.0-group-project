@@ -189,4 +189,9 @@ public class Deposit {
     public LocalDateTime getDateOfWithdrawn() {
         return dateOfWithdrawn;
     }
+
+    public String getDepositTypeString(){
+        String output = this.getDepositType().toString();
+        return output;
+    }
 }

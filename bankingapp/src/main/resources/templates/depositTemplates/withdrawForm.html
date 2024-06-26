@@ -137,11 +137,11 @@
         <div class="col-md-9">
             <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
             <h1>Create new depoist:</h1>
-            <form action="#" th:action="@{/deposit/withdraw}" method="get">
-                <label for="requestedDeposit">Select deposit:</label>
-                <select id="requestedDeposit" name="requestedDeposit" required>
+            <form action="#" th:action="@{/deposit/withdrawDeposit}" method="get">
+                <label for="depositType">Select deposit:</label>
+                <select id="depositType" name="depositType" required>
                     <option th:each="deposit : ${availableDeposits}"
-                            th:value="deposit"
+                            th:value="${deposit.getDepositTypeString()}"
                             th:text="${deposit.getDepositType()}"></option>
                 </select>
                 <button type="submit">Withdraw deposit</button>

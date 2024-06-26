@@ -107,44 +107,57 @@ public class DepositController {
         return "indexTemplates/hello";
     }
 
-    @GetMapping("/withdraw")
-    public String withdrawDeposit(HttpServletRequest request, Deposit requestedDeposit, Model model) {
-        // Get client instance
+    @GetMapping("/withdrawDeposit")
+    public String withdrawDeposit(HttpServletRequest request, String depositType, Model model){
+        //Get client instance
         Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
-        // Fetch his deposit records
-        List<Deposit> depositsOfClient = depositRepository.getAllByClient(client);
-        // error if client don't have any deposits
-        if (depositsOfClient.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client does not have any deposits!");
+        //Fetch his deposit records
+        List<Deposit> depositOfClient = depositRepository.getAllByClient(client);
+        //error if client don't have any deposits
+        if(depositOfClient.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client don't have any deposits!");
         }
-
-        if (requestedDeposit == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Deposit has not been found!");
+        //check what type
+        DepositType type = null;
+        if(depositType.equalsIgnoreCase("FIXED")){
+            type = DepositType.FIXED;
+        } else if (depositType.equalsIgnoreCase("PROGRESSIVE")) {
+            type = DepositType.PROGRESSIVE;
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no type of deposit as " + depositType.toUpperCase()+ "!");
         }
-
-        // Test if client can withdraw deposit
-        if (!requestedDeposit.getIsActive()) {
+        //Get instance of this deposit
+        Deposit requestedDeposit = null;
+        for(Deposit x : depositOfClient){
+            if(x.getDepositType().equals(type)){
+                requestedDeposit = x;
+            }
+        }
+        //Test if client can withdraw deposit
+        assert requestedDeposit != null;
+        if(!requestedDeposit.getIsActive()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot transfer money from this deposit account because the deposit has already been withdrawn! Date of withdrawn: " + requestedDeposit.getDateOfWithdrawn());
         }
-
-        // Fetch account of bank
+        //Fetch account of bank
         Account bankAccount = accountRepository.findByAccountNumber("BANK_DEPOSIT");
+        //Get client checking account
+        List<Account> listOfClientAccounts = accountRepository.findByClient(client);
+        Account clientCheckingAccount = null;
+        for(Account x : listOfClientAccounts){
+            if(x.getAccountType().equals(Account.AccountType.CHECKING)){
+                clientCheckingAccount = x;
+            }
+        }
 
-        // Get client checking account
-        Account clientCheckingAccount = client.getCheckingAccount();
-
-        // Deposit withdraw
-        LocalDateTime expectedDateOfWithdraw = requestedDeposit.getDateOfDeposit()
-                .plusMonths(requestedDeposit.getDepositDuration());
-        if (expectedDateOfWithdraw.isBefore(LocalDateTime.now())
-                || expectedDateOfWithdraw.isEqual(LocalDateTime.now())) {
-            Transaction withdraw = new Transaction(bankAccount, clientCheckingAccount,
-                    requestedDeposit.getReturnOfInvestment());
+        //deposit withdraw
+        LocalDateTime expectedDateOfWithdraw = requestedDeposit.getDateOfDeposit().plusMonths(requestedDeposit.getDepositDuration());
+        if(expectedDateOfWithdraw.isBefore(LocalDateTime.now()) || expectedDateOfWithdraw.isEqual(LocalDateTime.now())){
+            Transaction withdraw = new Transaction(bankAccount, clientCheckingAccount, requestedDeposit.getReturnOfInvestment());
             transactionRepository.save(withdraw);
             requestedDeposit.setActive(false);
             requestedDeposit.setDateOfWithdrawn(LocalDateTime.now());
             depositRepository.save(requestedDeposit);
-        } else {
+        }else{
             throw new ResponseStatusException(HttpStatus.LOCKED, "You cannot withdraw money from that deposit until " + expectedDateOfWithdraw + "!");
         }
 

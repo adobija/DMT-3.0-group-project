@@ -1,9 +1,12 @@
 package com.dmt.bankingapp.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.dmt.bankingapp.record.deposit.DepositRecord;
+import com.dmt.bankingapp.record.loans.ClientLoan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -129,29 +132,19 @@ public class ClientController {
         if(deposits.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "You don't have any deposits");
         }
-        StringBuilder depositsBalance = new StringBuilder();
+        ArrayList<DepositRecord> depositRecords = new ArrayList<>();
         
         for (Deposit deposit : deposits) {
             String withdrawInfo = "";
             if(deposit.getIsActive()){
-                withdrawInfo = "has not been withdrawed yet!";
+                withdrawInfo = "Has not been withdrawed yet!";
             }else{
-                withdrawInfo = "has been withdrawed " + deposit.getDateOfWithdrawn();
+                withdrawInfo = "Has been withdrawed " + deposit.getDateOfWithdrawn();
             }
-            depositsBalance.append(deposit.getDepositID())
-                    .append(": ")
-                    .append(deposit.getTotalDepositAmount())
-                    .append(", type of deposit: ")
-                    .append(deposit.getDepositType())
-                    .append(" " + withdrawInfo)
-                    .append("\n");
+            depositRecords.add(new DepositRecord(deposit.getDepositID(), deposit.getDateOfDeposit(), deposit.getDepositDuration(), deposit.getTotalDepositAmount(), deposit.getDepositType(), withdrawInfo));
         }
-        
-        // Remove the last newline in the output
-        if (depositsBalance.length() > 0) {
-            depositsBalance.setLength(depositsBalance.length() - 1);
-        }
-        model.addAttribute("deposits", depositsBalance);
+
+        model.addAttribute("deposits", depositRecords);
         return "clientTemplates/depositBalance";
     }
 
@@ -163,19 +156,15 @@ public class ClientController {
         if(loans.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "You don't have any loans");
         }
-        StringBuilder loansBalance = new StringBuilder();
 
         double total = 0;
-        
+        ArrayList<ClientLoan> clientLoans = new ArrayList<>();
         for (Loan loan : loans) {
             total += loan.getLeftToPay();
-            loansBalance.append(loan.getLoanID())
-                        .append(": ")
-                        .append(loan.getLeftToPay())
-                        .append("\n");
+            clientLoans.add(new ClientLoan(loan.getLoanID(), loan.getDateOfLoan(), loan.getLoanDuration(), loan.getLeftToPay()));
         }
-        loansBalance.append("Remaining total amount of loans: " + total);
-        model.addAttribute("loanBalance", loansBalance.toString());
+        model.addAttribute("totalRemain", "Remaining total amount of loans: " + total);
+        model.addAttribute("loans", clientLoans);
         return "clientTemplates/loanBalance";
     }
 

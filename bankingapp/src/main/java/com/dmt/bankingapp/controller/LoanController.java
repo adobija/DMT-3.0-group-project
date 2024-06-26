@@ -116,8 +116,8 @@ public class LoanController {
         accountRepository.save(loanAccount);
 
         String output = "Loan and loan account created successfully";
-        model.addAttribute("add", output);
-        return "loanTemplates/add";
+        model.addAttribute("response", output);
+        return "indexTemplates/hello";
     }
 
     @GetMapping("/all")

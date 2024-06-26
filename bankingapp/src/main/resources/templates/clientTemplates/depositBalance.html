@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Banking App</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <style>
     /* Custom CSS for specific styling */
     .menu-item {
@@ -15,6 +16,21 @@
     .menu-section p {
         font-weight: bold;
     }
+  </style>
+  <style>
+    .table {
+        border: 2px solid black;
+        border-collapse: collapse;
+    }
+    .table th, .table td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+    .table thead th {
+vertical-align: bottom;
+border-bottom: 2px solid #000000;
+}
   </style>
   <style>
     .controller {
@@ -39,7 +55,7 @@
     .controller li {
         padding: 8px;
         border-bottom: 1px solid #eee;
-        background-color: #ffffff;
+       background-color: #ffffff;
     }
     .controller li:last-child {
         border-bottom: none;
@@ -143,7 +159,31 @@
     <!-- Text Area for HTML Code -->
     <div class="col-md-9">
       <!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
-      <pre th:text="${deposits}"></pre>
+      <div class="container mt-4">
+        <h2>List of your deposits</h2>
+        <table class="table table-striped">
+          <thead style="background-color: #DEE2E6;">
+          <tr>
+            <th>ID</th>
+            <th>Deposit Date</th>
+            <th>Amount [PLN]</th>
+            <th>Duration [Months]</th>
+            <th>Type</th>
+            <th>Information</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="depo : ${deposits}">
+            <td th:text="${depo.depositID()}"></td>
+            <td th:text="${depo.creationTime()}"></td>
+            <td th:text="${depo.depositAmount()}"></td>
+            <td th:text="${depo.duration()}"></td>
+            <td th:text="${depo.depositType()}"></td>
+            <td th:text="${depo.info()}"></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

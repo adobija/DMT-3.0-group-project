@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Banking App</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         /* Custom CSS for specific styling */
         .menu-item {
@@ -15,6 +16,21 @@
         .menu-section p {
             font-weight: bold;
         }
+    </style>
+    <style>
+        .table {
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        .table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #000000;
+}
     </style>
     <style>
         .controller {
@@ -39,7 +55,7 @@
         .controller li {
             padding: 8px;
             border-bottom: 1px solid #eee;
-            background-color: #ffffff;
+           background-color: #ffffff;
         }
         .controller li:last-child {
             border-bottom: none;
@@ -143,8 +159,31 @@
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
             <!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
-            <h2>Data of your loans</h2>
-            <pre th:text="${loanBalance}"></pre>
+            <div class="container mt-4">
+                <h2>List of your loans</h2>
+                <h2><div class="alert alert-info" role="alert" style="text-align: center;">
+                    <p th:text="${totalRemain}"></p>
+                </div>
+                    </h2>
+                <table class="table table-striped">
+                    <thead style="background-color: #DEE2E6;">
+                    <tr>
+                        <th>ID</th>
+                        <th>Taken on</th>
+                        <th>Duration [Months]</th>
+                        <th>Left to pay [PLN]</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="loan : ${loans}">
+                        <td th:text="${loan.LoanID()}"></td>
+                        <td th:text="${loan.creationTime()}"></td>
+                        <td th:text="${loan.duration()}"></td>
+                        <td th:text="${loan.leftToPay()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
 
 

@@ -74,10 +74,19 @@ public class ViewController {
     public String showWithdrawDepositForm(HttpServletRequest request, Model model){
         Client requester = detailsOfLoggedClient.getLoggedClientInstance(request);
         List<Deposit> deposits = depositRepository.getAllByClient(requester);
-        if(deposits.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "You don't have any deposits");
+
+        ArrayList<Deposit> activeDeposits = new ArrayList<>();
+        for(Deposit x : deposits){
+            if(x.getIsActive()){
+                activeDeposits.add(x);
+            }else{
+                continue;
+            }
         }
-        model.addAttribute("avaibleDeposits", deposits);
+        if(activeDeposits.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "You don't have any active deposits");
+        }
+        model.addAttribute("availableDeposits", activeDeposits);
         return "depositTemplates/withdrawForm";
     }
 
