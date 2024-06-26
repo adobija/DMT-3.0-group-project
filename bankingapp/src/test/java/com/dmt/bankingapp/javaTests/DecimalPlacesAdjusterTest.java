@@ -36,7 +36,8 @@ public class DecimalPlacesAdjusterTest {
         "999.9999, 1000.00",
         "-999.9999, -1000.00",
         "99999.9999, 100000.00",
-        "0.009, 0.00"
+        "0.009, 0.00",
+        "0.009999999999999999, 0.00"
     })
     public void testAdjustToTwoDecimalPlaces(double input, double expected) {
         assertEquals(expected, DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(input), 0.0001);

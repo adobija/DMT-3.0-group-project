@@ -11,12 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.ArgumentCaptor; // Add this import statement
+import org.mockito.ArgumentCaptor;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.dmt.bankingapp.controller.ClientController;
+import com.dmt.bankingapp.entity.Account;
+import com.dmt.bankingapp.entity.Account.AccountType;
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.repository.ClientRepository;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
@@ -64,6 +66,29 @@ public class ClientControllerTests {
     }
 
     @Test
+    void testEditNameConflict() {
+        // Arrange
+        String newName = "New Name";
+        String currentName = "Current Name";
+        Client client = new Client();
+        client.setClientName(currentName);
+        Client existingClient = new Client();
+        existingClient.setClientName(newName);
+
+        // Act
+        when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(currentName);
+        when(clientRepository.findByClientName(currentName)).thenReturn(client);
+        when(clientRepository.findByClientName(newName)).thenReturn(existingClient);
+
+        // Assert
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            clientController.editName(newName, request);
+        });
+        assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
+        assertEquals("Name has already been used - failed to update client's name", exception.getReason());
+    }
+
+    @Test
     void testEditPasswordClientNotFound() {
         // Arrange
         String clientName = "ClientName";
@@ -99,7 +124,6 @@ public class ClientControllerTests {
         assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
     }
 
-
     @Test
     void testGetAllClientsRequesterNotAdmin() {
         // Arrange
@@ -133,5 +157,26 @@ public class ClientControllerTests {
         });
 
         assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
+    }
+
+    @Test
+    void testGetCheckingBalanceSuccess() {
+        // Arrange
+        String clientName = "ClientName";
+        double balance = 1000.0;
+        Client client = new Client();
+        client.setClientName(clientName);
+        Account checking = new Account("AccNumber", AccountType.CHECKING , client);
+        client.setCheckingAccount(checking);
+        client.getCheckingAccount().setAccountBalance(balance, false);
+
+        when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn(clientName);
+        when(clientRepository.findByClientName(clientName)).thenReturn(client);
+
+        // Act
+        double response = clientController.getCheckingBalance(request);
+
+        // Assert
+        assertEquals(balance, response);
     }
 }
