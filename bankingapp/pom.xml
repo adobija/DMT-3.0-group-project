@@ -40,7 +40,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 			<!-- Exclusion to avoid conflicts between JUnit 4 and JUnit 5 -
-			when using  use the spring-boot-starter-test dependency
+			when using the spring-boot-starter-test dependency
 			added by Artur 28.05.2024 -->
 			<exclusions>
 				<exclusion>
@@ -71,6 +71,15 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
+			<version>3.3.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

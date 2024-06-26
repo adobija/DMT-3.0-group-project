@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.dmt.bankingapp.controller.CommissionController;
@@ -28,6 +29,9 @@ public class CommissionControllerTests {
 
     @Mock
     private DetailsOfLoggedClientImpl detailsOfLoggedClient;
+
+    @Mock
+    private Model model;
 
     @InjectMocks
     private CommissionController commissionController;
@@ -54,10 +58,10 @@ public class CommissionControllerTests {
         when(commissionRepository.findByCommissionOf("LOAN_COMMISSION")).thenReturn(commission);
 
         // Act
-        String response = commissionController.setCommissionRateForLoanCommission(newRate, request);
+        String response = commissionController.setCommissionRateForLoanCommission(newRate, request, model);
 
         // Assert
-        assertEquals("Successfully updated commission rate for LOANS from 5.0 to 10.0", response);
+        assertEquals("adminTemplates/adminPanel", response);
         verify(commissionRepository, times(2)).save(any(Commission.class)); // Adjusted verification
     }
 
@@ -70,7 +74,7 @@ public class CommissionControllerTests {
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            commissionController.setCommissionRateForLoanCommission(newRate, request);
+            commissionController.setCommissionRateForLoanCommission(newRate, request, model);
         });
 
         assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
@@ -88,7 +92,7 @@ public class CommissionControllerTests {
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            commissionController.setCommissionRateForLoanCommission(newRate, request);
+            commissionController.setCommissionRateForLoanCommission(newRate, request, model);
         });
 
         assertEquals(HttpStatus.IM_USED, exception.getStatusCode());
@@ -106,7 +110,7 @@ public class CommissionControllerTests {
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            commissionController.setCommissionRateForLoanCommission(newRate, request);
+            commissionController.setCommissionRateForLoanCommission(newRate, request, model);
         });
 
         assertEquals(HttpStatus.NOT_ACCEPTABLE, exception.getStatusCode());
@@ -123,10 +127,10 @@ public class CommissionControllerTests {
         when(commissionRepository.findByCommissionOf("DEPOSIT")).thenReturn(commission);
 
         // Act
-        String response = commissionController.setCommissionRateForDeposit(newRate, request);
+        String response = commissionController.setCommissionRateForDeposit(newRate, request, model);
 
         // Assert
-        assertEquals("Successfully updated commission rate for DEPOSITS from 5.0 to 10.0", response);
+        assertEquals("adminTemplates/adminPanel", response);
         verify(commissionRepository, times(2)).save(any(Commission.class)); // Adjusted verification
     }
 
@@ -140,10 +144,10 @@ public class CommissionControllerTests {
         when(commissionRepository.findByCommissionOf("LOAN_INTEREST")).thenReturn(commission);
 
         // Act
-        String response = commissionController.setCommissionRateForLoanInterest(newRate, request);
+        String response = commissionController.setCommissionRateForLoanInterest(newRate, request, model);
 
         // Assert
-        assertEquals("Successfully updated interest rate for LOANS from 4.0 to 7.0", response);
+        assertEquals("adminTemplates/adminPanel", response);
         verify(commissionRepository, times(2)).save(any(Commission.class)); // Adjusted verification
     }
 }

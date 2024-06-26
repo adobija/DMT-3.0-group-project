@@ -3,8 +3,9 @@ package com.dmt.bankingapp.controller;
 import com.dmt.bankingapp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.ui.Model;
 import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 
@@ -18,9 +19,10 @@ import com.dmt.bankingapp.entity.Transaction;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping(path = "/deposit")
 public class DepositController {
 
@@ -43,12 +45,13 @@ public class DepositController {
     private CommissionRepository commissionRepository;
 
     @PostMapping("/addNewDeposit")
-    public @ResponseBody String addNewDeposit(
+    public String addNewDeposit(
 
             @RequestParam double totalDepositAmount,
             @RequestParam int depositDuration,
             @RequestParam String depositType,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            Model model) {
 
         String currentName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(currentName);
@@ -56,7 +59,7 @@ public class DepositController {
         if (checkingAccount == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Checking account has not been found");
         }
-        if(checkingAccount.getAccountBalance() < totalDepositAmount){
+        if (checkingAccount.getAccountBalance() < totalDepositAmount) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "You don't have enough money!");
         }
         Account bankAccount = accountRepository.findByAccountNumber("BANK_DEPOSIT");
@@ -69,29 +72,30 @@ public class DepositController {
 
         else if (depositType.equalsIgnoreCase("PROGRESSIVE")) {
             depositTypeValue = DepositType.PROGRESSIVE;
-        } 
-        //Check if client have already this type of Deposit
+        }
+        // Check if client have already this type of Deposit
         List<Deposit> checkDeposits = depositRepository.getAllByClient(client);
-        for(Deposit x : checkDeposits){
-            if(x.getDepositType().equals(depositTypeValue) && x.getIsActive()){
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Client have already one deposit of type " + depositTypeValue + "!");
+        for (Deposit x : checkDeposits) {
+            if (x.getDepositType().equals(depositTypeValue) && x.getIsActive()) {
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
+                        "Client have already one deposit of type " + depositTypeValue + "!");
             }
         }
-
 
         // Fetch live commision of deposit
         double commissionRate = commissionRepository.findByCommissionOf("DEPOSIT").getCommissionRateInPercent();
 
-        Deposit deposit = new Deposit(commissionRate, depositDuration, checkingAccount, totalDepositAmount, depositTypeValue);
-        
+        Deposit deposit = new Deposit(commissionRate, depositDuration, checkingAccount, totalDepositAmount,
+                depositTypeValue);
+
         switch (deposit.getDepositType()) {
             case FIXED:
                 deposit.calculateFixedTermDeposit();
-            break;
+                break;
 
             case PROGRESSIVE:
                 deposit.calculateProgressiveDeposit();
-            break;
+                break;
         }
 
         Transaction t1 = new Transaction(checkingAccount, bankAccount, totalDepositAmount);
@@ -99,10 +103,13 @@ public class DepositController {
 
         depositRepository.save(deposit);
 
-        return "Deposit added successfully";
+        String output = "Deposit added successfully";
+        model.addAttribute("response", output);
+        return "indexTemplates/hello";
     }
+
     @GetMapping("/withdrawDeposit")
-    public @ResponseBody String withdrawDeposit(HttpServletRequest request, String depositType){
+    public String withdrawDeposit(HttpServletRequest request, String depositType, Model model){
         //Get client instance
         Client client = detailsOfLoggedClient.getLoggedClientInstance(request);
         //Fetch his deposit records
@@ -155,7 +162,19 @@ public class DepositController {
             throw new ResponseStatusException(HttpStatus.LOCKED, "You cannot withdraw money from that deposit until " + expectedDateOfWithdraw + "!");
         }
 
-        return "Successfully withdrawn " + requestedDeposit.getReturnOfInvestment() + " zł!";
+        String output = "Successfully withdrawn " + requestedDeposit.getReturnOfInvestment();
+        model.addAttribute("response", output);
+        return "indexTemplates/hello";
+    }
 
+    @GetMapping(path = "/all")
+    public String listAll(HttpServletRequest request, Model model){
+        Client requester = detailsOfLoggedClient.getLoggedClientInstance(request);
+        if(!requester.isAdmin()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
+        }
+        List<Deposit> allDeposits = depositRepository.findAll();
+        model.addAttribute("list", allDeposits);
+        return "depositTemplates/listAllDeposits";
     }
 }

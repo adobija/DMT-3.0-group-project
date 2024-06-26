@@ -44,9 +44,10 @@ public class AccountsOfUserIntoHistoryListImpl implements AccountsOfUserIntoHist
         }
         //Array list of history instance records
         ArrayList<History> historyArrayList = new ArrayList<>();
-        int i = 0;
-        while(!accountList.isEmpty()){
+        for (int i = 0; i < accountList.size(); i++) {
             Account currentlyWorkingOn = accountList.get(i);
+            System.out.println(currentlyWorkingOn.getAccountNumber());
+            System.out.println(".".repeat(100));
             //fetch all records in Transaction table that have ID of account
             //All transaction where found account was receiver
             List<Transaction> incomeTransactions = transactionRepository.findByReceiver(currentlyWorkingOn);

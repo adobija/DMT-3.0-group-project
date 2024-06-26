@@ -1,11 +1,17 @@
 package com.dmt.bankingapp.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.dmt.bankingapp.record.deposit.DepositRecord;
+import com.dmt.bankingapp.record.loans.ClientLoan;
+import com.dmt.bankingapp.utils.DateAdjuster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,7 +24,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-@RestController
+@Controller
 @RequestMapping(path = "/client")
 public class ClientController {
 
@@ -29,7 +35,7 @@ public class ClientController {
     private DetailsOfLoggedClient detailsOfLoggedClient;
 
     @PostMapping("/editName")
-    public @ResponseBody String editName(@RequestParam String newName, HttpServletRequest request) {
+    public String editName(@RequestParam String newName, HttpServletRequest request, Model model) {
         if (clientRepository.findByClientName(newName) != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Name has already been used - failed to update client's name");
         }
@@ -38,32 +44,37 @@ public class ClientController {
         if (client != null) {
             client.setClientName(newName);
             clientRepository.save(client);
-            return "Client's name updated successfully";
+            model.addAttribute("response","Client's name updated successfully - RELOGIN TO COMMIT CHANGES");
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
         }
+        return "indexTemplates/hello";
     }
 
     @PostMapping("/editPassword")
-    public @ResponseBody String editPassword(@RequestParam String newPassword, HttpServletRequest request) {
+    public String editPassword(@RequestParam String oldPassword, @RequestParam String newPassword, HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         if (client != null) {
-            String storedHashedPassword = client.getClientPassword().replace("{bcrypt}", ""); // Remove prefix for comparison
+            String storedHashedPassword = client.getClientPassword().replace("{bcrypt}", "");// Remove prefix for comparison
+            if(!BCrypt.checkpw(oldPassword, storedHashedPassword)){
+                throw new ResponseStatusException(HttpStatus.LOCKED, "Please input valid old password!");
+            }
             if (BCrypt.checkpw(newPassword, storedHashedPassword)) {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Please choose a new password that is different from the previous password");
             } else {
                 client.setClientPassword(newPassword);
                 clientRepository.save(client);
-                return "Client's password updated successfully";
+                model.addAttribute("response", "Client's password updated successfully - RELOGIN TO COMMIT CHANGES");
+                return "indexTemplates/hello";
             }
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
         }
     }
 
-    @PostMapping("/editAdmin/{clientId}")
-    public @ResponseBody String editPermission(@PathVariable int clientId, @RequestParam boolean isAdmin, HttpServletRequest request) throws IOException {
+    @PostMapping("/editAdmin")
+    public String editPermission(@RequestParam int clientId, @RequestParam boolean isAdmin, HttpServletRequest request, Model model) throws IOException {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
@@ -74,80 +85,88 @@ public class ClientController {
         if (foundClient != null) {
             foundClient.setAdmin(isAdmin);
             clientRepository.save(foundClient);
-            return "Client's permission updated successfully";
+            model.addAttribute("response","Client's permission updated successfully");
+            return "indexTemplates/hello";
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
         }
     }
 
     @GetMapping("/all")
-    public @ResponseBody List<Client> getAllClients(HttpServletRequest request) {
+    public String getAllClients(HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
-        return clientRepository.findAll();
+        List<Client> listOfClients = clientRepository.findAll();
+        model.addAttribute("listOfClients", listOfClients);
+        return "clientTemplates/allClients";
     }
 
     @GetMapping("/byClientID")
-    public @ResponseBody Client getByClientID(@RequestParam int clientID, HttpServletRequest request) {
+    public String getByClientID(@RequestParam int clientID, HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
         if(!requester.isAdmin()){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
-        return clientRepository.findByClientID(clientID);
+        Client client = clientRepository.findByClientID(clientID);
+
+        model.addAttribute("client", client);
+        return "clientTemplates/foundClient";
     }
 
     @GetMapping("/checkingBalance")
-    public @ResponseBody double getCheckingBalance(HttpServletRequest request) {
+    public String getCheckingBalance(HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
-        return client.getCheckingAccount().getAccountBalance();
+        model.addAttribute("response", "Balance: "+client.getCheckingAccount().getAccountBalance() + " zł");
+        return "indexTemplates/hello";
     }
 
     @GetMapping("/depositsBalance")
-    public @ResponseBody String getDepositsBalance(HttpServletRequest request) {
+    public String getDepositsBalance(HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         List<Deposit> deposits = client.getDepositsList();
-        StringBuilder depositsBalance = new StringBuilder();
+        if(deposits.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "You don't have any deposits");
+        }
+        ArrayList<DepositRecord> depositRecords = new ArrayList<>();
         
         for (Deposit deposit : deposits) {
-            depositsBalance.append(deposit.getDepositID())
-                        .append(": ")
-                        .append(deposit.getTotalDepositAmount())
-                        .append("\n");
+            String withdrawInfo = "";
+            if(deposit.getIsActive()){
+                withdrawInfo = "Has not been withdrawed yet!";
+            }else{
+                withdrawInfo = "Has been withdrawed " + deposit.getDateOfWithdrawn();
+            }
+            depositRecords.add(new DepositRecord(deposit.getDepositID(), DateAdjuster.getDate(deposit.getDateOfDeposit()), deposit.getDepositDuration(), deposit.getTotalDepositAmount(), deposit.getDepositType(), withdrawInfo));
         }
-        
-        // Remove the last newline in the output
-        if (depositsBalance.length() > 0) {
-            depositsBalance.setLength(depositsBalance.length() - 1);
-        }
-        
-        return depositsBalance.toString();
+
+        model.addAttribute("deposits", depositRecords);
+        return "clientTemplates/depositBalance";
     }
 
     @GetMapping("/loansBalance")
-    public @ResponseBody String getLoansBalance(HttpServletRequest request) {
+    public String getLoansBalance(HttpServletRequest request, Model model) {
         String clientName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(clientName);
         List<Loan> loans = client.getLoansList();
-        StringBuilder loansBalance = new StringBuilder();
+        if(loans.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "You don't have any loans");
+        }
 
         double total = 0;
-        
+        ArrayList<ClientLoan> clientLoans = new ArrayList<>();
         for (Loan loan : loans) {
             total += loan.getLeftToPay();
-            loansBalance.append(loan.getLoanID())
-                        .append(": ")
-                        .append(loan.getLeftToPay())
-                        .append("\n");
+            clientLoans.add(new ClientLoan(loan.getLoanAccount().getAccountNumber(), loan.getLoanID(), DateAdjuster.getDate(loan.getDateOfLoan()), loan.getLoanDuration(), loan.getLeftToPay()));
         }
-        loansBalance.append("Remaining total amount of loans: " + total);
-        
-        return loansBalance.toString();
+        model.addAttribute("totalRemain", "Remaining amount to repay all loans: " + total + "zł");
+        model.addAttribute("loans", clientLoans);
+        return "clientTemplates/loanBalance";
     }
 
 }

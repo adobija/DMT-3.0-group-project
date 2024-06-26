@@ -1,23 +1,29 @@
 package com.dmt.bankingapp.controller;
 
 import com.dmt.bankingapp.entity.*;
+import com.dmt.bankingapp.record.loans.AllLoansRecord;
+import com.dmt.bankingapp.record.loans.LoanRecord;
 import com.dmt.bankingapp.repository.*;
 import com.dmt.bankingapp.service.AccountService;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@RestController
+@Controller
 @RequestMapping(path = "/loan")
 public class LoanController {
 
@@ -45,9 +51,10 @@ public class LoanController {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @PostMapping("/add")
-    public @ResponseBody String addNewLoan(@RequestParam double principalAmount,
-                                           @RequestParam int loanDuration,
-                                           HttpServletRequest request) {
+    public String addNewLoan(@RequestParam double principalAmount,
+            @RequestParam int loanDuration,
+            HttpServletRequest request,
+            Model model) {
         String currentName = detailsOfLoggedClient.getNameFromClient(request);
         Client client = clientRepository.findByClientName(currentName);
         Account checkingAccount = client.getCheckingAccount();
@@ -75,7 +82,8 @@ public class LoanController {
         // Fetch live interest rate
         double interestRate = commissionRepository.findByCommissionOf("LOAN_INTEREST").getCommissionRateInPercent();
 
-        Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration, bankAccount);
+        Loan loan = new Loan(loanAccount, checkingAccount, principalAmount, interestRate, commisionRate, loanDuration,
+                bankAccount);
 
         // Calculating commision and amount of intrests
         double intrestForBank = loan.intrestAmount(principalAmount, interestRate, loanDuration);
@@ -107,50 +115,40 @@ public class LoanController {
         loanAccount.setLoan(loan);
         accountRepository.save(loanAccount);
 
-        return "Loan and loan account created successfully";
+        String output = "Loan and loan account created successfully";
+        model.addAttribute("response", output);
+        return "indexTemplates/hello";
     }
 
     @GetMapping("/all")
-    public @ResponseBody String getAllLoans(HttpServletRequest request) {
+    public String getAllLoans(HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
-        if(!requester.isAdmin()){
+        if (!requester.isAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
 
         List<Loan> allLoans = loanRepository.findAll();
-        StringBuilder output = new StringBuilder();
+
+
+        ArrayList<AllLoansRecord> allLoansRecords = new ArrayList<>();
 
         for (Loan loan : allLoans) {
             LocalDateTime dateOfLoan = loan.getDateOfLoan();
             String formattedDate = dateOfLoan.format(formatter);
 
-            output.append(loan.getLoanID())
-                        .append(": ")
-                        .append(formattedDate)
-                        .append("  account: ")
-                        .append(loan.getLoanAccount().getAccountNumber())
-                        .append("  total: ")
-                        .append(loan.getTotalLoanAmount())
-                        .append("  left: ")
-                        .append(loan.getLeftToPay())
-                        .append("  client: ")
-                        .append(loan.getClient().getClientID())
-                        .append("\n");
+            allLoansRecords.add(new AllLoansRecord(loan.getLoanID(), formattedDate, loan.getLoanAccount().getAccountNumber(), loan.getTotalLoanAmount(), loan.getLeftToPay(), loan.getClient().getClientID()));
         }
 
-        // Remove the last newline in the output
-        if (output.length() > 0) {
-            output.setLength(output.length() - 1);
-        }
-        return output.toString();
+        model.addAttribute("all", allLoansRecords);
+        return "loanTemplates/allLoans";
     }
 
     @GetMapping("/byLoanId")
-    public @ResponseBody String getLoanById(@RequestParam int loanID, HttpServletRequest request) {
+    public String getLoanById(@RequestParam int loanID, HttpServletRequest request, Model model) {
         String requesterName = detailsOfLoggedClient.getNameFromClient(request);
         Client requester = clientRepository.findByClientName(requesterName);
-        if(!requester.isAdmin()){
+        if (!requester.isAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
         Loan loan = loanRepository.findByLoanID(loanID);
@@ -158,31 +156,11 @@ public class LoanController {
             throw new NoSuchElementException("Loan with this ID does not exist!");
         }
 
-        StringBuilder output = new StringBuilder();
         LocalDateTime dateOfLoan = loan.getDateOfLoan();
         String formattedDate = dateOfLoan.format(formatter);
+        LoanRecord loanRecord = new LoanRecord(loan.getLoanID(), formattedDate, loan.getLoanAccount().getAccountNumber(), loan.getTotalLoanAmount(), loan.getLeftToPay(), loan.getClient().getClientID(), loan.getLoanDuration(), loan.getInterestRate(), loan.getCommisionRate(), loan.getIsActive());
 
-        output.append("loan ID: ")
-                .append(loan.getLoanID())
-                .append("\ndate: ")
-                .append(formattedDate)
-                .append("\naccount: ")
-                .append(loan.getLoanAccount().getAccountNumber())
-                .append("\ntotal: ")
-                .append(loan.getTotalLoanAmount())
-                .append("\nleft: ")
-                .append(loan.getLeftToPay())
-                .append("\nclient: ")
-                .append(loan.getClient().getClientID())
-                .append("\nduration: ")
-                .append(loan.getLoanDuration())
-                .append("\ninterest: ")
-                .append(loan.getInterestRate())
-                .append("\ncommision: ")
-                .append(loan.getCommisionRate())
-                .append("\nactive: ")
-                .append(loan.getIsActive());
-
-        return output.toString();
+        model.addAttribute("loanbyid", loanRecord);
+        return "loanTemplates/loanbyid";
     }
 }

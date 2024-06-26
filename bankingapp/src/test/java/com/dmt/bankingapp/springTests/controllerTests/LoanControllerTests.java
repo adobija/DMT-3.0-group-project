@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -17,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.dmt.bankingapp.controller.LoanController;
@@ -72,6 +72,7 @@ public class LoanControllerTests {
         // Arrange
         double principalAmount = 10000.0;
         int loanDuration = 12;
+        Model model = mock(Model.class);
 
         when(detailsOfLoggedClient.getNameFromClient(request)).thenReturn("ClientName");
         when(clientRepository.findByClientName("ClientName")).thenReturn(client);
@@ -87,12 +88,13 @@ public class LoanControllerTests {
         when(commissionRepository.findByCommissionOf("LOAN_INTEREST")).thenReturn(loanInterest);
 
         // Act
-        String response = loanController.addNewLoan(principalAmount, loanDuration, request);
+        String response = loanController.addNewLoan(principalAmount, loanDuration, request, model);
 
         // Assert
-        assertEquals("Loan and loan account created successfully", response);
+        assertEquals("indexTemplates/hello", response);
         verify(loanRepository, times(1)).save(any(Loan.class));
         verify(transactionRepository, times(3)).save(any(Transaction.class));
+        verify(model).addAttribute("response", "Loan and loan account created successfully");
     }
 
     @Test
@@ -106,7 +108,7 @@ public class LoanControllerTests {
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            loanController.getAllLoans(request);
+            loanController.getAllLoans(request, mock(Model.class));
         });
 
         assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
@@ -124,7 +126,7 @@ public class LoanControllerTests {
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            loanController.getLoanById(loanId, request);
+            loanController.getLoanById(loanId, request, mock(Model.class));
         });
 
         assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
@@ -143,7 +145,7 @@ public class LoanControllerTests {
 
         // Act and Assert
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-            loanController.getLoanById(loanId, request);
+            loanController.getLoanById(loanId, request, mock(Model.class));
         });
 
         assertEquals("Loan with this ID does not exist!", exception.getMessage());
@@ -155,6 +157,7 @@ public class LoanControllerTests {
         String requesterName = "Requester";
         Client requester = new Client(requesterName, true, "password"); // Admin requester
         requester.setClientID(1);
+        Model model = mock(Model.class);
 
         Client client = new Client("ClientName", false, "password");
         client.setClientID(2);
@@ -172,10 +175,11 @@ public class LoanControllerTests {
         when(loanRepository.findAll()).thenReturn(List.of(loan));
 
         // Act
-        String response = loanController.getAllLoans(request);
+        String response = loanController.getAllLoans(request, model);
 
         // Assert
-        assertEquals("1: " + loan.getDateOfLoan().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) +
-                    "  account: LOAN123  total: 10000.0  left: 5000.0  client: 2", response);
+        assertEquals("loanTemplates/allLoans", response);
+
+        verify(model).addAttribute(eq("all"), any(List.class));
     }
 }

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+    lang="eu">
+<head>
+    <title>Login Panel</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+        }
+        .container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .login-panel {
+            border: 1px solid #ddd;
+            padding: 40px 30px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            width: 400px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .input-group input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .input-group .toggle-button {
+            position: absolute;
+            right: 10px;
+            top: 32px;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            background-color: #eee;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .error-message {
+            color: red;
+            margin: 10px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+<!--            border: 1px red dashed;-->
+            padding: 5px;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .button-group button {
+            padding: 10px 20px;
+            border: 1px solid #007bff;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button-group button:hover {
+            background-color: #0056b3;
+        }
+        .button-group button:focus {
+            outline: none;
+        }
+        .register-link {
+            margin-top: 20px;
+        }
+        .register-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+        #logout {
+        color: green;
+        font-size: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LOGIN PANEL<br><img src="/logo.png" style="max-width: 100px; height: auto;"><br>Academy DMT 3.0 Banking App</h1>
+        <div class="login-panel">
+            <form action="#" th:action="@{/authenticateClient}" method="POST">
+                <div class="error-message" id="error-message">
+                    <div th:if="${param.error}" id="badRequest">
+                        Invalid username and/or password.
+                    </div>
+                    <div th:if="${param.logout}" id="logout">
+                        You have been logged out.
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label> User Name: <input type="text" id="clientName" name="username"/> </label>
+                </div>
+                <div class="input-group">
+                    <label> Password: <input type="password" id="clientPassword" name="password"/> </label>
+                </div>
+                <div class="button-group">
+                    <button type="submit">LOGIN</button>
+                </div>
+            </form>
+            <div class="register-link">
+                <a href="/signup">REGISTER</a><br><br>
+                <h4><a href="/about">About us</a></h4>
+            </div>
+</body>
+</html>

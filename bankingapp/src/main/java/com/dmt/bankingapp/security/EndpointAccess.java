@@ -15,10 +15,16 @@ public class EndpointAccess {
         // Config which endpoints will be accessed by lambda expression
         httpSecurity.authorizeHttpRequests(configure -> configure
                 // mask:
+                .requestMatchers("/","/welcome").permitAll()
+                .requestMatchers("/hello").authenticated()
+                .requestMatchers("/homepage").authenticated()
+                .requestMatchers("/about").permitAll()
                 // .requestMatchers(HttpMethod.<REST API METHOD>,<URI as String>).<attribute>
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
+                .requestMatchers("/logo.png").permitAll()
                 //security for RegisterController
-                .requestMatchers(HttpMethod.POST, "/register/newClient").permitAll()
+                .requestMatchers(HttpMethod.POST, "/register/newClient").anonymous()
+                .requestMatchers("/signup").anonymous()
                 //security for ClientController
                 .requestMatchers(HttpMethod.POST, "/client/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/client/**").authenticated()
@@ -42,8 +48,16 @@ public class EndpointAccess {
                 .requestMatchers(HttpMethod.GET, "/installment/**").authenticated()
                 //security for error
                 .requestMatchers("/error/**").permitAll()
-        );
+                .anyRequest().authenticated()
+        )
+                //default login form
+                .formLogin(form ->
+                        form
+                                .loginPage("/login")
+                                .loginProcessingUrl("/authenticateClient")
+                                .permitAll()
 
+                );
         // Set http login as Basic Auth
         httpSecurity.httpBasic(Customizer.withDefaults());
 

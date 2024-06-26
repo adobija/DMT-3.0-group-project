@@ -1,5 +1,6 @@
 package com.dmt.bankingapp.entity;
 
+import com.dmt.bankingapp.utils.DecimalPlacesAdjuster;
 import jakarta.persistence.*;
 
 @Entity
@@ -91,7 +92,7 @@ public class Account {
     }
 
     public double getAccountBalance() {
-        return accountBalance;
+        return DecimalPlacesAdjuster.adjustToTwoDecimalPlaces(accountBalance);
     }
 
     public void setAccountBalance(double newAmountBalance, boolean isExpense) {

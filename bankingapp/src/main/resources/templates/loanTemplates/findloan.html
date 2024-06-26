@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Banking App</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for specific styling */
+        .menu-item {
+            margin-bottom: 10px;
+        }
+        .menu-section {
+            margin-bottom: 20px;
+        }
+        .menu-section p {
+            font-weight: bold;
+        }
+        .controller {
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        .controller h3 {
+            background-color: #f0f0f0;
+            padding: 8px;
+            margin: 0;
+            cursor: pointer;
+        }
+        .controller ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: none;
+        }
+        .controller ul.show {
+            display: block;
+        }
+        .controller li {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            background-color: #ffffff;
+        }
+        .controller li:last-child {
+            border-bottom: none;
+        }
+        body {
+            background-size: cover;
+            background-repeat: repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-color: #BAEAC8;
+        }
+    </style>
+</head>
+<body>
+<header th:fragment="header" class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            <!-- Left Block: Main Logo -->
+            <div class="col-md-3 d-flex align-items-center">
+                <a th:href="@{/hello}">
+                    <img src="/logo.png" class="img-fluid" style="max-width: 100px; height: auto;">
+                </a>
+            </div>
+            <!-- Middle Block: Title and Greeting -->
+            <div class="col-md-6 text-center d-flex flex-column justify-content-center">
+                <h1 class="mb-0">Banking App</h1>
+                <h6 class="mb-0">Academy DMT 3.0</h6><br>
+                <h2 th:inline="text" class="h4">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h2>
+            </div>
+            <!-- Right Block: Auth Links and About -->
+            <div class="col-md-3 text-right d-flex flex-column justify-content-center">
+                <div th:if="${!#authorization.expression('isAuthenticated()')}" class="mb-2">
+                    <p>Click <a class="btn btn-primary btn-sm" th:href="@{/signup}">here</a> to sign up.</p>
+                    <p>Click <a class="btn btn-secondary btn-sm" th:href="@{/login}">here</a> to sign in.</p>
+                </div>
+                <div th:if="${#authorization.expression('isAuthenticated()')}" id="logoutForm" class="mb-2">
+                    <form th:action="@{/logout}" method="post">
+                        <input type="submit" class="btn btn-danger btn-sm" value="logout"/>
+                    </form>
+                </div>
+                <a class="btn btn-info btn-sm" th:href="@{/about}">About us</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Left Menu -->
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="menu-section">
+                <div class="controller">
+                    <h3>Your profile and account</h3>
+                    <ul class="menu">
+                        <li><a href="/changeName">Change your username</a></li>
+                        <li><a href="/changePassword">Change your password</a></li>
+                        <li><a href="/changeAdminPermission">[A] Give or revoke admin permissions</a></li>
+                        <li><a href="/client/all">[A] List all clients</a></li>
+                        <li><a href="/byClientIdForm">[A] Find client by ID</a></li>
+                        <li><a href="/client/checkingBalance">Check your balance</a></li>
+                        <li><a href="/client/depositsBalance">Check your deposits</a></li>
+                        <li><a href="/client/loansBalance">Check your loans</a></li>
+                    </ul>
+                </div>
+
+                <div class="controller">
+                    <h3>Commission Controller</h3>
+                    <ul class="menu">
+                        <li><a href="/setForLoanCommission">[A] Change loan commission</a></li>
+                        <li><a href="/setForDeposit">[A] Change deposit rate</a></li>
+                        <li><a href="/setForLoanInterest">[A] Change loan interest</a></li>
+                        <li><a href="/commission/historyLoanCommission">[A] History of loan commission</a></li>
+                        <li><a href="/commission/historyLoanInterest">[A] History of loan interest</a></li>
+                        <li><a href="/commission/historyDepositCommission">[A] History of deposit commission</a></li>
+                    </ul>
+                </div>
+
+                <div class="controller">
+                    <h3>Deposits</h3>
+                    <ul class="menu">
+                        <li><a href="/addDeposit">Create new deposit</a></li>
+                        <li><a href="/withdrawDeposit">Withdraw deposit</a></li>
+                        <li><a href="/deposit/all">[A] List all deposits</a></li>
+                    </ul>
+                </div>
+
+                <div class="controller">
+                    <h3>Loans</h3>
+                    <ul class="menu">
+                        <li><a href="/takeLoan">Take loan</a></li>
+                        <li><a href="/loan/all">[A] List all loans</a></li>
+                        <li><a href="/loan/find">[A] Find loan by ID</a></li>
+                    </ul>
+                </div>
+
+                <div class="controller">
+                    <h3>Transactions</h3>
+                    <ul class="menu">
+                        <li><a href="/makeTransaction">Make transaction</a></li>
+                        <li><a href="/transaction/outgoingTransactions">Check outgoing transactions</a></li>
+                        <li><a href="/transaction/incomingTransactions">Check incoming transactions</a></li>
+                        <li><a href="/transaction/getAll">[A] List all transactions</a></li>
+                        <li><a href="/transaction/accNumber">[A] Find transactions by account number</a></li>
+                    </ul>
+                </div>
+
+
+                <div class="controller">
+                    <h3>Installments</h3>
+                    <ul class="menu">
+                        <li><a href="/installment/myAll">Check my installments</a></li>
+                        <li><a href="/nextInstallment">Check next installment</a></li>
+                        <li><a href="/given">[A]Get given installment</a></li>
+                        <li><a href="/loan">[A]Get loan installments</a></li>
+                        <li><a href="/all">[A]Get all installments</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Text Area for HTML Code -->
+        <div class="col-md-9">
+            <!-- ADD YOUR HTML CODE BELOW IN <DIV> MARKERS -->
+            <form action="#" th:action="@{/loan/byLoanId}" method="get">
+                <label for="loanId">Loan ID:</label>
+                <input type="text" id="loanID" name="loanID" required>
+                <button type="submit">Find Loan</button>
+            </form>
+            <p>OR</p>
+            <button type="button" onclick="window.location.href='/loan/all'">Display All Loans</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // JavaScript to toggle visibility of lists
+    document.querySelectorAll('.controller h3').forEach(item => {
+        item.addEventListener('click', function() {
+            this.nextElementSibling.classList.toggle('show');
+        });
+    });
+</script>
+
+</body>
+</html>
