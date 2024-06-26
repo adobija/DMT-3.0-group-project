@@ -86,7 +86,7 @@ public class InstallmentControllerTests {
         String viewName = installmentController.getMyInstallments(request, mockModel);
 
         // Assert
-        verify(mockModel, times(1)).addAttribute(eq("myAll"), anyString());
+        verify(mockModel, times(1)).addAttribute(eq("myAll"), anyList());
         assertEquals("installmentTemplates/myAll", viewName);
     }
 
@@ -102,7 +102,7 @@ public class InstallmentControllerTests {
         String viewName = installmentController.getNextInstallment(1, request, mockModel);
 
         // Assert
-        verify(mockModel, times(1)).addAttribute(eq("next"), anyString());
+        verify(mockModel, times(1)).addAttribute(eq("next"), anyList());
         assertEquals("installmentTemplates/next", viewName);
     }
 
@@ -150,7 +150,7 @@ public class InstallmentControllerTests {
         String viewName = installmentController.getGivenInstallment(1, request, mockModel);
 
         // Assert
-        verify(mockModel, times(1)).addAttribute(eq("given"), anyString());
+        verify(mockModel, times(1)).addAttribute(eq("given"), any());
         assertEquals("installmentTemplates/given", viewName);
     }
 
@@ -181,7 +181,7 @@ public class InstallmentControllerTests {
         String viewName = installmentController.getLoanInstallments(1, request, mockModel);
 
         // Assert
-        verify(mockModel, times(1)).addAttribute(eq("loan"), anyString());
+        verify(mockModel, times(1)).addAttribute(eq("loan"), anyList());
         assertEquals("installmentTemplates/loan", viewName);
     }
 
@@ -213,7 +213,7 @@ public class InstallmentControllerTests {
         String viewName = installmentController.getAllInstallments(request, mockModel);
 
         // Assert
-        verify(mockModel, times(1)).addAttribute(eq("all"), anyString());
+        verify(mockModel, times(1)).addAttribute(eq("all"), anyList());
         assertEquals("installmentTemplates/all", viewName);
     }
 
