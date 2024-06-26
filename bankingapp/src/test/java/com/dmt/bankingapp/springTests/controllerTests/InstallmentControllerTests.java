@@ -2,6 +2,9 @@ package com.dmt.bankingapp.springTests.controllerTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
@@ -18,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.dmt.bankingapp.controller.InstallmentController;
+import com.dmt.bankingapp.entity.Account;
 import com.dmt.bankingapp.entity.Client;
 import com.dmt.bankingapp.entity.Installment;
 import com.dmt.bankingapp.entity.Loan;
@@ -48,6 +52,7 @@ public class InstallmentControllerTests {
     private Client nonAdminClient;
     private Loan activeLoan;
     private Installment unpaidInstallment;
+    private Account loanAccount;
 
     @BeforeEach
     void setUp() {
@@ -58,10 +63,14 @@ public class InstallmentControllerTests {
         nonAdminClient = new Client("User", false, "password");
         nonAdminClient.setClientID(2);
 
+        loanAccount = new Account();
+        loanAccount.setAccountNumber("123456");
+
         activeLoan = new Loan();
         activeLoan.setLoanID(1);
         activeLoan.setClient(nonAdminClient);
         activeLoan.setIsActive(true);
+        activeLoan.setLoanAccount(loanAccount);
 
         unpaidInstallment = new Installment();
         unpaidInstallment.setInstallmentID(1);
