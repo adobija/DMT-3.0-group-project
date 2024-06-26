@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Banking App</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         /* Custom CSS for specific styling */
         .menu-item {
@@ -16,21 +15,6 @@
         .menu-section p {
             font-weight: bold;
         }
-    </style>
-    <style>
-        .table {
-            border: 2px solid black;
-            border-collapse: collapse;
-        }
-        .table th, .table td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: center;
-        }
-        .table thead th {
-    vertical-align: bottom;
-    border-bottom: 2px solid #000000;
-}
     </style>
     <style>
         .controller {
@@ -55,7 +39,7 @@
         .controller li {
             padding: 8px;
             border-bottom: 1px solid #eee;
-           background-color: #ffffff;
+            background-color: #ffffff;
         }
         .controller li:last-child {
             border-bottom: none;
@@ -183,42 +167,13 @@
         <!-- Text Area for HTML Code -->
         <div class="col-md-9">
             <!--            ADD YOUR HTML CODE BELOW IN <DIV> MARKERS-->
-            <div class="container mt-4">
-                <h2>List of all deposits</h2>
-                <table class="table table-striped">
-                    <thead style="background-color: #DEE2E6;">
-                    <tr>
-                        <th>ID</th>
-                        <th>Is Active</th>
-                        <th>Client ID</th>
-                        <th>Interest Rate</th>
-                        <th>Duration [Months]</th>
-                        <th>Total Deposit Amount [PLN]</th>
-                        <th>Date of deposit</th>
-                        <th>Return of Investment</th>
-                        <th>Type</th>
-                        <th>Date of Withdrawn</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="depo : ${list}">
-                        <td th:text="${depo.getDepositID()}"></td>
-                        <td th:text="${depo.getIsActive() ? 'Yes' : 'No'}"></td>
-                        <td th:text="${depo.getClient().getClientID()}"></td>
-                        <td th:text="${depo.getInterestRate()}"></td>
-                        <td th:text="${depo.getDepositDuration()}"></td>
-                        <td th:text="${depo.getTotalDepositAmount()}"></td>
-                        <td th:text="${depo.getFormatedDate()}"></td>
-                        <td th:text="${depo.getReturnOfInvestment()}"></td>
-                        <td th:text="${depo.getDepositType()}"></td>
-                        <td th:text="${depo.getFormatedDateOfWithdrawn()}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-
-
+            <h1>Find installment by Loan ID</h1>
+            <form action="#" th:action="@{/installment/loan}" method="get">
+                <label for="loanId">ID of Loan:</label>
+                <input type="number" id="loanId" min="0" name="loanId" required>
+                <br><br>
+                <button type="submit">Find</button>
+            </form>
         </div>
     </div>
 </div>
@@ -237,3 +192,4 @@
 
 </body>
 </html>
+

@@ -2,12 +2,10 @@ package com.dmt.bankingapp.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.dmt.bankingapp.entity.Deposit;
 import com.dmt.bankingapp.record.transactions.TransactionRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -89,7 +87,12 @@ public class TransactionController {
             String formattedTimestamp = timestamp.format(formatter);
             transactionRecords.add(new TransactionRecord(transaction.getTransactionID(), formattedTimestamp, transaction.getAmount(), checking.getAccountNumber(), transaction.getReceiver().getAccountNumber()));
         }
-
+        Collections.sort(transactionRecords, new Comparator<TransactionRecord>() {
+            @Override
+            public int compare(TransactionRecord tr1, TransactionRecord tr2) {
+                return Integer.compare(tr2.transactionID(), tr1.transactionID());
+            }
+        });
         model.addAttribute("outgoing", transactionRecords);
         return "transactionTemplates/outgoing";
     }
@@ -109,6 +112,12 @@ public class TransactionController {
             transactionRecords.add(new TransactionRecord(transaction.getTransactionID(), formattedTimestamp, transaction.getAmount(), transaction.getGiver().getAccountNumber(), checking.getAccountNumber()));
 
         }
+        Collections.sort(transactionRecords, new Comparator<TransactionRecord>() {
+            @Override
+            public int compare(TransactionRecord tr1, TransactionRecord tr2) {
+                return Integer.compare(tr2.transactionID(), tr1.transactionID());
+            }
+        });
         model.addAttribute("incoming",transactionRecords);
         return "transactionTemplates/incoming";
     }
@@ -128,6 +137,13 @@ public class TransactionController {
             String formattedTimestamp = timestamp.format(formatter);
             transactionRecords.add(new TransactionRecord(transaction.getTransactionID(), formattedTimestamp, transaction.getAmount(), transaction.getGiver().getAccountNumber(), transaction.getReceiver().getAccountNumber()));
         }
+
+        Collections.sort(transactionRecords, new Comparator<TransactionRecord>() {
+            @Override
+            public int compare(TransactionRecord t1, TransactionRecord t2) {
+                return Integer.compare(t2.transactionID(), t1.transactionID());
+            }
+        });
 
         // Remove the last newline in the output
         model.addAttribute("getAll", transactionRecords);
@@ -164,6 +180,12 @@ public class TransactionController {
             transactionRecords.add(new TransactionRecord(transaction.getTransactionID(), formattedTimestamp, transaction.getAmount(), transaction.getGiver().getAccountNumber(), transaction.getReceiver().getAccountNumber()));
         }
 
+        Collections.sort(transactionRecords, new Comparator<TransactionRecord>() {
+            @Override
+            public int compare(TransactionRecord t1, TransactionRecord t2) {
+                return Integer.compare(t2.transactionID(), t1.transactionID());
+            }
+        });
         model.addAttribute("accNumber", transactionRecords);
         return "transactionTemplates/accNumber";
     }
