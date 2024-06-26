@@ -95,8 +95,8 @@ class DepositControllerTests {
         checkingAccount.setAccountBalance(2000.0, false);
 
         when(detailsOfLoggedClient.getLoggedClientInstance(request)).thenReturn(client);
-        when(accountRepository.findByAccountNumber("CHK123")).thenReturn(checkingAccount);
         when(accountRepository.findByAccountNumber("BANK_DEPOSIT")).thenReturn(bankAccount);
+        when(accountRepository.findByClient(client)).thenReturn(List.of(checkingAccount));
 
         // Act
         Deposit deposit = new Deposit();
@@ -119,6 +119,7 @@ class DepositControllerTests {
         verify(depositRepository, times(1)).save(any(Deposit.class));
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
+
 
     @Test
     void testWithdrawDepositLocked() {
