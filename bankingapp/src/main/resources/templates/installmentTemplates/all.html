@@ -189,6 +189,7 @@
                         <th>Client ID</th>
                         <th>Is Paid</th>
                         <th>Amount [PLN]</th>
+                        <th>Loan account number</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -198,6 +199,7 @@
                         <td th:text="${installment.clientID()}"></td>
                         <td th:text="${installment.isPaid() ? 'Yes' : 'No'}"></td>
                         <td th:text="${installment.installmentAmount()}"></td>
+                        <td th:text="${installment.loanAccNumber()}"></td>
                     </tr>
                     </tbody>
                 </table>

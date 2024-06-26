@@ -169,15 +169,17 @@
                         <th>Installemnt Amount [PLN]</th>
                         <th>Already Paid [PLN]</th>
                         <th>To pay [PLN]</th>
+                        <th>Loan account number</th>
                         <th>Due date</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="installment : ${next}">
-                        <td th:text="${installment.loanID()}"></td>
+                        <td th:text="${installment.installmentID()}"></td>
                         <td th:text="${installment.installmentAmount()}"></td>
                         <td th:text="${installment.paidAmount()}"></td>
                         <td th:text="${installment.toPay()}"></td>
+                        <td th:text="${installment.loanAccNumber()}"></td>
                         <td th:text="${installment.dueDate()}"></td>
                     </tr>
                     </tbody>

@@ -51,7 +51,7 @@ public class InstallmentController {
         for (Loan loan : loans) {
             List<Installment> installments = loan.getInstallments();
             for (Installment installment: installments) {
-                installmentsList.add(new MyInstallment(loan.getLoanID(), installment.getInstallmentID(), installment.getInstallmentAmount(), installment.getPaidAmount(), installment.getIsPaid(), DateAdjuster.getDate(installment.getDueDate())));
+                installmentsList.add(new MyInstallment(loan.getLoanAccount().getAccountNumber(), loan.getLoanID(), installment.getInstallmentID(), installment.getInstallmentAmount(), installment.getPaidAmount(), installment.getIsPaid(), DateAdjuster.getDate(installment.getDueDate())));
             }
         }
         model.addAttribute("myAll", installmentsList);
@@ -81,7 +81,7 @@ public class InstallmentController {
         ArrayList<NextInstallment> installmentsList = new ArrayList<>();
         for (Installment installment : installments) {
             if (!installment.getIsPaid()) {
-                installmentsList.add(new NextInstallment(installment.getInstallmentID(), installment.getInstallmentAmount(), installment.getPaidAmount(), (installment.getInstallmentAmount() - installment.getPaidAmount()), DateAdjuster.getDate(installment.getDueDate())));
+                installmentsList.add(new NextInstallment(installment.getLoan().getLoanAccount().getAccountNumber(), installment.getInstallmentID(), installment.getInstallmentAmount(), installment.getPaidAmount(), (installment.getInstallmentAmount() - installment.getPaidAmount()), DateAdjuster.getDate(installment.getDueDate())));
                 break;
             }
         }
@@ -102,7 +102,7 @@ public class InstallmentController {
         if (installment == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Installment has not been found");
         }
-        GivenInstallment givenInstallment = new GivenInstallment(installment.getInstallmentID(), installment.getLoan().getLoanID(), installment.getLoan().getClient().getClientID(), installment.getIsPaid(), installment.getInstallmentAmount(), installment.getPaidAmount(), (installment.getInstallmentAmount() - installment.getPaidAmount()), DateAdjuster.getDate(installment.getDueDate()));
+        GivenInstallment givenInstallment = new GivenInstallment(installment.getLoan().getLoanAccount().getAccountNumber(), installment.getInstallmentID(), installment.getLoan().getLoanID(), installment.getLoan().getClient().getClientID(), installment.getIsPaid(), installment.getInstallmentAmount(), installment.getPaidAmount(), (installment.getInstallmentAmount() - installment.getPaidAmount()), DateAdjuster.getDate(installment.getDueDate()));
         model.addAttribute("given", givenInstallment);
         return "installmentTemplates/given";
     }
@@ -124,7 +124,7 @@ public class InstallmentController {
         ArrayList<LoanInstallment> loanInstallments = new ArrayList<>();
 
         for (Installment installment : installments) {
-               loanInstallments.add(new LoanInstallment(installment.getInstallmentID(), installment.getInstallmentAmount(), installment.getIsPaid(), installment.getPaidAmount(), (installment.getInstallmentAmount() - installment.getPaidAmount()), DateAdjuster.getDate(installment.getDueDate())));
+               loanInstallments.add(new LoanInstallment( installment.getLoan().getLoanAccount().getAccountNumber(), installment.getInstallmentID(), installment.getInstallmentAmount(), installment.getIsPaid(), installment.getPaidAmount(), (installment.getInstallmentAmount() - installment.getPaidAmount()), DateAdjuster.getDate(installment.getDueDate())));
         }
         model.addAttribute("forLoan", "installments for loan ID: " + loanId);
         model.addAttribute("loan", loanInstallments);
@@ -143,7 +143,7 @@ public class InstallmentController {
 
         ArrayList<AllInstallment> allInstallmentsList = new ArrayList<>();
         for (Installment installment: allInstallments) {
-           allInstallmentsList.add(new AllInstallment(installment.getInstallmentID(), installment.getLoan().getLoanID(), installment.getLoan().getClient().getClientID(), installment.getIsPaid(), installment.getInstallmentAmount()));
+           allInstallmentsList.add(new AllInstallment(installment.getLoan().getLoanAccount().getAccountNumber(), installment.getInstallmentID(), installment.getLoan().getLoanID(), installment.getLoan().getClient().getClientID(), installment.getIsPaid(), installment.getInstallmentAmount()));
         }
         model.addAttribute("all", allInstallmentsList);
         return "installmentTemplates/all";

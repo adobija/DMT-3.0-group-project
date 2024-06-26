@@ -1,6 +1,6 @@
 package com.dmt.bankingapp.record.installments;
 
-public record MyInstallment(int loanID, int installmentID, double installmentAmount, double paidAmount, boolean isPaid, String dueDate) {
+public record MyInstallment(String loanAccNumber, int loanID, int installmentID, double installmentAmount, double paidAmount, boolean isPaid, String dueDate) {
     @Override
     public int loanID() {
         return loanID;

@@ -1,6 +1,11 @@
 package com.dmt.bankingapp.record.installments;
 
-public record NextInstallment(int installmentID, double installmentAmount, double paidAmount, double toPay, String dueDate) {
+public record NextInstallment(String loanAccNumber, int installmentID, double installmentAmount, double paidAmount, double toPay, String dueDate) {
+    @Override
+    public String loanAccNumber() {
+        return loanAccNumber;
+    }
+
     @Override
     public int installmentID() {
         return installmentID;

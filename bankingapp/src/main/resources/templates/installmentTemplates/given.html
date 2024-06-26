@@ -195,6 +195,7 @@
                         <th>Installment amount</th>
                         <th>Already paid [PLN]</th>
                         <th>To pay [PLN]</th>
+                        <th>Loan account number</th>
                         <th>due date</th>
                     </tr>
                     </thead>
@@ -207,6 +208,7 @@
                         <td th:text="${installment.installmentAmount()}"></td>
                         <td th:text="${installment.paidAmount()}"></td>
                         <td th:text="${installment.toPay()}"></td>
+                        <td th:text="${installment.loanAccNumber()}"></td>
                         <td th:text="${installment.dueDate()}"></td>
                     </tr>
                     </tbody>

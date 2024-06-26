@@ -189,6 +189,7 @@
                         <th>Is Paid</th>
                         <th>Already paid [PLN]</th>
                         <th>To pay [PLN]</th>
+                        <th>Loan account number</th>
                         <th>due date</th>
                     </tr>
                     </thead>
@@ -199,6 +200,7 @@
                         <td th:text="${installment.isPaid() ? 'Yes' : 'No'}"></td>
                         <td th:text="${installment.paid()}"></td>
                         <td th:text="${installment.toPay()}"></td>
+                        <td th:text="${installment.loanAccNumber()}"></td>
                         <td th:text="${installment.dueDate()}"></td>
                     </tr>
                     </tbody>
