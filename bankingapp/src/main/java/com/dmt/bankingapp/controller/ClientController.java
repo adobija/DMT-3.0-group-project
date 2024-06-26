@@ -1,12 +1,11 @@
 package com.dmt.bankingapp.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import com.dmt.bankingapp.record.deposit.DepositRecord;
 import com.dmt.bankingapp.record.loans.ClientLoan;
+import com.dmt.bankingapp.record.transactions.TransactionRecord;
 import com.dmt.bankingapp.utils.DateAdjuster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -145,6 +144,12 @@ public class ClientController {
             depositRecords.add(new DepositRecord(deposit.getDepositID(), DateAdjuster.getDate(deposit.getDateOfDeposit()), deposit.getDepositDuration(), deposit.getTotalDepositAmount(), deposit.getDepositType(), withdrawInfo));
         }
 
+        Collections.sort(depositRecords, new Comparator<DepositRecord>() {
+            @Override
+            public int compare(DepositRecord deposit1, DepositRecord deposit2) {
+                return Integer.compare(deposit2.depositID(), deposit1.depositID());
+            }
+        });
         model.addAttribute("deposits", depositRecords);
         return "clientTemplates/depositBalance";
     }
