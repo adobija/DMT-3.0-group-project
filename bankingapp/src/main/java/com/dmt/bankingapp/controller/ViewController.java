@@ -8,7 +8,6 @@ import com.dmt.bankingapp.repository.LoanRepository;
 import com.dmt.bankingapp.service.implementation.DetailsOfLoggedClientImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

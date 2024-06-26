@@ -1,7 +1,5 @@
 package com.dmt.bankingapp.record.loans;
 
-import java.time.LocalDateTime;
-
 public record ClientLoan(String loanAccountNumber, int LoanID, String creationTime, int duration, double leftToPay) {
     @Override
     public String loanAccountNumber() {

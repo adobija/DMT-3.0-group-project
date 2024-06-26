@@ -2,8 +2,6 @@ package com.dmt.bankingapp.record.deposit;
 
 import com.dmt.bankingapp.entity.Deposit;
 
-import java.time.LocalDateTime;
-
 public record DepositRecord(int depositID, String creationTime, int duration, double depositAmount, Deposit.DepositType depositType, String info) {
 
     @Override

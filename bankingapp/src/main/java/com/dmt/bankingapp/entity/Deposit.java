@@ -1,7 +1,6 @@
 package com.dmt.bankingapp.entity;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import com.dmt.bankingapp.utils.DateAdjuster;
 import jakarta.persistence.*;
