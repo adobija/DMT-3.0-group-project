@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
@@ -82,13 +83,18 @@ public class TransactionControllerTests {
         
         // Create a sample transaction to be returned by the save method
         Transaction sampleTransaction = new Transaction(checkingAccount, receivingAccount, 100.0);
-        when(transactionRepository.save(any(Transaction.class))).thenReturn(sampleTransaction);
+        when(transactionRepository.save(any(Transaction.class))).thenAnswer(invocation -> {
+            Transaction transaction = invocation.getArgument(0);
+            transaction.setTransactionID(1); // Simulate saving by setting an ID
+            return transaction;
+        });
 
         // Act
         String viewName = transactionController.addNewTransaction(checkingAccount.getAccountNumber(), receivingAccount.getAccountNumber(), 100.0, request, mockModel);
 
         // Assert
-        verify(mockModel, times(1)).addAttribute(eq("add"), eq("Transaction created successfully! Amount transfered: 100.0"));
+        verify(mockModel, times(1)).addAttribute(eq("add"), eq("Transaction created successfully! Amount transferred: 100.0"));
+        verify(mockModel, times(1)).addAttribute(eq("clientAccount"), eq(checkingAccount.getAccountNumber()));
         assertEquals("transactionTemplates/add", viewName);
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
@@ -170,7 +176,7 @@ public class TransactionControllerTests {
 
         // Assert
         assertEquals("transactionTemplates/outgoing", viewName);
-        verify(model, times(1)).addAttribute(eq("outgoing"), anyString());
+        verify(model, times(1)).addAttribute(eq("outgoing"), any());
     }
 
     @Test
@@ -187,7 +193,7 @@ public class TransactionControllerTests {
 
         // Assert
         assertEquals("transactionTemplates/incoming", viewName);
-        verify(model, times(1)).addAttribute(eq("incoming"), anyString());
+        verify(model, times(1)).addAttribute(eq("incoming"), any());
     }
 
     private List<Transaction> createSampleTransactions(Account giver, Account receiver) {

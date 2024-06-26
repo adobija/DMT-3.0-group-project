@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 import com.dmt.bankingapp.service.interfaceClass.DetailsOfLoggedClient;
 
@@ -69,7 +68,7 @@ public class TransactionController {
         try {
             Transaction transaction = new Transaction(giver, receiver, amount);
             transactionRepository.save(transaction);
-            String output = "Transaction created successfully! Amount transfered: " + transaction.getAmount();
+            String output = "Transaction created successfully! Amount transferred: " + transaction.getAmount();
             model.addAttribute("add", output);
             return "transactionTemplates/add";
         } catch (IllegalStateException e) {
