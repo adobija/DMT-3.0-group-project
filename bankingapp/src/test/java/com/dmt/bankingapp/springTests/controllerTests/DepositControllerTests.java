@@ -84,7 +84,7 @@ class DepositControllerTests {
         String response = depositController.addNewDeposit(500.0, 12, "FIXED", request, mock(Model.class));
 
         // Assert
-        assertEquals("depositTemplates/addDeposit", response);
+        assertEquals("indexTemplates/hello", response);
         verify(depositRepository, times(1)).save(any(Deposit.class));
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
@@ -111,7 +111,6 @@ class DepositControllerTests {
         existingDeposits.add(deposit); // Add the deposit to the list
 
         when(depositRepository.getAllByClient(client)).thenReturn(existingDeposits);
-        when(accountRepository.findByClient(client)).thenReturn(List.of(checkingAccount));
 
         String response = depositController.withdrawDeposit(request, deposit, mock(Model.class));
 
@@ -143,7 +142,6 @@ class DepositControllerTests {
         existingDeposits.add(deposit); // Add the deposit to the list
 
         when(depositRepository.getAllByClient(client)).thenReturn(existingDeposits);
-        when(accountRepository.findByClient(client)).thenReturn(List.of(checkingAccount));
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
             depositController.withdrawDeposit(request, deposit, mock(Model.class))

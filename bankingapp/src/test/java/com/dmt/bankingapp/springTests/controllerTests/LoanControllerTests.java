@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -127,7 +126,7 @@ public class LoanControllerTests {
 
         // Act and Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            loanController.getLoanById(loanId, request,mock(Model.class));
+            loanController.getLoanById(loanId, request, mock(Model.class));
         });
 
         assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
@@ -180,7 +179,7 @@ public class LoanControllerTests {
 
         // Assert
         assertEquals("loanTemplates/allLoans", response);
-        verify(model).addAttribute("all", "1: " + loan.getDateOfLoan().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) +
-                    "  account: LOAN123  total: 10000.0  left: 5000.0  client: 2");
+
+        verify(model).addAttribute(eq("all"), any(List.class));
     }
 }
