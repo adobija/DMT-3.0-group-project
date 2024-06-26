@@ -1,6 +1,11 @@
 package com.dmt.bankingapp.record.loans;
 
-public record ClientLoan(String loanAccountNumber, int LoanID, String creationTime, int duration, double leftToPay) {
+public record ClientLoan(double totalLoanAmount, String loanAccountNumber, int LoanID, String creationTime, int duration, double leftToPay) {
+    @Override
+    public double totalLoanAmount() {
+        return totalLoanAmount;
+    }
+  
     @Override
     public String loanAccountNumber() {
         return loanAccountNumber;

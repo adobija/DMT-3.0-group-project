@@ -1,5 +1,6 @@
 package com.dmt.bankingapp.controller;
 
+import com.dmt.bankingapp.record.loans.AllLoansRecord;
 import com.dmt.bankingapp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,9 @@ import com.dmt.bankingapp.entity.Transaction;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -173,6 +177,14 @@ public class DepositController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
         }
         List<Deposit> allDeposits = depositRepository.findAll();
+
+        Collections.sort(allDeposits, new Comparator<Deposit>() {
+            @Override
+            public int compare(Deposit depo1, Deposit depo2) {
+                return Integer.compare(depo2.getDepositID(), depo1.getDepositID());
+            }
+        });
+
         model.addAttribute("list", allDeposits);
         return "depositTemplates/listAllDeposits";
     }

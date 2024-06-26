@@ -1,6 +1,7 @@
 package com.dmt.bankingapp.controller;
 
 import com.dmt.bankingapp.entity.*;
+import com.dmt.bankingapp.record.deposit.DepositRecord;
 import com.dmt.bankingapp.record.loans.AllLoansRecord;
 import com.dmt.bankingapp.record.loans.LoanRecord;
 import com.dmt.bankingapp.repository.*;
@@ -18,9 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Controller
 @RequestMapping(path = "/loan")
@@ -138,7 +137,12 @@ public class LoanController {
 
             allLoansRecords.add(new AllLoansRecord(loan.getLoanID(), formattedDate, loan.getLoanAccount().getAccountNumber(), loan.getTotalLoanAmount(), loan.getLeftToPay(), loan.getClient().getClientID()));
         }
-
+        Collections.sort(allLoansRecords, new Comparator<AllLoansRecord>() {
+            @Override
+            public int compare(AllLoansRecord loan1, AllLoansRecord loan2) {
+                return Integer.compare(loan2.loanID(), loan1.loanID());
+            }
+        });
         model.addAttribute("all", allLoansRecords);
         return "loanTemplates/allLoans";
     }
