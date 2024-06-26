@@ -91,10 +91,10 @@ public class LoanControllerTests {
         String response = loanController.addNewLoan(principalAmount, loanDuration, request, model);
 
         // Assert
-        assertEquals("loanTemplates/add", response);
+        assertEquals("indexTemplates/hello", response);
         verify(loanRepository, times(1)).save(any(Loan.class));
         verify(transactionRepository, times(3)).save(any(Transaction.class));
-        verify(model).addAttribute("add", "Loan and loan account created successfully");
+        verify(model).addAttribute("response", "Loan and loan account created successfully");
     }
 
     @Test
