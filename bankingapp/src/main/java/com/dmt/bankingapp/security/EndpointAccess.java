@@ -18,6 +18,7 @@ public class EndpointAccess {
                 .requestMatchers("/","/welcome").permitAll()
                 .requestMatchers("/hello").authenticated()
                 .requestMatchers("/homepage").authenticated()
+                .requestMatchers("/about").permitAll()
                 // .requestMatchers(HttpMethod.<REST API METHOD>,<URI as String>).<attribute>
                 .requestMatchers(HttpMethod.GET, "/test/**").authenticated()
                 .requestMatchers("/logo.png").permitAll()

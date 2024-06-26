@@ -93,7 +93,7 @@
 <!-- Left Menu -->
 <div class="container mt-3">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3" th:if="${#authorization.expression('isAuthenticated()')}">
             <div class="menu-section">
                 <div class="controller">
                     <h3>Your profile and account</h3>
@@ -175,7 +175,7 @@
             W ramach zadania, istnieje pelna dowolnosc pod kątem projektu bazy danych, układu tabel
             i relacji. Nie ma odgórnego ograniczenia pod kątem formatu numeru konta, poziomu skomplikowania hasła, czy interfejsu. Wszelkie wątpliwości/pytania powinny być poruszane
             w module “strumień” na platformie Google Classroom.<br>
-            <a href="https://github.com/dmt-kasinski/banking-app">Github repository</a>
+            <h1><a href="https://github.com/dmt-kasinski/banking-app">Github repository</a></h1>
             </p>
         </div>
     </div>
