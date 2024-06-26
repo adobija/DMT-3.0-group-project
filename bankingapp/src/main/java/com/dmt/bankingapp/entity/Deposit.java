@@ -1,7 +1,9 @@
 package com.dmt.bankingapp.entity;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
+import com.dmt.bankingapp.utils.DateAdjuster;
 import jakarta.persistence.*;
 
 import com.dmt.bankingapp.utils.DecimalPlacesAdjuster;
@@ -100,6 +102,9 @@ public class Deposit {
     public LocalDateTime getDateOfDeposit() {
         return dateOfDeposit;
     }
+    public String getFormatedDate(){
+        return DateAdjuster.getDate(dateOfDeposit);
+    }
 
     public double getTotalDepositAmount() {
         return this.totalDepositAmount;
@@ -188,6 +193,14 @@ public class Deposit {
 
     public LocalDateTime getDateOfWithdrawn() {
         return dateOfWithdrawn;
+    }
+
+    public String getFormatedDateOfWithdrawn(){
+        if(dateOfWithdrawn == null){
+            return "Hasn't been withdrawn yet!";
+        }else{
+            return DateAdjuster.getDate(dateOfWithdrawn);
+        }
     }
 
     public String getDepositTypeString(){

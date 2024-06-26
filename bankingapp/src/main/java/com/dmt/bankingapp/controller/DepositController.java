@@ -19,6 +19,7 @@ import com.dmt.bankingapp.entity.Transaction;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -164,5 +165,16 @@ public class DepositController {
         String output = "Successfully withdrawn " + requestedDeposit.getReturnOfInvestment();
         model.addAttribute("response", output);
         return "indexTemplates/hello";
+    }
+
+    @GetMapping(path = "/all")
+    public String listAll(HttpServletRequest request, Model model){
+        Client requester = detailsOfLoggedClient.getLoggedClientInstance(request);
+        if(!requester.isAdmin()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission!");
+        }
+        List<Deposit> allDeposits = depositRepository.findAll();
+        model.addAttribute("list", allDeposits);
+        return "depositTemplates/listAllDeposits";
     }
 }
