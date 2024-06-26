@@ -29,12 +29,6 @@ public class AccountsOfUserIntoHistoryListImplTest {
     private EntityManager entityManager;
 
     @Autowired
-    private AccountRepository accountRepository;
-
-    @Autowired
-    private TransactionRepository transactionRepository;
-
-    @Autowired
     private AccountsOfUserIntoHistoryListImpl accountsOfUserIntoHistoryList;
     @Test
     public void getStoredHistoryByClientTest(){
