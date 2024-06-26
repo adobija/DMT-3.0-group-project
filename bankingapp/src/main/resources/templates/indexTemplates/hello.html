@@ -141,15 +141,15 @@
                 <p th:text="${response}"></p>
                 </div>
 
-                <div class="alert alert-primary" role="alert" style="text-align: center;">
+                <div th:if="${accNumber != null}" class="alert alert-primary" role="alert" style="text-align: center;">
                     <p>Your account number: <span th:text="${accNumber}"></span><br></p>
                 </div>
 
-                <div class="alert alert-primary" role="alert" style="text-align: center;">
+                <div th:if="${balance != null}" class="alert alert-primary" role="alert" style="text-align: center;">
                     <p>You have: <span th:text="${balance}"></span> zł</p>
                 </div>
 
-                <div class="alert alert-primary" role="alert" style="text-align: center;">
+                <div th:if="${date != null}" class="alert alert-primary" role="alert" style="text-align: center;">
                     <p>Today is <span th:text="${date}"></span></p>
                 </div>
             </h3>
